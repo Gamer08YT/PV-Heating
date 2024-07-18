@@ -3,6 +3,10 @@
       focusComponent="login"
       title="msg://LoginView.title">
     <layout justifyContent="CENTER" alignItems="CENTER" classNames="jmix-login-main-layout">
+        <!--<vbox>
+            <svgIcon resource="VAADIN/themes/PV-Heating/icons/solar.svg"/>
+            <h2 text="msg://loginForm.headerTitle"/>
+        </vbox>-->
         <loginForm id="login"
                    forgotPasswordButtonVisible="false" localesVisible="true">
             <form title="msg://loginForm.headerTitle"

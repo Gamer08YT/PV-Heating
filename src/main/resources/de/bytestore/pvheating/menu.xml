@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://jmix.io/schema/flowui/menu">
 
-    <menu id="application" title="msg://de.bytestore.pvheating/menu.application.title" opened="true">
-        <item view="heater_User.list" title="msg://de.bytestore.pvheating.view.user/UserListView.title"/>
-        <item view="heater_SettingsView" title="msg://de.bytestore.pvheating.view.settings/settingsView.title"/>
+    <menu id="application" icon="vaadin:dashboard" title="msg://de.bytestore.pvheating/menu.application.title" opened="true">
+
+    </menu>
+    <menu id="security" icon="vaadin:users" title="msg://de.bytestore.pvheating/menu.user.title">
+        <item view="heater_User.list" icon="lumo:user" title="msg://de.bytestore.pvheating.view.user/UserListView.title"/>
+        <item view="sec_ResourceRoleModel.list"
+              title="msg://io.jmix.securityflowui.view.resourcerole/resourceRoleModelListView.menu"/>
+        <item view="sec_RowLevelRoleModel.list"
+              title="msg://io.jmix.securityflowui.view.rowlevelrole/rowLevelRoleModelListView.menu"/>
+    </menu>
+    <menu id="datatools" icon="lumo:cog" title="msg://de.bytestore.pvheating/menu.system.title">
+        <item view="datatl_entityInspectorListView" icon="vaadin:database"
+              title="msg://io.jmix.datatoolsflowui.view.entityinspector/listTitle"/>
+        <item view="heater_SettingsView" icon="vaadin:wrench" title="msg://de.bytestore.pvheating.view.settings/settingsView.title"/>
     </menu>
 
 </menu-config>

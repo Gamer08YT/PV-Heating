@@ -16,7 +16,7 @@
         </navigationBar>
         <drawerLayout>
             <section id="section" classNames="jmix-main-view-section">
-                <hbox spacing="false" alignItems="CENTER">
+                <hbox spacing="false" padding="true" alignItems="CENTER">
                     <svgIcon resource="VAADIN/themes/PV-Heating/icons/solar.svg"/>
 
                     <h2 id="applicationTitle"
