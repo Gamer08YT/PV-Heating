@@ -41,6 +41,8 @@ public class SettingsView extends StandardView {
     private JmixFormLayout currentRange;
     @ViewComponent
     private JmixFormLayout voltageRange;
+    @Autowired
+    private MessageBundle messageBundle;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -118,7 +120,7 @@ public class SettingsView extends StandardView {
         voltageRange.setVisible(typeIO == SCRType.VOLTAGE);
 
         if (typeIO == SCRType.PWM)
-            throw new NotImplementedException();
+            throw new NotImplementedException(messageBundle.getMessage("pwmNotImplemented"));
     }
 
 
