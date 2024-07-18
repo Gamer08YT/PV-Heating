@@ -14,6 +14,31 @@
         </tabs>
         <select itemsEnum="SCRType" id="scrType"/>
 
+        <formLayout>
+            <numberField label="msg://min" stepButtonsVisible="true" id="currentMinField" min="0">
+                <suffix>
+                    <span text="mA"/>
+                </suffix>
+            </numberField>
+            <numberField label="msg://max" stepButtonsVisible="true" id="currentMaxField" max="20">
+                <suffix>
+                    <span text="mA"/>
+                </suffix>
+            </numberField>
+        </formLayout>
+
+        <formLayout>
+            <numberField label="msg://min" stepButtonsVisible="true" id="voltageMinField" min="0">
+                <suffix>
+                    <span text="V"/>
+                </suffix>
+            </numberField>
+            <numberField label="msg://max" stepButtonsVisible="true" id="voltageMaxField" max="20">
+                <suffix>
+                    <span text="V"/>
+                </suffix>
+            </numberField>
+        </formLayout>
 
     </layout>
 </view>
