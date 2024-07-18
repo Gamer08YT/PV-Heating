@@ -14,6 +14,8 @@
         </tabs>
 
         <formLayout>
+            <select itemsEnum="SensorType" helperText="msg://helperSensor" id="sensorType"/>
+
             <numberField label="msg://maxTemperatureSensor" helperText="msg://helperTemperatureSensor"
                          stepButtonsVisible="true" step="1000" min="0">
                 <suffix>

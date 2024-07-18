@@ -13,6 +13,7 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import de.bytestore.pvheating.entity.SCRType;
+import de.bytestore.pvheating.entity.SensorType;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
 import io.jmix.flowui.component.select.JmixSelect;
@@ -29,6 +30,8 @@ public class SettingsView extends StandardView {
     private JmixSelect<Object> scrType;
     @Autowired
     private Messages messages;
+    @ViewComponent
+    private JmixSelect<Object> sensorType;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -36,7 +39,12 @@ public class SettingsView extends StandardView {
     }
 
     private void initTabs() {
+        initTemperature();
         initSCR();
+    }
+
+    private void initTemperature() {
+        sensorType.setItems(SensorType.values());
     }
 
     private void initSCR() {
@@ -60,7 +68,6 @@ public class SettingsView extends StandardView {
             return layoutIO;
         });
     }
-    
-    
+
 
 }
