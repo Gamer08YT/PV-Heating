@@ -12,7 +12,24 @@
                 <span text="msg://scr"/>
             </tab>
         </tabs>
-        <select itemsEnum="SCRType" id="scrType"/>
+
+        <formLayout>
+            <numberField label="msg://maxTemperatureSensor" helperText="msg://helperTemperatureSensor"
+                         stepButtonsVisible="true" step="1000" min="0">
+                <suffix>
+                    <svgIcon resource="VAADIN/themes/PV-Heating/icons/resistance.svg"/>
+                </suffix>
+            </numberField>
+        </formLayout>
+
+        <formLayout>
+            <numberField label="msg://maxTemperature" helperText="msg://helperTemperature" stepButtonsVisible="true"
+                         step="0.5" min="0" max="70">
+                <suffix>
+                    <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>
+                </suffix>
+            </numberField>
+        </formLayout>
 
         <formLayout>
             <numberField label="msg://min" stepButtonsVisible="true" id="currentMinField" min="0">
@@ -28,6 +45,8 @@
         </formLayout>
 
         <formLayout>
+            <select itemsEnum="SCRType" helperText="msg://helperSCR" id="scrType"/>
+
             <numberField label="msg://min" stepButtonsVisible="true" id="voltageMinField" min="0">
                 <suffix>
                     <span text="V"/>

@@ -1,0 +1,52 @@
+<svg width="47.99999999999999" height="47.99999999999999" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <radialGradient gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0.2069) scale(1 0.96552)" r="34.95669" cy="21.08696" cx="24" data-name="Безымянный градиент 146" id="Безымянный_градиент_146">
+   <stop stop-color="#dfe9f2" offset="0"/>
+   <stop stop-color="#d6e0e9" offset="0.391"/>
+   <stop stop-color="#bfc8d1" offset="1"/>
+  </radialGradient>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <path id="svg_1" fill="#0078d4" d="m6,32l36,0a0,0 0 0 1 0,0l0,8a2,2 0 0 1 -2,2l-32,0a2,2 0 0 1 -2,-2l0,-8a0,0 0 0 1 0,0z" class="cls-1"/>
+  <path id="svg_2" fill="url(#Безымянный_градиент_146)" d="m8,6l32,0a2,2 0 0 1 2,2l0,25a1,1 0 0 1 -1,1l-34,0a1,1 0 0 1 -1,-1l0,-25a2,2 0 0 1 2,-2z" class="cls-2"/>
+  <g id="svg_3">
+   <path id="svg_4" fill="#64717c" d="m37.001,19a0.99982,0.99982 0 0 1 -0.91211,-0.58789a13.11031,13.11031 0 0 0 -12.08889,-7.41211a13.11031,13.11031 0 0 0 -12.08887,7.41211a1,1 0 1 1 -1.82226,-0.82422a15.11006,15.11006 0 0 1 13.91113,-8.58789a15.11006,15.11006 0 0 1 13.91113,8.58789a1,1 0 0 1 -0.91013,1.41211z" class="cls-3"/>
+   <path id="svg_5" fill="#64717c" d="m13,21a0.99676,0.99676 0 0 1 -0.707,-0.293l-2,-2a0.99989,0.99989 0 0 1 1.414,-1.414l2,2a1,1 0 0 1 -0.707,1.707z" class="cls-3"/>
+   <path id="svg_6" fill="#64717c" d="m18.001,16a0.99894,0.99894 0 0 1 -0.8584,-0.48535l-1.5,-2.5a1,1 0 1 1 1.71484,-1.0293l1.5,2.5a1,1 0 0 1 -0.85644,1.51465z" class="cls-3"/>
+   <path id="svg_7" fill="#64717c" d="m29.999,16a1,1 0 0 1 -0.85644,-1.51465l1.5,-2.5a1,1 0 1 1 1.71484,1.0293l-1.5,2.5a0.99894,0.99894 0 0 1 -0.8584,0.48535z" class="cls-3"/>
+   <path id="svg_8" fill="#64717c" d="m35,21a1,1 0 0 1 -0.707,-1.707l2,-2a0.99989,0.99989 0 1 1 1.414,1.414l-2,2a0.99676,0.99676 0 0 1 -0.707,0.293z" class="cls-3"/>
+   <path id="svg_9" fill="#64717c" d="m24,14a0.99943,0.99943 0 0 1 -1,-1l0,-3a1,1 0 0 1 2,0l0,3a0.99943,0.99943 0 0 1 -1,1z" class="cls-3"/>
+  </g>
+  <path id="svg_10" fill="#64717c" d="m24.001,35a0.9988,0.9988 0 0 1 -0.78223,-0.375l-8,-10a1.00049,1.00049 0 1 1 1.5625,-1.25l8,10a0.99991,0.99991 0 0 1 -0.78027,1.625z" class="cls-3"/>
+  <circle id="svg_11" fill="#0078d4" r="6" cy="36" cx="24" class="cls-1"/>
+  <g id="svg_12">
+   <g id="svg_13" opacity="0.05" class="cls-4">
+    <path id="svg_14" d="m24,33a3,3 0 1 1 -3,3a3,3 0 0 1 3,-3m0,-1a4,4 0 1 0 4,4a4.00452,4.00452 0 0 0 -4,-4z"/>
+   </g>
+   <g id="svg_15" opacity="0.07" class="cls-5">
+    <path id="svg_16" d="m24,33a3,3 0 1 1 -3,3a3,3 0 0 1 3,-3m0,-0.5a3.5,3.5 0 1 0 3.5,3.5a3.504,3.504 0 0 0 -3.5,-3.5z"/>
+   </g>
+   <circle id="svg_17" fill="#fff" r="3" cy="36" cx="24" class="cls-6"/>
+  </g>
+  <g id="svg_18">
+   <g id="svg_19" opacity="0.05" class="cls-4">
+    <path id="svg_20" d="m10,37a1,1 0 1 1 -1,1a1,1 0 0 1 1,-1m0,-1a2,2 0 1 0 2,2a2.00228,2.00228 0 0 0 -2,-2z"/>
+   </g>
+   <g id="svg_21" opacity="0.07" class="cls-5">
+    <path id="svg_22" d="m10,37a1,1 0 1 1 -1,1a1,1 0 0 1 1,-1m0,-0.5a1.5,1.5 0 1 0 1.5,1.5a1.50172,1.50172 0 0 0 -1.5,-1.5z"/>
+   </g>
+   <circle id="svg_23" fill="#fff" r="1" cy="38" cx="10" class="cls-6"/>
+  </g>
+  <g id="svg_24">
+   <g id="svg_25" opacity="0.05" class="cls-4">
+    <path id="svg_26" d="m38,37a1,1 0 1 1 -1,1a1,1 0 0 1 1,-1m0,-1a2,2 0 1 0 2,2a2.00228,2.00228 0 0 0 -2,-2z"/>
+   </g>
+   <g id="svg_27" opacity="0.07" class="cls-5">
+    <path id="svg_28" d="m38,37a1,1 0 1 1 -1,1a1,1 0 0 1 1,-1m0,-0.5a1.5,1.5 0 1 0 1.5,1.5a1.50172,1.50172 0 0 0 -1.5,-1.5z"/>
+   </g>
+   <circle id="svg_29" fill="#fff" r="1" cy="38" cx="38" class="cls-6"/>
+  </g>
+  <text font-weight="bold" transform="matrix(0.475545 0 0 0.475545 8.91285 14.9879)" stroke="null" xml:space="preserve" text-anchor="start" font-family="'arial'" font-size="24" stroke-width="0" id="svg_30" y="18.88721" x="23.95366" fill="#000000">Ω</text>
+ </g>
+</svg>
