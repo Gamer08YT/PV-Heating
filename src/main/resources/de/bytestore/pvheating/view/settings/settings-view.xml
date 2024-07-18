@@ -2,5 +2,18 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://settingsView.title">
     <layout>
+        <tabs width="100%" themeNames="centered icon-on-top">
+            <tab id="temperature">
+                <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>
+                <span text="msg://temperature"/>
+            </tab>
+            <tab id="scr">
+                <svgIcon resource="VAADIN/themes/PV-Heating/icons/transistor.svg"/>
+                <span text="msg://scr"/>
+            </tab>
+        </tabs>
+        <select itemsEnum="SCRType" id="scrType"/>
+
+
     </layout>
 </view>

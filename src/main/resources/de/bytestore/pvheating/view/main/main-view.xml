@@ -16,13 +16,17 @@
         </navigationBar>
         <drawerLayout>
             <section id="section" classNames="jmix-main-view-section">
-                <h2 id="applicationTitle"
-                    classNames="jmix-main-view-application-title">
-                    <anchor id="baseLink"
-                            href="."
-                            text="msg://applicationTitle.text"
-                            classNames="jmix-main-view-application-title-base-link"/>
-                </h2>
+                <hbox spacing="false" alignItems="CENTER">
+                    <svgIcon resource="VAADIN/themes/PV-Heating/icons/solar.svg"/>
+
+                    <h2 id="applicationTitle"
+                        classNames="jmix-main-view-application-title">
+                        <anchor id="baseLink"
+                                href="."
+                                text="msg://applicationTitle.text"
+                                classNames="jmix-main-view-application-title-base-link"/>
+                    </h2>
+                </hbox>
                 <nav id="navigation"
                      classNames="jmix-main-view-navigation"
                      ariaLabel="msg://navigation.ariaLabel">

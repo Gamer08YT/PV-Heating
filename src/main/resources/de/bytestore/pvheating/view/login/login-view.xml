@@ -4,7 +4,7 @@
       title="msg://LoginView.title">
     <layout justifyContent="CENTER" alignItems="CENTER" classNames="jmix-login-main-layout">
         <loginForm id="login"
-                   forgotPasswordButtonVisible="false">
+                   forgotPasswordButtonVisible="false" localesVisible="true">
             <form title="msg://loginForm.headerTitle"
                   username="msg://loginForm.username"
                   password="msg://loginForm.password"
@@ -15,6 +15,7 @@
                           message="msg://loginForm.badCredentials"
                           username="msg://loginForm.errorUsername"
                           password="msg://loginForm.errorPassword"/>
+            <additionalInformation message="msg://eapNote"/>
         </loginForm>
     </layout>
 </view>
