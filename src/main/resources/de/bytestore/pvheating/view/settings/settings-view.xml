@@ -3,6 +3,10 @@
       title="msg://settingsView.title">
     <layout>
         <tabs width="100%" themeNames="centered icon-on-top">
+            <tab id="power">
+                <svgIcon resource="VAADIN/themes/PV-Heating/icons/power.svg"/>
+                <span text="msg://power"/>
+            </tab>
             <tab id="temperature">
                 <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>
                 <span text="msg://temperature"/>
@@ -12,6 +16,17 @@
                 <span text="msg://scr"/>
             </tab>
         </tabs>
+
+        <formLayout>
+            <numberField label="msg://maxPowerUsage" helperText="msg://helperPowerUsage"
+                         stepButtonsVisible="true" step="100" min="0">
+                <suffix>
+                    <svgIcon resource="VAADIN/themes/PV-Heating/icons/teapot.svg"/>
+                </suffix>
+            </numberField>
+
+            <button enabled="false" text="msg://calibrate"/>
+        </formLayout>
 
         <formLayout>
             <select itemsEnum="SensorType" helperText="msg://helperSensor" id="sensorType"/>

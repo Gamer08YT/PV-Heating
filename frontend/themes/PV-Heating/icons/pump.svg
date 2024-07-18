@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48" width="48px" height="48px">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#Безымянный_градиент_18);
+      }
+
+      .cls-2 {
+        fill: url(#Безымянный_градиент_18-2);
+      }
+
+      .cls-3 {
+        fill: #64717c;
+      }
+
+      .cls-4 {
+        fill: url(#Безымянный_градиент_17);
+      }
+
+      .cls-5 {
+        fill: url(#Безымянный_градиент_54);
+      }
+    </style>
+    <linearGradient id="Безымянный_градиент_18" data-name="Безымянный градиент 18" x1="4.96739" y1="28" x2="11.57228" y2="28" gradientTransform="translate(17 56) rotate(-180)" gradientUnits="userSpaceOnUse">
+      <stop offset="0.503" stop-color="#a1aab3"/>
+      <stop offset="0.658" stop-color="#9ea7af"/>
+      <stop offset="0.796" stop-color="#949da5"/>
+      <stop offset="0.928" stop-color="#848c92"/>
+      <stop offset="1" stop-color="#787f85"/>
+    </linearGradient>
+    <linearGradient id="Безымянный_градиент_18-2" x1="16" y1="10.6087" x2="16" y2="21.03865" gradientTransform="translate(31.5 -0.5) rotate(90)" xlink:href="#Безымянный_градиент_18"/>
+    <linearGradient id="Безымянный_градиент_17" data-name="Безымянный градиент 17" x1="9.5163" y1="28" x2="25.85062" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a1aab3"/>
+      <stop offset="1" stop-color="#8f979e"/>
+    </linearGradient>
+    <linearGradient id="Безымянный_градиент_54" data-name="Безымянный градиент 54" x1="44.63587" y1="28" x2="24.71475" y2="28" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a1aab3"/>
+      <stop offset="0.17678" stop-color="#9ea7af"/>
+      <stop offset="0.65312" stop-color="#949da5"/>
+      <stop offset="0.70679" stop-color="#929ba3"/>
+      <stop offset="0.73521" stop-color="#8b949b"/>
+      <stop offset="0.75133" stop-color="#848c92"/>
+      <stop offset="1" stop-color="#787f85"/>
+    </linearGradient>
+  </defs>
+  <rect class="cls-1" x="5" y="25" width="7" height="6" transform="translate(17 56) rotate(180)"/>
+  <rect class="cls-2" x="10.5" y="12.5" width="11" height="6" transform="translate(0.5 31.5) rotate(-90)"/>
+  <rect class="cls-3" x="3" y="23" width="4" height="10" rx="2" transform="translate(10 56) rotate(180)"/>
+  <rect class="cls-3" x="14" y="5" width="4" height="10" rx="2" transform="translate(6 26) rotate(-90)"/>
+  <path class="cls-4" d="M13,20H26a0,0,0,0,1,0,0V36a0,0,0,0,1,0,0H13a2,2,0,0,1-2-2V22A2,2,0,0,1,13,20Z"/>
+  <path class="cls-5" d="M43,16H30.70156a2,2,0,0,0-1.24939.43826L25,20V36l4.45217,3.56174A2,2,0,0,0,30.70156,40H43a2,2,0,0,0,2-2V18A2,2,0,0,0,43,16Z"/>
+  <g>
+    <rect class="cls-3" x="32" y="19" width="11" height="2" rx="1"/>
+    <rect class="cls-3" x="32" y="23" width="11" height="2" rx="1"/>
+    <rect class="cls-3" x="32" y="27" width="11" height="2" rx="1"/>
+    <rect class="cls-3" x="32" y="31" width="11" height="2" rx="1"/>
+    <rect class="cls-3" x="32" y="35" width="11" height="2" rx="1"/>
+  </g>
+</svg>
