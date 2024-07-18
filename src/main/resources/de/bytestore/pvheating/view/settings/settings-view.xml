@@ -22,13 +22,18 @@
         </tabs>
 
         <formLayout id="sheetpower">
+            <numberField label="msg://minPowerUsage" helperText="msg://helperMinPowerUsage"
+                         stepButtonsVisible="true" step="100" min="0">
+                <suffix>
+                    <span text="W"/>
+                </suffix>
+            </numberField>
             <numberField label="msg://maxPowerUsage" helperText="msg://helperPowerUsage"
                          stepButtonsVisible="true" step="100" min="0">
                 <suffix>
-                    <svgIcon resource="VAADIN/themes/PV-Heating/icons/teapot.svg"/>
+                    <span text="W"/>
                 </suffix>
             </numberField>
-
             <button enabled="false" text="msg://calibrate"/>
         </formLayout>
 
