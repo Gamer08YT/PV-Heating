@@ -15,7 +15,15 @@
                 <svgIcon resource="VAADIN/themes/PV-Heating/icons/transistor.svg"/>
                 <span text="msg://scr"/>
             </tab>
+            <tab id="pump">
+                <svgIcon resource="VAADIN/themes/PV-Heating/icons/pump.svg"/>
+                <span text="msg://pump"/>
+            </tab>
         </tabs>
+
+        <formLayout>
+            <checkbox id="checkboxPump" label="msg://enablePump"/>
+        </formLayout>
 
         <formLayout>
             <numberField label="msg://maxPowerUsage" helperText="msg://helperPowerUsage"
