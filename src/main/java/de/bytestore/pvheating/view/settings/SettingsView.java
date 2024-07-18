@@ -51,6 +51,25 @@ public class SettingsView extends StandardView {
         scrType.setItems(SCRType.values());
     }
 
+    @Supply(to = "sensorType", subject = "renderer")
+    private ComponentRenderer sensorTypeRenderer() {
+        return new ComponentRenderer(typeIO -> {
+            SvgIcon iconIO = null;
+
+            switch ((SensorType) typeIO) {
+                case NTC -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/negative.svg");
+                case PTC -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/positive.svg");
+            }
+
+            VerticalLayout layoutIO = new VerticalLayout(iconIO, new Span(messages.getMessage((SensorType) typeIO)));
+            layoutIO.setAlignItems(FlexComponent.Alignment.CENTER);
+
+            return layoutIO;
+        });
+    }
+
+
+
     @Supply(to = "scrType", subject = "renderer")
     private ComponentRenderer scrTypeRenderer() {
         return new ComponentRenderer(typeIO -> {
