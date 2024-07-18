@@ -1,24 +1,25 @@
 package de.bytestore.pvheating.view.settings;
 
 
+import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.FontIcon;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.SvgIcon;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
+import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoIcon;
 import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.entity.SensorType;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
+import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.select.JmixSelect;
-import io.jmix.flowui.component.tabsheet.JmixTabSheet;
 import io.jmix.flowui.view.*;
+import org.apache.commons.lang3.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "settings-view", layout = MainView.class)
@@ -26,16 +27,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 @ViewDescriptor("settings-view.xml")
 public class SettingsView extends StandardView {
 
+    private static final Logger log = LoggerFactory.getLogger(SettingsView.class);
+
     @ViewComponent
     private JmixSelect<Object> scrType;
+
     @Autowired
     private Messages messages;
+
     @ViewComponent
     private JmixSelect<Object> sensorType;
+    @ViewComponent
+    private JmixFormLayout currentRange;
+    @ViewComponent
+    private JmixFormLayout voltageRange;
 
     @Subscribe
     public void onInit(final InitEvent event) {
         initTabs();
+    }
+
+    @Subscribe("tabSheet")
+    public void onTabSheetSelectedChange(final Tabs.SelectedChangeEvent eventIO) {
+        // Print Info Message.
+        log.info("Showing Settings Tab {}.", eventIO.getSelectedTab().getId().get());
+
+        getContent().findComponent("sheet" + eventIO.getSelectedTab().getId().get()).ifPresent(component -> {
+            eventIO.getPreviousTab().getId().ifPresent(idIO -> {
+                getContent().getComponent("sheet" + idIO).setVisible(false);
+            });
+
+            ((FormLayout) component).setVisible(true);
+        });
     }
 
     private void initTabs() {
@@ -69,7 +92,6 @@ public class SettingsView extends StandardView {
     }
 
 
-
     @Supply(to = "scrType", subject = "renderer")
     private ComponentRenderer scrTypeRenderer() {
         return new ComponentRenderer(typeIO -> {
@@ -86,6 +108,17 @@ public class SettingsView extends StandardView {
 
             return layoutIO;
         });
+    }
+
+    @Subscribe("scrType")
+    public void onScrTypeComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixSelect<?>, ?> eventIO) {
+        SCRType typeIO = (SCRType) scrType.getValue();
+
+        currentRange.setVisible(typeIO == SCRType.CURRENT);
+        voltageRange.setVisible(typeIO == SCRType.VOLTAGE);
+
+        if (typeIO == SCRType.PWM)
+            throw new NotImplementedException();
     }
 
 

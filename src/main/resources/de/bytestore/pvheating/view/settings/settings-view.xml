@@ -2,7 +2,7 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://settingsView.title">
     <layout>
-        <tabs width="100%" themeNames="centered icon-on-top">
+        <tabs width="100%" id="tabSheet" themeNames="centered icon-on-top">
             <tab id="power">
                 <svgIcon resource="VAADIN/themes/PV-Heating/icons/power.svg"/>
                 <span text="msg://power"/>
@@ -21,11 +21,7 @@
             </tab>
         </tabs>
 
-        <formLayout>
-            <checkbox id="checkboxPump" label="msg://enablePump"/>
-        </formLayout>
-
-        <formLayout>
+        <formLayout id="sheetpower">
             <numberField label="msg://maxPowerUsage" helperText="msg://helperPowerUsage"
                          stepButtonsVisible="true" step="100" min="0">
                 <suffix>
@@ -36,7 +32,7 @@
             <button enabled="false" text="msg://calibrate"/>
         </formLayout>
 
-        <formLayout>
+        <formLayout id="sheettemperature" visible="false">
             <select itemsEnum="SensorType" helperText="msg://helperSensor" id="sensorType"/>
 
             <numberField label="msg://maxTemperatureSensor" helperText="msg://helperTemperatureSensor"
@@ -45,9 +41,7 @@
                     <svgIcon resource="VAADIN/themes/PV-Heating/icons/resistance.svg"/>
                 </suffix>
             </numberField>
-        </formLayout>
 
-        <formLayout>
             <numberField label="msg://maxTemperature" helperText="msg://helperTemperature" stepButtonsVisible="true"
                          step="0.5" min="0" max="70">
                 <suffix>
@@ -56,32 +50,40 @@
             </numberField>
         </formLayout>
 
-        <formLayout>
-            <numberField label="msg://min" stepButtonsVisible="true" id="currentMinField" min="0">
-                <suffix>
-                    <span text="mA"/>
-                </suffix>
-            </numberField>
-            <numberField label="msg://max" stepButtonsVisible="true" id="currentMaxField" max="20">
-                <suffix>
-                    <span text="mA"/>
-                </suffix>
-            </numberField>
+        <formLayout id="sheetscr" visible="false">
+            <formLayout colspan="12">
+                <select itemsEnum="SCRType" helperText="msg://helperSCR" id="scrType"/>
+            </formLayout>
+
+            <formLayout id="voltageRange" visible="false" colspan="12">
+                <numberField label="msg://min" stepButtonsVisible="true" id="voltageMinField" min="0">
+                    <suffix>
+                        <span text="V"/>
+                    </suffix>
+                </numberField>
+                <numberField label="msg://max" stepButtonsVisible="true" id="voltageMaxField" max="20">
+                    <suffix>
+                        <span text="V"/>
+                    </suffix>
+                </numberField>
+            </formLayout>
+
+            <formLayout id="currentRange" visible="false" colspan="12">
+                <numberField label="msg://min" stepButtonsVisible="true" id="currentMinField" min="0">
+                    <suffix>
+                        <span text="mA"/>
+                    </suffix>
+                </numberField>
+                <numberField label="msg://max" stepButtonsVisible="true" id="currentMaxField" max="20">
+                    <suffix>
+                        <span text="mA"/>
+                    </suffix>
+                </numberField>
+            </formLayout>
         </formLayout>
 
-        <formLayout>
-            <select itemsEnum="SCRType" helperText="msg://helperSCR" id="scrType"/>
-
-            <numberField label="msg://min" stepButtonsVisible="true" id="voltageMinField" min="0">
-                <suffix>
-                    <span text="V"/>
-                </suffix>
-            </numberField>
-            <numberField label="msg://max" stepButtonsVisible="true" id="voltageMaxField" max="20">
-                <suffix>
-                    <span text="V"/>
-                </suffix>
-            </numberField>
+        <formLayout id="sheetpump" visible="false">
+            <checkbox colspan="12" id="checkboxPump" label="msg://enablePump"/>
         </formLayout>
 
     </layout>
