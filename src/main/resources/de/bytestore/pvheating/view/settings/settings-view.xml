@@ -19,6 +19,10 @@
                 <svgIcon resource="VAADIN/themes/PV-Heating/icons/pump.svg"/>
                 <span text="msg://pump"/>
             </tab>
+            <tab id="system">
+                <svgIcon resource="VAADIN/themes/PV-Heating/icons/system.svg"/>
+                <span text="msg://de.bytestore.pvheating/menu.system.title"/>
+            </tab>
         </tabs>
 
         <formLayout id="sheetpower">
@@ -91,5 +95,8 @@
             <checkbox colspan="12" id="checkboxPump" label="msg://enablePump"/>
         </formLayout>
 
+        <formLayout id="sheetsystem" visible="false">
+
+        </formLayout>
     </layout>
 </view>

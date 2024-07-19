@@ -1,1 +1,9 @@
 /* Define your styles here */
+.card.hover:hover {
+    background-color: var(--lumo-contrast-10pct);
+}
+
+.card {
+    background-color: var(--lumo-contrast-5pct);
+    border-radius: 0.5rem;
+}

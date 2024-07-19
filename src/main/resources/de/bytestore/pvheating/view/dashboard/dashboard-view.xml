@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view" xmlns:charts="http://jmix.io/schema/charts/ui"
+      title="msg://dashboardView.title">
+    <layout>
+        <hbox alignItems="CENTER" justifyContent="CENTER">
+            <vbox width="100%" height="100%" classNames="card">
+                <charts:chart height="100%" width="100%" animation="true" minHeight="15rem" minWidth="15rem">
+                    <charts:series>
+                        <charts:gauge name="msg://de.bytestore.pvheating.view.main/power">
+                            <charts:data>
+                                <charts:dataItem value="50"
+                                                 name="msg://de.bytestore.pvheating.view.main/heatingElement"/>
+                            </charts:data>
+                            <charts:detail fontSize="15" formatter="{value} W"/>
+                        </charts:gauge>
+                    </charts:series>
+                </charts:chart>
+            </vbox>
+            <vbox width="100%" height="100%" classNames="card">
+                <charts:chart height="100%" width="100%" minHeight="15rem" minWidth="15rem" animation="true"
+                              renderer="SVG">
+                    <charts:series>
+                        <charts:gauge name="msg://de.bytestore.pvheating.view.main/temperature">
+                            <charts:data>
+                                <charts:dataItem value="33"
+                                                 name="msg://de.bytestore.pvheating.view.main/heatingElement"/>
+                            </charts:data>
+                            <charts:detail fontSize="20" formatter="{value}°C"/>
+                        </charts:gauge>
+                    </charts:series>
+                </charts:chart>
+            </vbox>
+        </hbox>
+
+    </layout>
+</view>
