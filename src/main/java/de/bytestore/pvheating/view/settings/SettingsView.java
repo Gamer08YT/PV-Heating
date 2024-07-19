@@ -12,10 +12,13 @@ import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.entity.SensorType;
+import de.bytestore.pvheating.handler.ConfigHandler;
+import de.bytestore.pvheating.objects.config.SystemConfig;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.select.JmixSelect;
+import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.view.*;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -44,6 +47,16 @@ public class SettingsView extends StandardView {
     @Autowired
     private MessageBundle messageBundle;
 
+    private SystemConfig config = ConfigHandler.getCached();
+    @ViewComponent
+    private JmixNumberField currentMaxField;
+    @ViewComponent
+    private JmixNumberField currentMinField;
+    @ViewComponent
+    private JmixNumberField voltageMinField;
+    @ViewComponent
+    private JmixNumberField voltageMaxField;
+
     @Subscribe
     public void onInit(final InitEvent event) {
         initTabs();
@@ -70,10 +83,34 @@ public class SettingsView extends StandardView {
 
     private void initTemperature() {
         sensorType.setItems(SensorType.values());
+
+
     }
 
+    /**
+     * Initializes the SCR (Silicon-Controlled Rectifier) configuration.
+     * This method sets the SCR type, voltage values, and current values based on the configuration.
+     *
+     * The SCR type is set by populating the items in the scrType ComboBox with the available SCRType values,
+     * and then setting the value of scrType to the SCR type from the configuration.
+     *
+     * The minimum and maximum voltage values are set by retrieving the corresponding values from the configuration
+     * and then setting the values of voltageMinField and voltageMaxField respectively.
+     *
+     * The maximum and minimum current values are set by retrieving the corresponding values from the configuration
+     * and then setting the values of currentMaxField and currentMinField respectively.
+     */
     private void initSCR() {
         scrType.setItems(SCRType.values());
+        scrType.setValue(config.getScr().getType());
+
+        // Set Voltage Values.
+        voltageMinField.setValue(config.getScr().getMinVoltage());
+        voltageMaxField.setValue(config.getScr().getMaxVoltage());
+
+        // Set Current Values.
+        currentMaxField.setValue(config.getScr().getMaxCurrent());
+        currentMinField.setValue(config.getScr().getMinCurrent());
     }
 
     @Supply(to = "sensorType", subject = "renderer")

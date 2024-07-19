@@ -7,7 +7,7 @@ import lombok.Data;
 public class TemperatureConfig {
     private SensorType sensorType = SensorType.NTC;
 
-    private long resistance = 10000;
+    private double resistance = 10000;
 
-    private long desiredTemperature = 60;
+    private double desiredTemperature = 60;
 }

@@ -7,16 +7,16 @@ import lombok.Data;
 public class SCRConfig {
     private SCRType type = SCRType.VOLTAGE;
 
-    private long minVoltage = 0;
+    private double minVoltage = 0;
 
-    private long maxVoltage = 10;
+    private double maxVoltage = 10;
 
-    private long minCurrent = 0;
+    private double minCurrent = 0;
 
-    private long maxCurrent = 20;
+    private double maxCurrent = 20;
 
-    private long minPWM = 5000;
+    private double minPWM = 5000;
 
-    private long maxPWM = 10000;
+    private double maxPWM = 10000;
 
 }

@@ -35,6 +35,11 @@ public class PVHeatingApplication implements AppShellConfigurator {
         ConfigHandler.createIfNotExists();
     }
 
+    @EventListener
+    public void onApplicationStarted(final ApplicationStartedEvent event) {
+        ConfigHandler.readConfig();
+    }
+
     @Bean
     @Primary
     @ConfigurationProperties("main.datasource")

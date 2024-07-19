@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import de.bytestore.pvheating.objects.config.SystemConfig;
+import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +15,15 @@ import java.nio.charset.Charset;
 
 public class ConfigHandler {
     private static final Logger log = LoggerFactory.getLogger(ConfigHandler.class);
+
+    @Getter
     public static File config = new File("./config.json");
 
+    @Getter
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+    @Getter
+    private static SystemConfig cached = null;
 
     /**
      * Checks if the config file exists and creates it if it doesn't.
@@ -44,5 +51,21 @@ public class ConfigHandler {
      */
     private static String getDefaultConfig() {
         return gson.toJson(new SystemConfig());
+    }
+
+    /**
+     * Reads the configuration file and parses it into a SystemConfig object.
+     * If the configuration file does not exist, it creates a default configuration
+     * and writes it to disk.
+     * <p>
+     * The configuration file is expected to be a JSON file located at the
+     * path specified by the 'config' field in the ConfigHandler class.
+     */
+    public static void readConfig() {
+        try {
+            cached = gson.fromJson(FileUtils.readFileToString(config, Charset.defaultCharset()), SystemConfig.class);
+        } catch (IOException e) {
+            log.error("Unable to read Config from disk.", e);
+        }
     }
 }

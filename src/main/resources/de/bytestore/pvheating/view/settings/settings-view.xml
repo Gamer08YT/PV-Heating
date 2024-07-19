@@ -42,7 +42,8 @@
         </formLayout>
 
         <formLayout id="sheettemperature" visible="false">
-            <select itemsEnum="SensorType" label="msg://de.bytestore.pvheating.entity/SensorType" helperText="msg://helperSensor" id="sensorType"/>
+            <select itemsEnum="SensorType" label="msg://de.bytestore.pvheating.entity/SensorType"
+                    helperText="msg://helperSensor" id="sensorType"/>
 
             <numberField label="msg://maxTemperatureSensor" helperText="msg://helperTemperatureSensor"
                          stepButtonsVisible="true" step="1000" min="0">
@@ -61,7 +62,8 @@
 
         <formLayout id="sheetscr" visible="false">
             <formLayout colspan="12">
-                <select itemsEnum="SCRType" label="msg://de.bytestore.pvheating.entity/SCRType" helperText="msg://helperSCR" id="scrType"/>
+                <select itemsEnum="SCRType" label="msg://de.bytestore.pvheating.entity/SCRType"
+                        helperText="msg://helperSCR" id="scrType"/>
             </formLayout>
 
             <formLayout id="voltageRange" visible="false" colspan="12">
@@ -96,13 +98,15 @@
         </formLayout>
 
         <formLayout id="sheetsystem" visible="false">
-            <hbox alignItems="CENTER">
-                <svgIcon size="3rem" resource="VAADIN/themes/PV-Heating/icons/solar.svg"/>
-                <h2 text="PV Heating"/>
-            </hbox>
+            <vbox>
+                <hbox alignItems="CENTER">
+                    <svgIcon size="3rem" resource="VAADIN/themes/PV-Heating/icons/solar.svg"/>
+                    <h2 text="PV Heating"/>
+                </hbox>
 
-            <span text="PV Heating Developed by Byte-Store.DE (Jan Heil)."/>
-            <button text="GitHub" icon="vaadin:globe"/>
+                <span text="PV Heating Developed by Byte-Store.DE (Jan Heil)."/>
+                <button text="GitHub" icon="vaadin:globe"/>
+            </vbox>
         </formLayout>
     </layout>
 </view>
