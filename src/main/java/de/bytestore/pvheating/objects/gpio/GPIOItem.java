@@ -14,4 +14,12 @@ public class GPIOItem {
         this.type = type;
         this.name = name;
     }
+
+    public GPIOType getType() {
+        return type;
+    }
+
+    public int getName() {
+        return name;
+    }
 }

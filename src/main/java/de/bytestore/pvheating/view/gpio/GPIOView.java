@@ -2,14 +2,12 @@ package de.bytestore.pvheating.view.gpio;
 
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.entity.GPIOType;
 import de.bytestore.pvheating.objects.gpio.GPIOItem;
 import de.bytestore.pvheating.view.main.MainView;
-import io.jmix.flowui.view.StandardView;
-import io.jmix.flowui.view.Subscribe;
-import io.jmix.flowui.view.ViewController;
-import io.jmix.flowui.view.ViewDescriptor;
+import io.jmix.flowui.view.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +25,15 @@ public class GPIOView extends StandardView {
         add(new GPIOItem(GPIOType.DIGITAL, 3));
         add(new GPIOItem(GPIOType.DIGITAL, 4));
     }};
+    @ViewComponent
+    private HorizontalLayout gpioGrid;
 
     @Subscribe
     public void onInit(final InitEvent event) {
         gpioItems.forEach(gpioItem -> {
             Button buttonIO = new Button((gpioItem.getType() == GPIOType.ANALOG ? "A" : "D") + gpioItem.getName());
 
-            getContent().add(buttonIO);
+            gpioGrid.add(buttonIO);
         });
     }
 

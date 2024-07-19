@@ -2,5 +2,6 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://GPIOView.title">
     <layout>
+        <hbox id="gpioGrid"></hbox>
     </layout>
 </view>
