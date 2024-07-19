@@ -2,6 +2,7 @@ package de.bytestore.pvheating.view.settings;
 
 
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.SvgIcon;
@@ -16,10 +17,12 @@ import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.SystemConfig;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
+import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.select.JmixSelect;
 import io.jmix.flowui.component.textfield.JmixNumberField;
+import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
@@ -71,6 +74,10 @@ public class SettingsView extends StandardView {
     private JmixNumberField minPowerUsage;
     @ViewComponent
     private JmixNumberField maxPowerUsage;
+    @ViewComponent
+    private JmixButton save;
+    @Autowired
+    private Notifications notifications;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -208,6 +215,32 @@ public class SettingsView extends StandardView {
         if (typeIO == SCRType.PWM)
             throw new NotImplementedException(messageBundle.getMessage("pwmNotImplemented"));
     }
+
+    @Subscribe(id = "save", subject = "clickListener")
+    public void onSaveClick(final ClickEvent<JmixButton> event) {
+        config.getPower().setMaxPower(maxPowerUsage.getValue());
+        config.getPower().setMinPower(minPowerUsage.getValue());
+
+        config.getPump().setEnable(checkboxPump.getValue());
+
+        config.getScr().setMaxCurrent(currentMaxField.getValue());
+        config.getScr().setMinCurrent(currentMinField.getValue());
+
+        config.getScr().setMaxVoltage(voltageMaxField.getValue());
+        config.getScr().setMinVoltage(voltageMinField.getValue());
+
+        config.getScr().setType((SCRType) scrType.getValue());
+
+        config.getTemperature().setSensorType((SensorType) sensorType.getValue());
+        config.getTemperature().setResistance(sensorResistance.getValue());
+        config.getTemperature().setDesiredTemperature(desiredTemperature.getValue());
+
+        ConfigHandler.save();
+        save.setEnabled(true);
+
+        notifications.show(messageBundle.getMessage("settingsSaved"));
+    }
+
 
 
 }

@@ -6,6 +6,7 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import de.bytestore.pvheating.handler.ConfigHandler;
+import de.bytestore.pvheating.handler.GPIOHandler;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -38,6 +39,7 @@ public class PVHeatingApplication implements AppShellConfigurator {
     @EventListener
     public void onApplicationStarted(final ApplicationStartedEvent event) {
         ConfigHandler.readConfig();
+        GPIOHandler.initialize();
     }
 
     @Bean

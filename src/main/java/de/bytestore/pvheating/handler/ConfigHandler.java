@@ -68,4 +68,18 @@ public class ConfigHandler {
             log.error("Unable to read Config from disk.", e);
         }
     }
+
+    /**
+     * Saves the configuration to disk.
+     * This method converts the SystemConfig object to a JSON string using Gson library,
+     * and writes it to the 'config' file specified in the ConfigHandler class.
+     * If an error occurs while saving the configuration, an error message is logged.
+     */
+    public static void save() {
+        try {
+            FileUtils.writeStringToFile(config, gson.toJson(cached), Charset.defaultCharset());
+        } catch (IOException e) {
+            log.error("Unable to save Config to disk.", e);
+        }
+    }
 }

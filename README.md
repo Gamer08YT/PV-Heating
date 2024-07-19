@@ -30,6 +30,14 @@ Insert gif or link to demo
 
 ## Roadmap
 
+- Raspberry Support
+  - SCR Regelung
+    - PWM
+    - Current
+    - Voltage
+  - Temperaturfühler
+  - Relais Ausgang
+  - Dynamische GPIO Belegungen
 - Updater
 - VPN Access/Proxy (Für SmartHome Anwendung)
 

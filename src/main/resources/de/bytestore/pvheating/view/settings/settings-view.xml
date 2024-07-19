@@ -108,5 +108,7 @@
                 <button text="GitHub" icon="vaadin:globe"/>
             </vbox>
         </formLayout>
+
+        <button disableOnClick="true" id="save" text="msg://save" icon="CHECK"/>
     </layout>
 </view>
