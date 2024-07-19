@@ -35,8 +35,6 @@ dependencies {
     implementation 'io.jmix.datatools:jmix-datatools-flowui-starter'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.projectlombok:lombok'
-
     runtimeOnly 'org.hsqldb:hsqldb'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -45,6 +43,10 @@ dependencies {
     testImplementation 'io.jmix.flowui:jmix-flowui-test-assist'
     implementation 'io.jmix.charts:jmix-charts-flowui-starter'
     implementation 'io.jmix.translations:jmix-translations-de'
+
+    compileOnly 'org.projectlombok:lombok:1.18.20'
+//    compileOnly 'com.yworks:yguard:4.1.0'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
 }
 

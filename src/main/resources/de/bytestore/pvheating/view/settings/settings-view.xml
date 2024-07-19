@@ -26,13 +26,13 @@
         </tabs>
 
         <formLayout id="sheetpower">
-            <numberField label="msg://minPowerUsage" helperText="msg://helperMinPowerUsage"
+            <numberField label="msg://minPowerUsage" id="minPowerUsage" helperText="msg://helperMinPowerUsage"
                          stepButtonsVisible="true" step="100" min="0">
                 <suffix>
                     <span text="W"/>
                 </suffix>
             </numberField>
-            <numberField label="msg://maxPowerUsage" helperText="msg://helperPowerUsage"
+            <numberField label="msg://maxPowerUsage" id="maxPowerUsage" helperText="msg://helperPowerUsage"
                          stepButtonsVisible="true" step="100" min="0">
                 <suffix>
                     <span text="W"/>
@@ -46,13 +46,13 @@
                     helperText="msg://helperSensor" id="sensorType"/>
 
             <numberField label="msg://maxTemperatureSensor" helperText="msg://helperTemperatureSensor"
-                         stepButtonsVisible="true" step="1000" min="0">
+                         stepButtonsVisible="true" id="sensorResistance" step="1000" min="0">
                 <suffix>
                     <svgIcon resource="VAADIN/themes/PV-Heating/icons/resistance.svg"/>
                 </suffix>
             </numberField>
 
-            <numberField label="msg://maxTemperature" helperText="msg://helperTemperature" stepButtonsVisible="true"
+            <numberField label="msg://maxTemperature" id="desiredTemperature" helperText="msg://helperTemperature" stepButtonsVisible="true"
                          step="0.5" min="0" max="70">
                 <suffix>
                     <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>

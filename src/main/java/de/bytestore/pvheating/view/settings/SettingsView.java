@@ -16,6 +16,7 @@ import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.SystemConfig;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
+import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.select.JmixSelect;
 import io.jmix.flowui.component.textfield.JmixNumberField;
@@ -25,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "settings-view", layout = MainView.class)
+@Route(value = "settings", layout = MainView.class)
 @ViewController("heater_SettingsView")
 @ViewDescriptor("settings-view.xml")
 public class SettingsView extends StandardView {
@@ -40,14 +41,18 @@ public class SettingsView extends StandardView {
 
     @ViewComponent
     private JmixSelect<Object> sensorType;
+
     @ViewComponent
     private JmixFormLayout currentRange;
+
     @ViewComponent
     private JmixFormLayout voltageRange;
+
     @Autowired
     private MessageBundle messageBundle;
 
     private SystemConfig config = ConfigHandler.getCached();
+
     @ViewComponent
     private JmixNumberField currentMaxField;
     @ViewComponent
@@ -56,6 +61,16 @@ public class SettingsView extends StandardView {
     private JmixNumberField voltageMinField;
     @ViewComponent
     private JmixNumberField voltageMaxField;
+    @ViewComponent
+    private JmixNumberField desiredTemperature;
+    @ViewComponent
+    private JmixNumberField sensorResistance;
+    @ViewComponent
+    private JmixCheckbox checkboxPump;
+    @ViewComponent
+    private JmixNumberField minPowerUsage;
+    @ViewComponent
+    private JmixNumberField maxPowerUsage;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -79,10 +94,44 @@ public class SettingsView extends StandardView {
     private void initTabs() {
         initTemperature();
         initSCR();
+        initPump();
+        initPower();
     }
 
+    /**
+     * Initializes the power usage values based on the configuration.
+     * Sets the minimum power usage and the maximum power usage values.
+     * Uses the minPower and maxPower properties of the PowerConfig class.
+     */
+    private void initPower() {
+        minPowerUsage.setValue(config.getPower().getMinPower());
+        maxPowerUsage.setValue(config.getPower().getMaxPower());
+    }
+
+    private void initPump() {
+        checkboxPump.setValue(config.getPump().isEnable());
+    }
+
+    /**
+     * Initializes the temperature configuration.
+     * This method sets the sensor type, resistance, and desired temperature based on the configuration.
+     *
+     * The sensor type is set by populating the items in the sensorType ComboBox with the available SensorType values,
+     * and then setting the value of sensorType to the sensor type from the configuration.
+     *
+     * The resistance value is set by retrieving the corresponding value from the configuration
+     * and then setting the value of sensorResistance.
+     *
+     * The desired temperature value is set by retrieving the corresponding value from the configuration
+     * and then setting the value of desiredTemperature.
+     */
     private void initTemperature() {
         sensorType.setItems(SensorType.values());
+        sensorType.setValue(config.getTemperature().getSensorType());
+
+        // Set Sensor Values.
+        sensorResistance.setValue(config.getTemperature().getResistance());
+        desiredTemperature.setValue(config.getTemperature().getDesiredTemperature());
 
 
     }
