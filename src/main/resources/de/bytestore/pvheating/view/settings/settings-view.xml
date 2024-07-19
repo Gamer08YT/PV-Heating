@@ -96,7 +96,13 @@
         </formLayout>
 
         <formLayout id="sheetsystem" visible="false">
+            <hbox alignItems="CENTER">
+                <svgIcon size="3rem" resource="VAADIN/themes/PV-Heating/icons/solar.svg"/>
+                <h2 text="PV Heating"/>
+            </hbox>
 
+            <span text="PV Heating Developed by Byte-Store.DE (Jan Heil)."/>
+            <button text="GitHub" icon="vaadin:globe"/>
         </formLayout>
     </layout>
 </view>
