@@ -1,6 +1,6 @@
-version: "3"
+version: "2"
 services:
-  PV-Heating:
+  pv-heating:
     image: PV-Heating
     user: root
     volumes:
