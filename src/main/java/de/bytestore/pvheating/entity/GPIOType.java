@@ -8,7 +8,8 @@ import org.springframework.lang.Nullable;
 public enum GPIOType implements EnumClass<Integer> {
 
     ANALOG(10),
-    DIGITAL(20);
+    DIGITAL(20),
+    PWM(30);
 
     private final Integer id;
 

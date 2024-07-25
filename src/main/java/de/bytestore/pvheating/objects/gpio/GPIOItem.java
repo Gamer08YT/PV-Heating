@@ -3,23 +3,27 @@ package de.bytestore.pvheating.objects.gpio;
 import de.bytestore.pvheating.entity.GPIOType;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GPIOItem {
     @Getter
-    private GPIOType type = GPIOType.DIGITAL;
+    private ArrayList<GPIOType> type = new ArrayList<>();
 
     @Getter
-    private int name = 0;
+    private String name = "GPIO0";
 
-    public GPIOItem(GPIOType type, int name) {
-        this.type = type;
+
+    public GPIOItem(String name, GPIOType... type) {
+        this.type.addAll(List.of(type));
         this.name = name;
     }
 
-    public GPIOType getType() {
+    public ArrayList<GPIOType> getType() {
         return type;
     }
 
-    public int getName() {
+    public String getName() {
         return name;
     }
 }

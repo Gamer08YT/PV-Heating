@@ -45,7 +45,7 @@
                 <span id="nonSupportedBoard" visible="false" themeNames="error badge" text="msg://nonSupportedBoard"/>
                 <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
-                <hbox width="100%">
+                <hbox width="100%" alignItems="CENTER">
                     <vbox classNames="stats-card">
                         <span classNames="title" text="msg://de.bytestore.pvheating.view.main/temperature"/>
                         <hbox>
@@ -56,7 +56,7 @@
                     <vbox classNames="stats-card">
                         <span classNames="title" text="msg://de.bytestore.pvheating.view.main/power"/>
                         <hbox>
-                            <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>
+                            <svgIcon resource="VAADIN/themes/PV-Heating/icons/power.svg"/>
                             <span classNames="value" text="100 W"/>
                         </hbox>
                     </vbox>
@@ -68,6 +68,30 @@
                         </hbox>
                     </vbox>
                 </hbox>
+
+                <vbox alignItems="CENTER" padding="false">
+                    <hbox width="100%" alignItems="CENTER">
+                        <vbox classNames="stats-card">
+                            <span classNames="title" text="msg://max-power"/>
+                            <span classNames="description" text="msg://description-max-power"/>
+                            <span classNames="value" text="100 W"/>
+                        </vbox>
+                        <svgIcon size="4.5rem" resource="VAADIN/themes/PV-Heating/icons/arrow.svg"/>
+                        <vbox classNames="stats-card">
+                            <span classNames="title" text="msg://real-power"/>
+                            <span classNames="description" text="msg://description-real-power"/>
+                            <span classNames="value" text="10 W"/>
+                        </vbox>
+                    </hbox>
+
+                    <svgIcon size="2.5rem" resource="VAADIN/themes/PV-Heating/icons/arrow-down.svg"/>
+
+                    <vbox classNames="stats-card">
+                        <span classNames="title" text="msg://work"/>
+                        <span classNames="description" text="msg://description-work"/>
+                        <span classNames="value" text="10 W"/>
+                    </vbox>
+                </vbox>
             </vbox>
         </initialLayout>
     </appLayout>
