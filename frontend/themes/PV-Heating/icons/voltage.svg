@@ -31,5 +31,5 @@
     <path d="M38,37a1,1,0,1,1-1,1,1,1,0,0,1,1-1m0-.5A1.5,1.5,0,1,0,39.5,38,1.50172,1.50172,0,0,0,38,36.5Z" opacity=".07" />
     <circle cx="38" cy="38" r="1" fill="#fff" />
   </g>
-  <text font-weight="bold" transform="matrix(0.475545 0 0 0.475545 8.91285 14.9879)" stroke="null" xml:space="preserve" text-anchor="start" font-family="'arial'" font-size="24" stroke-width="0" id="svg_30" y="18.88721" x="23.95366" fill="#000000">V</text>
+  <text font-weight="bold" transform="matrix(0.475545 0 0 0.475545 8.91285 14.9879)" stroke="null" xml:space="preserve" text-anchor="start" font-family="'arial'" font-size="24" stroke-width="0" id="svg_30" y="18.88721" x="23.5" fill="#000000">V</text>
 </svg>
