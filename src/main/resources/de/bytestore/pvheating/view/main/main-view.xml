@@ -41,7 +41,27 @@
             </section>
         </drawerLayout>
         <initialLayout>
+            <vbox>
+                <span id="nonSupportedBoard" visible="false" themeNames="error badge" text="msg://nonSupportedBoard"/>
+                <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
+                <hbox width="100%">
+                    <vbox classNames="stats-card">
+                        <span classNames="title" text="Leistungsaufnahme"/>
+                        <hbox>
+                            <svgIcon resource="VAADIN/themes/PV-Heating/icons/power.svg"/>
+                            <span classNames="value" text="100W"/>
+                        </hbox>
+                    </vbox>
+                    <vbox classNames="stats-card">
+                        <span classNames="title" text="Leistungsaufnahme"/>
+                        <hbox>
+                            <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>
+                            <span classNames="value" text="100W"/>
+                        </hbox>
+                    </vbox>
+                </hbox>
+            </vbox>
         </initialLayout>
     </appLayout>
 </mainView>

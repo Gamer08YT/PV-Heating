@@ -3,7 +3,23 @@
     background-color: var(--lumo-contrast-10pct);
 }
 
-.card {
+.card, .stats-card {
     background-color: var(--lumo-contrast-5pct);
     border-radius: 0.5rem;
+}
+
+.stats-card .title {
+    background-color: var(--lumo-contrast-10pct);
+    border-radius: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+.stats-card .value {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.stats-card vaadin-horizontal-layout {
+    align-items: center;
 }

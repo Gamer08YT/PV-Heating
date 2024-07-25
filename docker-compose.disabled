@@ -1,11 +1,11 @@
 version: "2"
 services:
   pv-heating:
-    image: PV-Heating
+    image: bytestore/pv-heating
     user: root
     volumes:
       - jmix:/workspace/.jmix
     ports:
-      - "8080:8080"
+      - "80:80"
 volumes:
   jmix: 

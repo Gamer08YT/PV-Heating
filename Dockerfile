@@ -1,3 +1,4 @@
+MAINTAINER "Byte-Store.DE (Jan Heil)"
 FROM bellsoft/liberica-openjre-alpine:17 AS layers
 WORKDIR /application
 COPY build/libs/*.jar app.jar
