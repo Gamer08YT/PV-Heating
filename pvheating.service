@@ -1,0 +1,11 @@
+[Unit]
+Description=Check and start PVHeating screen session
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/check_pvheating.sh
+User=root
+
+[Install]
+WantedBy=multi-user.target

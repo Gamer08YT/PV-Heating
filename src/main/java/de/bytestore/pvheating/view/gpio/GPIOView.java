@@ -1,6 +1,7 @@
 package de.bytestore.pvheating.view.gpio;
 
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.handler.GPIOHandler;
@@ -22,11 +23,11 @@ public class GPIOView extends StandardView {
 
     @Subscribe
     public void onInit(final InitEvent event) {
-//        gpioItems.forEach(gpioItem -> {
-//            Button buttonIO = new Button(gpioItem.getName());
-//
-//            gpioGrid.add(buttonIO);
-//        });
+        configs.forEach(configItem -> {
+            Button buttonIO = new Button(configItem.getClass().getName());
+
+            gpioGrid.add(buttonIO);
+        });
     }
 
 
