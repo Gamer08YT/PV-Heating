@@ -1,14 +1,14 @@
 /* Define your styles here */
-.card.hover:hover {
+.card.hover:hover, .gpio:hover {
     background-color: var(--lumo-contrast-10pct);
 }
 
-.card, .stats-card {
+.card, .stats-card, .gpio {
     background-color: var(--lumo-contrast-5pct);
     border-radius: 0.5rem;
 }
 
-.stats-card .title {
+.stats-card .title, .gpio {
     background-color: var(--lumo-contrast-10pct);
     border-radius: 0.5rem;
     padding-left: 0.5rem;
@@ -27,4 +27,16 @@
 
 .stats-card vaadin-horizontal-layout {
     align-items: center;
+}
+
+.pwm {
+    background-color: deepskyblue;
+}
+
+.analog {
+    background-color: yellow;
+}
+
+.digital {
+    background-color: coral;
 }

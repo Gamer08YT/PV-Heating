@@ -235,7 +235,7 @@ public class SettingsView extends StandardView {
         config.getTemperature().setResistance(sensorResistance.getValue());
         config.getTemperature().setDesiredTemperature(desiredTemperature.getValue());
 
-        ConfigHandler.save();
+        ConfigHandler.saveConfig();
         save.setEnabled(true);
 
         notifications.show(messageBundle.getMessage("settingsSaved"));

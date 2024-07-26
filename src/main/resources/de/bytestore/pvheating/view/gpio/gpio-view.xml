@@ -2,6 +2,11 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://GPIOView.title">
     <layout>
-        <hbox id="gpioGrid" alignItems="CENTER" width="100%" justifyContent="CENTER"/>
+        <formLayout id="gpioGrid" width="100%"/>
+
+        <formLayout id="selector" width="100%" enabled="false">
+            <select id="selectType" label="msg://type"/>
+            <button id="assignBtn" text="msg://assign"/>
+        </formLayout>
     </layout>
 </view>
