@@ -1,6 +1,7 @@
 plugins {
     id 'io.jmix' version '2.3.1'
     id 'java'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 }
 
 apply plugin: 'org.springframework.boot'
@@ -20,6 +21,7 @@ repositories {
         url 'https://global.repo.jmix.io/repository/public'
     }
 }
+
 
 dependencies {
     implementation 'io.jmix.core:jmix-core-starter'
@@ -47,7 +49,16 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.20'
 //    compileOnly 'com.yworks:yguard:4.1.0'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+
     implementation 'com.pi4j:pi4j-core:2.6.0'
+    implementation 'com.pi4j:pi4j-plugin-raspberrypi:2.6.0'
+    implementation 'com.pi4j:pi4j-plugin-pigpio:2.6.0'
+    implementation 'com.pi4j:pi4j-plugin-linuxfs:2.6.0'
+    implementation 'com.pi4j:pi4j-plugin-gpiod:2.6.0'
+    implementation 'com.pi4j:pi4j-plugin-mock:2.6.0'
+    implementation 'com.vaadin:vaadin-spring-boot-starter:24.3.10'
+
 }
 
 test {

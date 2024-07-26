@@ -1,9 +1,13 @@
 package de.bytestore.pvheating.view.gpio;
 
 
+import com.pi4j.io.gpio.digital.DigitalOutput;
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.RangeInput;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.shared.Tooltip;
@@ -12,8 +16,10 @@ import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.handler.GPIOHandler;
 import de.bytestore.pvheating.objects.config.GPIOConfig;
 import de.bytestore.pvheating.objects.gpio.GPIOItem;
+import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
+import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.select.JmixSelect;
 import io.jmix.flowui.kit.component.button.JmixButton;
@@ -27,6 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 @ViewController("heater_GPIOView")
 @ViewDescriptor("gpio-view.xml")
 public class GPIOView extends StandardView {
+
+    @Autowired
+    private Pi4JService service;
 
     @ViewComponent
     private FormLayout gpioGrid;
@@ -43,10 +52,14 @@ public class GPIOView extends StandardView {
 
     private GPIOConfig config;
 
+    private DigitalOutput ledIO;
+    @ViewComponent
+    private JmixCheckbox ledTest;
+    @ViewComponent
+    private RangeInput ledPWM;
+
     @Subscribe
     public void onInit(final InitEvent event) {
-        System.out.println(GPIOHandler.getConfigs());
-
         ConfigHandler.readGPIO();
         config = ConfigHandler.getGpioConfig();
 
@@ -129,16 +142,34 @@ public class GPIOView extends StandardView {
 
     @Subscribe(id = "assignBtn", subject = "clickListener")
     public void onAssignBtnClick(final ClickEvent<JmixButton> event) {
+        if(!config.getDefinitions().contains(GPIOHandler.getConfigs().get(0))) {
+            // Add Definition if not exits.
+            config.getDefinitions().add(GPIOHandler.getConfigs().get(0));
+        }
+
         // Check if Config Entry exists.
-        if(!config.getDefinitions().isEmpty()) {
+        if(!config.getDefinitions().isEmpty() && config.getDefinitions().get(0) != null) {
+            System.out.println(config.getDefinitions().get(0));
+
             config.getDefinitions().get(0).getPinByName(selected.getName()).setDefinition(selectType.getValue());
         }
 
         // Save Config to Disk.
         ConfigHandler.saveGPIO();
 
-        // Disable Selector.
-        selector.setEnabled(false);
+        UI.getCurrent().access(() -> {
+            // Disable Selector.
+            selector.setEnabled(false);
+        });
     }
 
+    @Subscribe("ledTest")
+    public void onLedTestComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
+        service.setPinState(22, ledTest.getValue());
+    }
+
+    @Subscribe("ledPWM")
+    public void onLedPWMComponentValueChange(final AbstractField.ComponentValueChangeEvent<RangeInput, ?> event) {
+        service.setPWM(19, ledPWM.getValue());
+    }
 }

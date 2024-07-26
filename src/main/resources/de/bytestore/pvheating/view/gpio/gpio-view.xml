@@ -8,5 +8,8 @@
             <select id="selectType" label="msg://type"/>
             <button id="assignBtn" text="msg://assign"/>
         </formLayout>
+        <checkbox id="ledTest" label="ledTest"/>
+        <rangeInput id="ledPWM" min="0" minHeight="10000"/>
+
     </layout>
 </view>
