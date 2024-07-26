@@ -6,6 +6,8 @@ After=network.target
 Type=oneshot
 ExecStart=/usr/local/bin/check_pvheating.sh
 User=root
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
