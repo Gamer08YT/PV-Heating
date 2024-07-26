@@ -1,13 +1,15 @@
 [Unit]
-Description=Check and start PVHeating screen session
+Description=PV Heating Java Application
 After=network.target
 
 [Service]
-Type=oneshot
-ExecStart=/usr/local/bin/check_pvheating.sh
-User=root
-StandardOutput=journal
-StandardError=journal
+WorkingDirectory=/home/pvheating/
+ExecStart=/usr/bin/java -jar /home/pvheating/PV-Heating.jar
+User=pvheating
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=pvheating
 
 [Install]
 WantedBy=multi-user.target
