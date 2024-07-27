@@ -8,8 +8,10 @@
             <select id="selectType" label="msg://type"/>
             <button id="assignBtn" text="msg://assign"/>
         </formLayout>
-        <checkbox id="ledTest" label="ledTest"/>
+        <checkbox id="ledTest" label="LED Test"/>
         <rangeInput id="ledPWM" min="0" minHeight="10000"/>
+        <button id="ledFade" text="LED Fade"/>
+        <!-- sudo killall pigpiod -->!
 
     </layout>
 </view>

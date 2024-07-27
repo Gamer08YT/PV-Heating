@@ -7,6 +7,7 @@ import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmConfig;
 import com.pi4j.io.pwm.PwmType;
+import com.pi4j.library.pigpio.PiGpio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,7 +72,7 @@ public class Pi4JService {
         Pwm pwmConfig = null;
 
         if (!Pi4JService.provider.containsKey(pinIO)) {
-            pwmConfig = pi4jContext.create(Pwm.newConfigBuilder(pi4jContext).provider("linuxfs-pwm").pwmType(PwmType.HARDWARE).initial(0).shutdown(0).address(pinIO).build()) ;
+            pwmConfig = pi4jContext.create(Pwm.newConfigBuilder(pi4jContext).pwmType(PwmType.SOFTWARE).initial(0).shutdown(0).address(pinIO).build()) ;
 
             // Put Provider to Cache.
             Pi4JService.provider.put(pinIO, pwmConfig);

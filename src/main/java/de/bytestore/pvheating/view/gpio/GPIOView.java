@@ -19,6 +19,9 @@ import de.bytestore.pvheating.objects.gpio.GPIOItem;
 import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
+import io.jmix.flowui.backgroundtask.BackgroundTask;
+import io.jmix.flowui.backgroundtask.BackgroundWorker;
+import io.jmix.flowui.backgroundtask.TaskLifeCycle;
 import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
 import io.jmix.flowui.component.select.JmixSelect;
@@ -27,6 +30,7 @@ import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Route(value = "gpio", layout = MainView.class)
@@ -57,6 +61,8 @@ public class GPIOView extends StandardView {
     private JmixCheckbox ledTest;
     @ViewComponent
     private RangeInput ledPWM;
+    @Autowired
+    private BackgroundWorker backgroundWorker;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -172,4 +178,33 @@ public class GPIOView extends StandardView {
     public void onLedPWMComponentValueChange(final AbstractField.ComponentValueChangeEvent<RangeInput, ?> event) {
         service.setPWM(19, ledPWM.getValue());
     }
+
+    @Subscribe(id = "ledFade", subject = "clickListener")
+    public void onLedFadeClick(final ClickEvent<JmixButton> event) {
+        backgroundWorker.handle(new BackgroundTask<Object, Object>(TimeUnit.SECONDS.toMillis(10)) {
+            @Override
+            public Object run(TaskLifeCycle<Object> taskLifeCycle) throws Exception {
+                this.fade();
+                this.fade();
+                this.fade();
+
+                return null;
+            }
+
+            private void fade() {
+                for (int i = 10000; i >= 0; i = i - 1000) {
+                    service.setPWM(19, (double) i);
+
+                    try {
+                        Thread.sleep(150);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }).execute();
+
+    }
+    
+    
 }

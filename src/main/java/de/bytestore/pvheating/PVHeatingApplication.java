@@ -31,8 +31,11 @@ public class PVHeatingApplication implements AppShellConfigurator {
     private Environment environment;
 
     public static void main(String[] args) {
-        SpringApplication.run(PVHeatingApplication.class, args);
+        // PIGPIO which remote Raspberry Pi to connect to
+        System.setProperty("pi4j.host", "192.168.3.196");
+        System.setProperty("pi4j.remote", "true");
 
+        SpringApplication.run(PVHeatingApplication.class, args);
         ConfigHandler.createIfNotExists();
     }
 
