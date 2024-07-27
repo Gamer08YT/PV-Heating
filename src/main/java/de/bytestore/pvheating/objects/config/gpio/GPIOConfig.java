@@ -1,4 +1,4 @@
-package de.bytestore.pvheating.objects.config;
+package de.bytestore.pvheating.objects.config.gpio;
 
 import de.bytestore.pvheating.handler.devices.GPIODefinitions;
 import lombok.Data;

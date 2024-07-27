@@ -14,7 +14,7 @@ import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.handler.GPIOHandler;
-import de.bytestore.pvheating.objects.config.GPIOConfig;
+import de.bytestore.pvheating.objects.config.gpio.GPIOConfig;
 import de.bytestore.pvheating.objects.gpio.GPIOItem;
 import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.view.main.MainView;
@@ -169,10 +169,10 @@ public class GPIOView extends StandardView {
         });
     }
 
-    @Subscribe("ledTest")
-    public void onLedTestComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        service.setPinState(22, ledTest.getValue());
-    }
+//    @Subscribe("ledTest")
+//    public void onLedTestComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
+//        service.setPinState(22, ledTest.getValue());
+//    }
 
     @Subscribe("ledPWM")
     public void onLedPWMComponentValueChange(final AbstractField.ComponentValueChangeEvent<RangeInput, ?> event) {
@@ -192,7 +192,7 @@ public class GPIOView extends StandardView {
             }
 
             private void fade() {
-                for (int i = 10000; i >= 0; i = i - 1000) {
+                for (int i = 10000; i >= 0; i--) {
                     service.setPWM(19, (double) i);
 
                     try {

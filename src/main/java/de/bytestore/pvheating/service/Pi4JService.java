@@ -1,17 +1,18 @@
 package de.bytestore.pvheating.service;
 
+import com.pi4j.boardinfo.definition.BoardModel;
 import com.pi4j.context.Context;
 import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.pwm.Pwm;
-import com.pi4j.io.pwm.PwmConfig;
 import com.pi4j.io.pwm.PwmType;
-import com.pi4j.library.pigpio.PiGpio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+
+import static com.pi4j.io.gpio.digital.DigitalState.HIGH;
 
 @Service
 public class Pi4JService {
@@ -62,7 +63,7 @@ public class Pi4JService {
         } else
             digitalInput = (DigitalInput) Pi4JService.provider.get(pinIO);
 
-        return digitalInput.state().isHigh();
+        return digitalInput.state() == HIGH;
     }
 
     public void setPWM(int pinIO, Double value) {
@@ -83,5 +84,14 @@ public class Pi4JService {
             pwmConfig.on(value);
         else
             pwmConfig.off();
+    }
+
+
+    public Context getPi4jContext() {
+        return pi4jContext;
+    }
+
+    public BoardModel getModel() {
+        return pi4jContext.boardInfo().getBoardModel();
     }
 }

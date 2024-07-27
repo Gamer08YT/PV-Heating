@@ -2,8 +2,8 @@ package de.bytestore.pvheating.handler;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.bytestore.pvheating.objects.config.GPIOConfig;
-import de.bytestore.pvheating.objects.config.SystemConfig;
+import de.bytestore.pvheating.objects.config.gpio.GPIOConfig;
+import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -88,10 +88,12 @@ public class ConfigHandler {
      * path specified by the 'config' field in the ConfigHandler class.
      */
     public static void readConfig() {
+        log.info("Reading System configuration file.");
+
         try {
             cached = gson.fromJson(FileUtils.readFileToString(config, Charset.defaultCharset()), SystemConfig.class);
         } catch (IOException e) {
-            log.error("Unable to read Config from disk.", e);
+            log.error("Unable to read System Config from disk.", e);
         }
     }
 
@@ -102,6 +104,8 @@ public class ConfigHandler {
      * The configuration file is expected to be a JSON file located at the path specified by the 'config' field in the ConfigHandler class.
      */
     public static void readGPIO() {
+        log.info("Reading GPIO configuration file.");
+
         try {
             gpioConfig = gson.fromJson(FileUtils.readFileToString(gpio, Charset.defaultCharset()), GPIOConfig.class);
         } catch (IOException e) {

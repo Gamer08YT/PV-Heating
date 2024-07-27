@@ -14,7 +14,7 @@ import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.entity.SensorType;
 import de.bytestore.pvheating.handler.ConfigHandler;
-import de.bytestore.pvheating.objects.config.SystemConfig;
+import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
 import io.jmix.flowui.Notifications;
@@ -37,13 +37,13 @@ public class SettingsView extends StandardView {
     private static final Logger log = LoggerFactory.getLogger(SettingsView.class);
 
     @ViewComponent
-    private JmixSelect<Object> scrType;
+    private JmixSelect<SCRType> scrType;
 
     @Autowired
     private Messages messages;
 
     @ViewComponent
-    private JmixSelect<Object> sensorType;
+    private JmixSelect<SensorType> sensorType;
 
     @ViewComponent
     private JmixFormLayout currentRange;
@@ -78,6 +78,8 @@ public class SettingsView extends StandardView {
     private JmixButton save;
     @Autowired
     private Notifications notifications;
+    @ViewComponent
+    private JmixNumberField offsetPowerUsage;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -113,6 +115,7 @@ public class SettingsView extends StandardView {
     private void initPower() {
         minPowerUsage.setValue(config.getPower().getMinPower());
         maxPowerUsage.setValue(config.getPower().getMaxPower());
+        offsetPowerUsage.setValue(config.getPower().getOffsetPower());
     }
 
     private void initPump() {
@@ -139,8 +142,6 @@ public class SettingsView extends StandardView {
         // Set Sensor Values.
         sensorResistance.setValue(config.getTemperature().getResistance());
         desiredTemperature.setValue(config.getTemperature().getDesiredTemperature());
-
-
     }
 
     /**
@@ -220,6 +221,7 @@ public class SettingsView extends StandardView {
     public void onSaveClick(final ClickEvent<JmixButton> event) {
         config.getPower().setMaxPower(maxPowerUsage.getValue());
         config.getPower().setMinPower(minPowerUsage.getValue());
+        config.getPower().setOffsetPower(offsetPowerUsage.getValue());
 
         config.getPump().setEnable(checkboxPump.getValue());
 

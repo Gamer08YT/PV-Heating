@@ -1,4 +1,4 @@
-package de.bytestore.pvheating.objects.config;
+package de.bytestore.pvheating.objects.config.system;
 
 import de.bytestore.pvheating.entity.SensorType;
 import lombok.Data;

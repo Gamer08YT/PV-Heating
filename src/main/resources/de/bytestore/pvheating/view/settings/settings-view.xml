@@ -26,6 +26,12 @@
         </tabs>
 
         <formLayout id="sheetpower">
+            <numberField label="msg://offsetPowerUsage" id="offsetPowerUsage" helperText="msg://helperOffsetPowerUsage"
+                         stepButtonsVisible="true" step="100" min="0">
+                <suffix>
+                    <span text="W"/>
+                </suffix>
+            </numberField>
             <numberField label="msg://minPowerUsage" id="minPowerUsage" helperText="msg://helperMinPowerUsage"
                          stepButtonsVisible="true" step="100" min="0">
                 <suffix>

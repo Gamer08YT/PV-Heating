@@ -20,6 +20,7 @@ repositories {
     maven {
         url 'https://global.repo.jmix.io/repository/public'
     }
+    maven { url 'https://jitpack.io' }
 }
 
 
@@ -62,6 +63,13 @@ dependencies {
 
     // Don't known why but it needs to be implemented.
     implementation 'com.vaadin:vaadin-spring-boot-starter:24.3.10'
+
+    // Background Service.
+    implementation 'io.jmix.quartz:jmix-quartz-flowui-starter'
+    implementation 'io.jmix.quartz:jmix-quartz-starter'
+
+    // Timings with Non Blocking.
+    implementation 'io.projectreactor:reactor-core:3.6.8'
 }
 
 test {

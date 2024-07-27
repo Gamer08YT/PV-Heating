@@ -50,21 +50,21 @@
                         <span classNames="title" text="msg://de.bytestore.pvheating.view.main/temperature"/>
                         <hbox>
                             <svgIcon resource="VAADIN/themes/PV-Heating/icons/power.svg"/>
-                            <span classNames="value" text="55 °C"/>
+                            <span classNames="value" text="0 °C"/>
                         </hbox>
                     </vbox>
                     <vbox classNames="stats-card">
                         <span classNames="title" text="msg://de.bytestore.pvheating.view.main/power"/>
                         <hbox>
                             <svgIcon resource="VAADIN/themes/PV-Heating/icons/power.svg"/>
-                            <span classNames="value" text="100 W"/>
+                            <span classNames="value" id="currentPower" text="0 W"/>
                         </hbox>
                     </vbox>
                     <vbox classNames="stats-card">
                         <span classNames="title" text="msg://flow"/>
                         <hbox>
                             <svgIcon resource="VAADIN/themes/PV-Heating/icons/fan.svg"/>
-                            <span classNames="value" text="10 l/min"/>
+                            <span classNames="value" id="flowRate" text="0 l/min"/>
                         </hbox>
                     </vbox>
                 </hbox>

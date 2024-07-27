@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <menu-config xmlns="http://jmix.io/schema/flowui/menu">
 
-    <menu id="application" icon="vaadin:dashboard" title="msg://de.bytestore.pvheating/menu.application.title" opened="true">
-        <item view="heater_DashboardView" title="msg://de.bytestore.pvheating.view.dashboard/dashboardView.title" icon="vaadin:dashboard"/>
+    <menu opened="true" id="application" title="msg://de.bytestore.pvheating/menu.application.title"
+          icon="vaadin:dashboard">
+        <item view="heater_DashboardView" title="msg://de.bytestore.pvheating.view.dashboard/dashboardView.title"
+              icon="vaadin:dashboard"/>
         <item view="heater_GPIOView" id="menuGPIO" title="msg://de.bytestore.pvheating.view.gpio/GPIOView.title"
               icon="vaadin:info-circle-o"/>
     </menu>
-    <menu id="security" icon="vaadin:users" title="msg://de.bytestore.pvheating/menu.user.title">
-        <item view="heater_User.list" icon="lumo:user" title="msg://de.bytestore.pvheating.view.user/UserListView.title"/>
+    <menu id="security" title="msg://de.bytestore.pvheating/menu.user.title" icon="vaadin:users">
+        <item view="heater_User.list" title="msg://de.bytestore.pvheating.view.user/UserListView.title"
+              icon="lumo:user"/>
         <item view="sec_ResourceRoleModel.list"
               title="msg://io.jmix.securityflowui.view.resourcerole/resourceRoleModelListView.menu"/>
         <item view="sec_RowLevelRoleModel.list"
               title="msg://io.jmix.securityflowui.view.rowlevelrole/rowLevelRoleModelListView.menu"/>
     </menu>
-    <menu id="datatools" icon="lumo:cog" title="msg://de.bytestore.pvheating/menu.system.title">
-        <item view="datatl_entityInspectorListView" icon="vaadin:database"
-              title="msg://io.jmix.datatoolsflowui.view.entityinspector/listTitle"/>
-        <item view="heater_SettingsView" icon="vaadin:wrench" title="msg://de.bytestore.pvheating.view.settings/settingsView.title"/>
+    <menu id="datatools" title="msg://de.bytestore.pvheating/menu.system.title" icon="lumo:cog">
+        <item view="datatl_entityInspectorListView" title="msg://io.jmix.datatoolsflowui.view.entityinspector/listTitle"
+              icon="vaadin:database"/>
+        <item view="quartz_JobModel.list" icon="lumo:clock" title="msg://io.jmix.quartzflowui.view.jobs/jobModelListView.menu"/>
+        <item view="heater_SettingsView" title="msg://de.bytestore.pvheating.view.settings/settingsView.title"
+              icon="vaadin:wrench"/>
     </menu>
-
 </menu-config>
