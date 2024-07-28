@@ -86,9 +86,17 @@ public class Pi4JService {
         List<String> lines = get1Wire(deviceIO, "w1_slave");
 
         if (lines.get(0).contains("YES")) {
-            String tempLine = lines.get(1).split(" ")[9];
 
-            return Double.parseDouble(tempLine.substring(2)) / 1000.0;
+            if (lines.get(0).contains("YES")) {
+                String tempLine = lines.get(1);
+                int tIndex = tempLine.indexOf("t=");
+
+                if (tIndex != -1) {
+                    String tempString = tempLine.substring(tIndex + 2);
+
+                    return Double.parseDouble(tempString) / 1000.0;
+                }
+            }
         } else {
             log.error("Error reading temperature for DS18B20 {}.", deviceIO);
 
