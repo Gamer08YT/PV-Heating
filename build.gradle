@@ -52,9 +52,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
 
-    implementation 'com.pi4j:pi4j-core:2.6.0'
-    implementation 'com.pi4j:pi4j-plugin-raspberrypi:2.6.0'
-    implementation 'com.pi4j:pi4j-plugin-pigpio:2.6.0'
+    implementation 'com.pi4j:pi4j-core:2.6.1'
+    implementation 'com.pi4j:pi4j-plugin-raspberrypi:2.6.1'
+    implementation 'com.pi4j:pi4j-plugin-pigpio:2.6.1'
 
     // Disable Native Libs for Development on AMD64 Machine.
     //    implementation 'com.pi4j:pi4j-plugin-linuxfs:2.6.0'

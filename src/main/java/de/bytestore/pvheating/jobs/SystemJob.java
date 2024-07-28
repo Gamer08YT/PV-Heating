@@ -19,7 +19,7 @@ public class SystemJob implements Job {
     public Pi4JService service;
 
     // Pulse Steps wich equals one Liter.
-    private static final int PULSES_PER_LITER = 450;
+    private static final double ONE_PULSE_IN_LITER = 0.002222222;
 
     // Pulse Snapshot Time.
     private static final long INTERVAL_S = 1;
@@ -64,7 +64,7 @@ public class SystemJob implements Job {
         long elapsedTime = currentTime - startTime; // elapsed time in milliseconds
 
         // calculate flow rate in liters per minute
-        double flowRate = (GPIOService.getFLOW_PULSE_COUNT() / (double) PULSES_PER_LITER) / (elapsedTime / 60000.0);
+        double flowRate = (GPIOService.getFLOW_PULSE_COUNT() * ONE_PULSE_IN_LITER);
 
         // reset pulse count and start time
         GPIOService.setFLOW_PULSE_COUNT(0);
