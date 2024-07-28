@@ -158,9 +158,9 @@ public class SettingsView extends StandardView {
         desiredTemperature.setValue(config.getTemperature().getDesiredTemperature());
 
         // Set 1Wire Devices.
-        try {
-            wire1Device.setValue(config.getTemperature().getWire1Device());
+        wire1Device.setValue(config.getTemperature().getWire1Device());
 
+        try {
             List<String> wire1Devices = service.get1WireDevices();
 
             if(wire1Devices.size() > 0)
@@ -265,7 +265,7 @@ public class SettingsView extends StandardView {
         currentRange.setVisible(typeIO == SCRType.CURRENT);
         voltageRange.setVisible(typeIO == SCRType.VOLTAGE);
 
-        if (typeIO == SCRType.PWM)
+        if (typeIO != SCRType.PWM)
             throw new NotImplementedException(messageBundle.getMessage("pwmNotImplemented"));
     }
 

@@ -71,7 +71,7 @@
 
                 <vbox alignItems="CENTER" padding="false">
                     <hbox width="100%" alignItems="CENTER">
-                        <vbox classNames="stats-card">
+                        <vbox id="maxPowerCard" classNames="stats-card">
                             <span classNames="title" text="msg://max-power"/>
                             <span classNames="description" text="msg://description-max-power"/>
                             <span classNames="value" id="usablePower" text="0 W"/>

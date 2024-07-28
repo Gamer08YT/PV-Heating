@@ -4,9 +4,9 @@ import com.pi4j.boardinfo.definition.PiModel;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.handler.CacheHandler;
-import de.bytestore.pvheating.handler.HAHandler;
 import de.bytestore.pvheating.service.Pi4JService;
 import io.jmix.core.Messages;
 import io.jmix.flowui.app.main.StandardMainView;
@@ -54,6 +54,8 @@ public class MainView extends StandardMainView {
     private Span currentTemperature;
     @ViewComponent
     private Span usablePower;
+    @ViewComponent
+    private VerticalLayout maxPowerCard;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -80,11 +82,24 @@ public class MainView extends StandardMainView {
      */
     private void refreshStats() {
         getUI().ifPresent(ui -> ui.access(() -> {
-            currentPower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("current-power", 0)) + " W");
-            usablePower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("usable-power", 0)) + " W");
-            flowRate.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("flow-per-minute", 0)) + " l/min");
-            currentTemperature.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("temperature", 0)) + " °C");
+            currentPower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("current-power", 0.00)) + " W");
+            usablePower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("usable-power", 0.00)) + " W");
+            flowRate.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("flow-per-minute", 0.00)) + " l/min");
+            currentTemperature.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("temperature", 0.00)) + " °C");
+
+            // Set Card Color (Working State).
+            setWorkingState((Double) CacheHandler.getValueOrDefault("usable-power", 0.00));
         }));
+    }
+
+    /**
+     * Sets the working state based on the provided value.
+     *
+     * @param valueIO The value to determine the working state. A positive value indicates online state, while 0 indicates offline state.
+     */
+    private void setWorkingState(Double valueIO) {
+        maxPowerCard.setClassName("online", (valueIO > 0));
+        maxPowerCard.setClassName("offline", (valueIO == 0));
     }
 
     /**

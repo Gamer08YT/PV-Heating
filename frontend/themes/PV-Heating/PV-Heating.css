@@ -25,6 +25,14 @@
     font-size: 1.5rem;
 }
 
+.stats-card.offline {
+    background-color: var(--lumo-error-color-50pct);
+}
+
+.stats-card.online {
+    background-color: var(--lumo-success-color-50pct);
+}
+
 .stats-card vaadin-horizontal-layout {
     align-items: center;
 }

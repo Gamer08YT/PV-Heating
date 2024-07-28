@@ -27,4 +27,15 @@ public class CacheHandler {
     public static Object getValue(String keyIO) {
         return cache.get(keyIO);
     }
+
+    /**
+     * Retrieves the value associated with the given key from the cache and returns it. If the key is not present in the cache, it returns the default value provided.
+     *
+     * @param keyIO the key whose associated value is to be retrieved from the cache
+     * @param defaultValue the value to be returned if the key is not present in the cache
+     * @return the value associated with the specified key if it exists in the cache, otherwise the default value
+     */
+    public static Object getValueOrDefault(String keyIO, Object defaultValue) {
+        return (getValue(keyIO) != null ? getValue(keyIO) : defaultValue);
+    }
 }

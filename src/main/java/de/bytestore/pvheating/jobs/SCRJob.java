@@ -1,5 +1,6 @@
 package de.bytestore.pvheating.jobs;
 
+import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
@@ -25,14 +26,18 @@ public class SCRJob implements Job {
     }
 
     private void handlePower() {
-        // Calculate Usable Power.
-        double usablePower = this.calculateUsablePower((Double) CacheHandler.getValue("current-power"), config.getPower().getOffsetPower(), config.getPower().getMinPower());
+        if(config != null) {
+            // Calculate Usable Power.
+            double usablePower = this.calculateUsablePower((Double) CacheHandler.getValue("current-power"), config.getPower().getOffsetPower(), config.getPower().getMinPower());
 
-        // Set PWM Value.
-        service.setPWM(19, calculatePWM(usablePower));
+            if (config.getScr().getType().equals(SCRType.PWM)) {
+                // Set PWM Value.
+                service.setPWM(19, calculatePWM(usablePower));
+            }
 
-        // Set Cache Value for Frontend.
-        CacheHandler.setValue("usable-power", usablePower);
+            // Set Cache Value for Frontend.
+            CacheHandler.setValue("usable-power", usablePower);
+        }
     }
 
     /**
