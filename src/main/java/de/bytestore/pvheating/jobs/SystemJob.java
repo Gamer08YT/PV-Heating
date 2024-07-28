@@ -70,9 +70,6 @@ public class SystemJob implements Job {
         GPIOService.setFLOW_PULSE_COUNT(0);
         startTime = currentTime;
 
-        // print the flow rate
-        System.out.printf("Flow Rate: %.2f L/min%n", flowRate);
-
         return flowRate;
     }
 

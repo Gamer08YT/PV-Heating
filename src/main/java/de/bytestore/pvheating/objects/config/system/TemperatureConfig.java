@@ -10,4 +10,6 @@ public class TemperatureConfig {
     private double resistance = 10000;
 
     private double desiredTemperature = 60;
+
+    private String wire1Device = "";
 }

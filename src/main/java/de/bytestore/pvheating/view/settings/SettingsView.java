@@ -15,6 +15,7 @@ import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.entity.SensorType;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
+import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
 import io.jmix.flowui.Notifications;
@@ -29,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @Route(value = "settings", layout = MainView.class)
 @ViewController("heater_SettingsView")
 @ViewDescriptor("settings-view.xml")
@@ -38,6 +41,9 @@ public class SettingsView extends StandardView {
 
     @ViewComponent
     private JmixSelect<SCRType> scrType;
+
+    @Autowired
+    private Pi4JService service;
 
     @Autowired
     private Messages messages;
@@ -80,6 +86,12 @@ public class SettingsView extends StandardView {
     private Notifications notifications;
     @ViewComponent
     private JmixNumberField offsetPowerUsage;
+    @ViewComponent
+    private JmixSelect<String> wire1Device;
+    @ViewComponent
+    private VerticalLayout oneWire;
+    @ViewComponent
+    private JmixFormLayout analogSensors;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -142,6 +154,40 @@ public class SettingsView extends StandardView {
         // Set Sensor Values.
         sensorResistance.setValue(config.getTemperature().getResistance());
         desiredTemperature.setValue(config.getTemperature().getDesiredTemperature());
+
+        // Set 1Wire Devices.
+        try {
+            wire1Device.setValue(config.getTemperature().getWire1Device());
+
+            List<String> wire1Devices = service.get1WireDevices();
+
+            if(wire1Devices.size() > 0)
+                wire1Device.setItems(wire1Devices);
+        } catch (Exception exceptionIO) {
+            // todo: Show 1Wire Dialog.
+        }
+
+        setTemperatureSelectorFields();
+    }
+
+    @Subscribe("sensorType")
+    public void onSensorTypeComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixSelect<?>, ?> event) {
+        setTemperatureSelectorFields();
+    }
+
+    /**
+     * Sets the visibility of temperature selector fields based on the sensor type.
+     * If the sensor type is NTC or PTC, the oneWire field is hidden and the analogSensors field is displayed.
+     * If the sensor type is DS18B20, the oneWire field is displayed and the analogSensors field is hidden.
+     */
+    private void setTemperatureSelectorFields() {
+        if(sensorType.getValue() == SensorType.NTC || sensorType.getValue() == SensorType.PTC) {
+            analogSensors.setVisible(true);
+            oneWire.setVisible(false);
+        } else if(sensorType.getValue() == SensorType.DS18B20) {
+            oneWire.setVisible(true);
+            analogSensors.setVisible(false);
+        }
     }
 
     /**
@@ -178,6 +224,7 @@ public class SettingsView extends StandardView {
             switch ((SensorType) typeIO) {
                 case NTC -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/negative.svg");
                 case PTC -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/positive.svg");
+                default -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/chip.svg");
             }
 
             VerticalLayout layoutIO = new VerticalLayout(iconIO, new Span(messages.getMessage((SensorType) typeIO)));
@@ -236,6 +283,7 @@ public class SettingsView extends StandardView {
         config.getTemperature().setSensorType((SensorType) sensorType.getValue());
         config.getTemperature().setResistance(sensorResistance.getValue());
         config.getTemperature().setDesiredTemperature(desiredTemperature.getValue());
+        config.getTemperature().setWire1Device(wire1Device.getValue());
 
         ConfigHandler.saveConfig();
         save.setEnabled(true);

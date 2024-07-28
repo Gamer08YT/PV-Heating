@@ -8,7 +8,8 @@ import org.springframework.lang.Nullable;
 public enum SensorType implements EnumClass<Integer> {
 
     NTC(10),
-    PTC(20);
+    PTC(20),
+    DS18B20(1820);
 
     private final Integer id;
 

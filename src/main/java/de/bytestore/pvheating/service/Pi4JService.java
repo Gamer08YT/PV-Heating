@@ -99,9 +99,9 @@ public class Pi4JService {
             }
         } else {
             log.error("Error reading temperature for DS18B20 {}.", deviceIO);
-
-            return -1;
         }
+
+        return -1;
     }
 
     /**

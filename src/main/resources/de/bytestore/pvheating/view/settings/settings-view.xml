@@ -51,19 +51,27 @@
             <select itemsEnum="SensorType" label="msg://de.bytestore.pvheating.entity/SensorType"
                     helperText="msg://helperSensor" id="sensorType"/>
 
-            <numberField label="msg://maxTemperatureSensor" helperText="msg://helperTemperatureSensor"
-                         stepButtonsVisible="true" id="sensorResistance" step="1000" min="0">
-                <suffix>
-                    <svgIcon resource="VAADIN/themes/PV-Heating/icons/resistance.svg"/>
-                </suffix>
-            </numberField>
+            <formLayout id="analogSensors" visible="false" width="100%" colspan="12">
+                <numberField label="msg://maxTemperatureSensor" helperText="msg://helperTemperatureSensor"
+                             stepButtonsVisible="true" id="sensorResistance" step="1000" min="0">
+                    <suffix>
+                        <svgIcon resource="VAADIN/themes/PV-Heating/icons/resistance.svg"/>
+                    </suffix>
+                </numberField>
 
-            <numberField label="msg://maxTemperature" id="desiredTemperature" helperText="msg://helperTemperature" stepButtonsVisible="true"
-                         step="0.5" min="0" max="70">
-                <suffix>
-                    <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>
-                </suffix>
-            </numberField>
+                <numberField label="msg://maxTemperature" id="desiredTemperature" helperText="msg://helperTemperature" stepButtonsVisible="true"
+                             step="0.5" min="0" max="70">
+                    <suffix>
+                        <svgIcon resource="VAADIN/themes/PV-Heating/icons/temperature.svg"/>
+                    </suffix>
+                </numberField>
+            </formLayout>
+
+            <vbox visible="false" id="oneWire" padding="false">
+                <select width="100%" label="msg://de.bytestore.pvheating.entity/oneWireDevice"
+                        id="wire1Device"/>
+                <span id="oneWireError" themeNames="badge error" text="msg://no1WireFound"/>
+            </vbox>
         </formLayout>
 
         <formLayout id="sheetscr" visible="false">
