@@ -2,8 +2,11 @@ package de.bytestore.pvheating.jobs;
 
 import com.google.gson.JsonObject;
 import com.pi4j.io.gpio.digital.DigitalInput;
+import de.bytestore.pvheating.entity.SensorType;
 import de.bytestore.pvheating.handler.CacheHandler;
+import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.handler.HAHandler;
+import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import de.bytestore.pvheating.service.GPIOService;
 import de.bytestore.pvheating.service.Pi4JService;
 import io.jmix.core.security.Authenticated;
@@ -28,6 +31,8 @@ public class SystemJob implements Job {
 
     private static long startTime;
 
+    private SystemConfig config = ConfigHandler.getCached();
+
     @Authenticated
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -36,8 +41,16 @@ public class SystemJob implements Job {
 
         // Read Flow Sensor.
         this.readFlowSensor();
+        
+        // Read Temperature Sensor.
+        this.readTemperatureSensor();
     }
 
+    private void readTemperatureSensor() {
+        if(config.getTemperature().getSensorType().equals(SensorType.DS18B20)) {
+            CacheHandler.setValue("temperature", service.readDS18B20(config.getTemperature().getWire1Device()));
+        }
+    }
 
 
     /**

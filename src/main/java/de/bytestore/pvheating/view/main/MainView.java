@@ -50,6 +50,8 @@ public class MainView extends StandardMainView {
 
     // Create new Decimal Formatter Instance.
     private static DecimalFormat formatIO = new DecimalFormat("0.00");
+    @ViewComponent
+    private Span currentTemperature;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -78,6 +80,7 @@ public class MainView extends StandardMainView {
         getUI().ifPresent(ui -> ui.access(() -> {
             currentPower.setText((Double) CacheHandler.getValue("current-power") + " W");
             flowRate.setText(formatIO.format((Double) CacheHandler.getValue("flow-per-minute")) + " l/min");
+            currentTemperature.setText(formatIO.format((Double) CacheHandler.getValue("temperature")) + " °C");
         }));
     }
 

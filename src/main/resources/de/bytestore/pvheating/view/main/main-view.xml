@@ -50,7 +50,7 @@
                         <span classNames="title" text="msg://de.bytestore.pvheating.view.main/temperature"/>
                         <hbox>
                             <svgIcon resource="VAADIN/themes/PV-Heating/icons/power.svg"/>
-                            <span classNames="value" text="0 °C"/>
+                            <span id="currentTemperature" classNames="value" text="0 °C"/>
                         </hbox>
                     </vbox>
                     <vbox classNames="stats-card">
