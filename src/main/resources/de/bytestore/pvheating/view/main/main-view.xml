@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<mainView xmlns="http://jmix.io/schema/flowui/main-view" xmlns:charts="http://jmix.io/schema/charts/ui"
+<mainView xmlns="http://jmix.io/schema/flowui/main-view"
           title="msg://MainView.title">
     <actions>
         <action id="logout" type="logout"/>
@@ -74,13 +74,13 @@
                         <vbox classNames="stats-card">
                             <span classNames="title" text="msg://max-power"/>
                             <span classNames="description" text="msg://description-max-power"/>
-                            <span classNames="value" text="100 W"/>
+                            <span classNames="value" id="usablePower" text="0 W"/>
                         </vbox>
                         <svgIcon size="4.5rem" resource="VAADIN/themes/PV-Heating/icons/arrow.svg"/>
                         <vbox classNames="stats-card">
                             <span classNames="title" text="msg://real-power"/>
                             <span classNames="description" text="msg://description-real-power"/>
-                            <span classNames="value" text="10 W"/>
+                            <span classNames="value" text="0 W"/>
                         </vbox>
                     </hbox>
 
@@ -89,7 +89,7 @@
                     <vbox classNames="stats-card">
                         <span classNames="title" text="msg://work"/>
                         <span classNames="description" text="msg://description-work"/>
-                        <span classNames="value" text="10 W"/>
+                        <span classNames="value" text="0 kWh"/>
                     </vbox>
                 </vbox>
             </vbox>

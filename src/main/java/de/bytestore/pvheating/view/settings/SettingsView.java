@@ -92,6 +92,8 @@ public class SettingsView extends StandardView {
     private VerticalLayout oneWire;
     @ViewComponent
     private JmixFormLayout analogSensors;
+    @ViewComponent
+    private Span oneWireError;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -163,8 +165,11 @@ public class SettingsView extends StandardView {
 
             if(wire1Devices.size() > 0)
                 wire1Device.setItems(wire1Devices);
+            else
+                oneWireError.setVisible(true);
         } catch (Exception exceptionIO) {
             // todo: Show 1Wire Dialog.
+            oneWireError.setVisible(true);
         }
 
         setTemperatureSelectorFields();

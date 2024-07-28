@@ -52,6 +52,8 @@ public class MainView extends StandardMainView {
     private static DecimalFormat formatIO = new DecimalFormat("0.00");
     @ViewComponent
     private Span currentTemperature;
+    @ViewComponent
+    private Span usablePower;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -78,9 +80,10 @@ public class MainView extends StandardMainView {
      */
     private void refreshStats() {
         getUI().ifPresent(ui -> ui.access(() -> {
-            currentPower.setText((Double) CacheHandler.getValue("current-power") + " W");
-            flowRate.setText(formatIO.format((Double) CacheHandler.getValue("flow-per-minute")) + " l/min");
-            currentTemperature.setText(formatIO.format((Double) CacheHandler.getValue("temperature")) + " °C");
+            currentPower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("current-power", 0)) + " W");
+            usablePower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("usable-power", 0)) + " W");
+            flowRate.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("flow-per-minute", 0)) + " l/min");
+            currentTemperature.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("temperature", 0)) + " °C");
         }));
     }
 

@@ -46,15 +46,26 @@ public class SystemJob implements Job {
         this.readTemperatureSensor();
     }
 
+    /**
+     * Reads the temperature from a temperature sensor based on the configuration.
+     * If the configuration is not null and the sensor type is DS18B20, the temperature
+     * value is read from the sensor and stored in the cache with the key "temperature".
+     */
     private void readTemperatureSensor() {
-        if(config.getTemperature().getSensorType().equals(SensorType.DS18B20)) {
-            CacheHandler.setValue("temperature", service.readDS18B20(config.getTemperature().getWire1Device()));
+        if(config != null) {
+            if (config.getTemperature().getSensorType().equals(SensorType.DS18B20)) {
+                CacheHandler.setValue("temperature", service.readDS18B20(config.getTemperature().getWire1Device()));
+            }
         }
     }
 
 
     /**
-     *
+     * Reads the flow sensor and updates the flow rate values in the cache.
+     * It calculates the flow rate using the number of flow pulses and the number of pulses per liter.
+     * The flow rate is then stored in the cache with keys "flow-per-second" (flow rate in liters per second)
+     * and "flow-per-minute" (flow rate in liters per minute).
+     * The pulse counter is reset after reading the flow sensor.
      */
     private void readFlowSensor() {
         double flowIO = calculateFlowRate();
@@ -87,7 +98,10 @@ public class SystemJob implements Job {
     }
 
     /**
+     * Handles communication with the Home Assistant system.
      *
+     * This method retrieves the current power sensor state from the Home Assistant system and caches it if available.
+     * If the power state is available, it is stored in the cache with the key "current-power".
      */
     private void handleHomeAssistant() {
         JsonObject powerIO = HAHandler.getSensorState("sensor.derzeitige_wirkleistung");

@@ -70,7 +70,7 @@
             <vbox visible="false" id="oneWire" padding="false">
                 <select width="100%" label="msg://de.bytestore.pvheating.entity/oneWireDevice"
                         id="wire1Device"/>
-                <span id="oneWireError" themeNames="badge error" text="msg://no1WireFound"/>
+                <span id="oneWireError" visible="false" themeNames="badge error" text="msg://no1WireFound"/>
             </vbox>
         </formLayout>
 

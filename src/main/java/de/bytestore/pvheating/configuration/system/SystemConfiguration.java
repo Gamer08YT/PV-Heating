@@ -1,4 +1,4 @@
-package de.bytestore.pvheating.configuration;
+package de.bytestore.pvheating.configuration.system;
 
 import io.jmix.core.annotation.JmixModule;
 import io.jmix.data.DataConfiguration;
@@ -15,7 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @JmixModule(dependsOn = DataConfiguration.class)
 public class SystemConfiguration {
     @Bean("systemExecuter")
-    public TaskExecutor taskExecutor() {
+    public TaskExecutor systemExecutor() {
         ThreadPoolTaskExecutor poolIO = new ThreadPoolTaskExecutor();
 
         poolIO.setCorePoolSize(1);
