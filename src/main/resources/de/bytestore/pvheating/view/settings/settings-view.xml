@@ -26,6 +26,7 @@
         </tabs>
 
         <formLayout id="sheetpower">
+            <select id="modbusConverter" label="msg://modbusSerialAdapter"></select>
             <numberField label="msg://offsetPowerUsage" id="offsetPowerUsage" helperText="msg://helperOffsetPowerUsage"
                          stepButtonsVisible="true" step="100" min="0">
                 <suffix>

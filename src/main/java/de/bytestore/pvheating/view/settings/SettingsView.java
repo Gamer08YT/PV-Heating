@@ -1,6 +1,7 @@
 package de.bytestore.pvheating.view.settings;
 
 
+import com.fazecast.jSerialComm.SerialPort;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -15,6 +16,7 @@ import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.entity.SensorType;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
+import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
@@ -30,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Route(value = "settings", layout = MainView.class)
@@ -43,7 +46,10 @@ public class SettingsView extends StandardView {
     private JmixSelect<SCRType> scrType;
 
     @Autowired
-    private Pi4JService service;
+    private Pi4JService pi4JService;
+
+    @Autowired
+    private ModbusService modbusService;
 
     @Autowired
     private Messages messages;
@@ -94,6 +100,8 @@ public class SettingsView extends StandardView {
     private JmixFormLayout analogSensors;
     @ViewComponent
     private Span oneWireError;
+    @ViewComponent
+    private JmixSelect<Object> modbusConverter;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -127,6 +135,11 @@ public class SettingsView extends StandardView {
      * Uses the minPower and maxPower properties of the PowerConfig class.
      */
     private void initPower() {
+        modbusConverter.setValue(config.getPower().getModbus().getPort());
+        modbusConverter.setItems(Arrays.stream(modbusService.getSerialPorts())
+                .map(SerialPort::getSystemPortName)
+                .toArray(String[]::new));
+
         minPowerUsage.setValue(config.getPower().getMinPower());
         maxPowerUsage.setValue(config.getPower().getMaxPower());
         offsetPowerUsage.setValue(config.getPower().getOffsetPower());
@@ -161,7 +174,7 @@ public class SettingsView extends StandardView {
         wire1Device.setValue(config.getTemperature().getWire1Device());
 
         try {
-            List<String> wire1Devices = service.get1WireDevices();
+            List<String> wire1Devices = pi4JService.get1WireDevices();
 
             if(wire1Devices.size() > 0)
                 wire1Device.setItems(wire1Devices);
