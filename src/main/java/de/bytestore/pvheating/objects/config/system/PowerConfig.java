@@ -9,4 +9,6 @@ public class PowerConfig {
     private double maxPower = 3000;
 
     private double offsetPower = 300;
+
+    private ModbusConfig modbus = new ModbusConfig();
 }

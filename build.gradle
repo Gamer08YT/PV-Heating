@@ -70,6 +70,9 @@ dependencies {
 
     // Timings with Non Blocking.
     implementation 'io.projectreactor:reactor-core:3.6.8'
+
+    // Modbus Lib.
+    implementation 'com.ghgande:j2mod:3.2.1'
 }
 
 test {

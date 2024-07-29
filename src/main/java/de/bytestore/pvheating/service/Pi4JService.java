@@ -138,10 +138,13 @@ public class Pi4JService {
 
     }
 
+    /**
+     * Sets the PWM value for a specified pin.
+     *
+     * @param pinIO The pin number for which the PWM value should be set.
+     * @param value The PWM value to be set. A positive value turns the pin on, while a negative value turns it off.
+     */
     public void setPWM(int pinIO, Double value) {
-        System.out.println("TEST:");
-        System.out.println(Pi4JService.provider);
-
         Pwm pwmConfig = null;
 
         if (!Pi4JService.provider.containsKey(pinIO)) {
