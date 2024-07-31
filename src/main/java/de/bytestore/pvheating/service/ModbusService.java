@@ -273,4 +273,21 @@ public class ModbusService {
     public SerialPort[] getSerialPorts() {
         return SerialPort.getCommPorts();
     }
+
+    /**
+     * Returns the port number used for Modbus communication.
+     * <p>
+     * This method retrieves the port number from the configuration object if it exists. If the configuration object,
+     * the power object, or the Modbus object is null, or if the port is not specified in the Modbus object,
+     * it returns the string "Internal Error".
+     * </p>
+     *
+     * @return the port number used for Modbus communication, or the string "Internal Error" if not found or configured incorrectly.
+     */
+    public String getPort() {
+        if(config != null && config.getPower() != null && config.getPower().getModbus() != null)
+            return config.getPower().getModbus().getPort();
+        else
+            return "Internal Error";
+    }
 }

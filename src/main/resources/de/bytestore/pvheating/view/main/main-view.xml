@@ -43,6 +43,7 @@
         <initialLayout>
             <vbox>
                 <span id="nonSupportedBoard" visible="false" themeNames="error badge" text="msg://nonSupportedBoard"/>
+                <span id="modbusMaxAttempts" visible="false" themeNames="error badge" text="msg://modbusMaxAttempts"/>
                 <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
                 <hbox width="100%" alignItems="CENTER">

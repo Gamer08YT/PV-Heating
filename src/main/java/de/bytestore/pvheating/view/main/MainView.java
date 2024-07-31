@@ -7,6 +7,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.handler.CacheHandler;
+import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import io.jmix.core.Messages;
 import io.jmix.flowui.app.main.StandardMainView;
@@ -48,6 +49,9 @@ public class MainView extends StandardMainView {
     @ViewComponent
     private Span flowRate;
 
+    @Autowired
+    private ModbusService modbusService;
+
     // Create new Decimal Formatter Instance.
     private static DecimalFormat formatIO = new DecimalFormat("0.00");
     @ViewComponent
@@ -56,6 +60,8 @@ public class MainView extends StandardMainView {
     private Span usablePower;
     @ViewComponent
     private VerticalLayout maxPowerCard;
+    @ViewComponent
+    private Span modbusMaxAttempts;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -88,6 +94,10 @@ public class MainView extends StandardMainView {
 
             // Set Card Color (Working State).
             setWorkingState((Double) CacheHandler.getValueOrDefault("usable-power", 0.00));
+
+            // Set Modbus Error State.
+            modbusMaxAttempts.setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
+            modbusMaxAttempts.setVisible(modbusService.getFails() <= 3);
         }));
     }
 
@@ -101,9 +111,9 @@ public class MainView extends StandardMainView {
         maxPowerCard.setClassName("offline", (valueIO == 0 || valueIO < 0));
 
         if(valueIO > 0)
-            usablePower.setText(formatIO.format(valueIO + " W"));
+            usablePower.setText(formatIO.format(valueIO) + " W");
         else
-            usablePower.setText(formatIO.format("0") + " W");
+            usablePower.setText(formatIO.format(0) + " W");
     }
 
     /**
@@ -132,4 +142,6 @@ public class MainView extends StandardMainView {
             subscription.dispose();
         }
     }
+
+
 }
