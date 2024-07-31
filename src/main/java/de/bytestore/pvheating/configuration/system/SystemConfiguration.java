@@ -14,7 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @ConfigurationPropertiesScan
 @JmixModule(dependsOn = DataConfiguration.class)
 public class SystemConfiguration {
-    @Bean("systemExecuter")
+    @Bean("systemExecutor")
     public TaskExecutor systemExecutor() {
         ThreadPoolTaskExecutor poolIO = new ThreadPoolTaskExecutor();
 

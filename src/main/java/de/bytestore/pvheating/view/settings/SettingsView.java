@@ -101,7 +101,7 @@ public class SettingsView extends StandardView {
     @ViewComponent
     private Span oneWireError;
     @ViewComponent
-    private JmixSelect<Object> modbusConverter;
+    private JmixSelect<String> modbusConverter;
 
     @Subscribe
     public void onInit(final InitEvent event) {

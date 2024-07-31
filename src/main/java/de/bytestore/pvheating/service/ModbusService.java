@@ -9,6 +9,8 @@ import com.ghgande.j2mod.modbus.util.SerialParameters;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.ModbusConfig;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,11 @@ import java.nio.ByteBuffer;
 public class ModbusService {
     private static ModbusSerialMaster masterIO;
 
-    private SystemConfig config = ConfigHandler.getCached();
+    @Setter
+    private SystemConfig config;
+
+    @Getter
+    private int fails = 0;
 
     // HA Example:
     //    name: sdm72dm
@@ -219,28 +225,43 @@ public class ModbusService {
      * If any exception occurs during the connection, it throws a RuntimeException.
      */
     public void connect() {
-        ModbusConfig configIO = config.getPower().getModbus();
+        if(config == null)
+            config = ConfigHandler.getCached();
 
-        // Create new Serial Config.
-        SerialParameters parametersIO = new SerialParameters();
+        if(config != null && config.getPower().getModbus() != null) {
+            ModbusConfig configIO = config.getPower().getModbus();
 
-        parametersIO.setPortName(configIO.getPort());
-        parametersIO.setBaudRate(configIO.getBaud());
-        parametersIO.setDatabits(configIO.getDataBits());
-        parametersIO.setStopbits(configIO.getStopBits());
-        parametersIO.setParity(parametersIO.getParity());
+            // Create new Serial Config.
+            SerialParameters parametersIO = new SerialParameters();
 
-        // Create new Master Instance.
-        ModbusService.masterIO = new ModbusSerialMaster(parametersIO);
+            parametersIO.setPortName(configIO.getPort());
+            parametersIO.setBaudRate(configIO.getBaud());
+            parametersIO.setDatabits(configIO.getDataBits());
+            parametersIO.setStopbits(configIO.getStopBits());
+            parametersIO.setParity(parametersIO.getParity());
 
-        try {
-            // Connect to Slave.
-            ModbusService.masterIO.connect();
+            // Create new Master Instance.
+            ModbusService.masterIO = new ModbusSerialMaster(parametersIO);
 
-            // Print Success Message.
-            log.info("Connected to Modbus via {}.", configIO.getPort());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            try {
+                // Connect to Slave.
+                ModbusService.masterIO.connect();
+
+                // Print Success Message.
+                log.info("Connected to Modbus via {}.", configIO.getPort());
+
+                // Reset Fail Counter.
+                fails = 0;
+            } catch (Exception e) {
+                if(fails == 2) {
+                    log.error("Canceled Modus connection to {}, max attempts reached.", configIO.getPort());
+                }
+
+                // Increment Fail Counter.
+                fails++;
+
+                throw new RuntimeException(e);
+            }
         }
     }
 

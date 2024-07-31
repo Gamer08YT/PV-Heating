@@ -83,7 +83,6 @@ public class MainView extends StandardMainView {
     private void refreshStats() {
         getUI().ifPresent(ui -> ui.access(() -> {
             currentPower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("current-power", 0.00)) + " W");
-            usablePower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("usable-power", 0.00)) + " W");
             flowRate.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("flow-per-minute", 0.00)) + " l/min");
             currentTemperature.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("temperature", 0.00)) + " °C");
 
@@ -99,7 +98,12 @@ public class MainView extends StandardMainView {
      */
     private void setWorkingState(Double valueIO) {
         maxPowerCard.setClassName("online", (valueIO > 0));
-        maxPowerCard.setClassName("offline", (valueIO == 0));
+        maxPowerCard.setClassName("offline", (valueIO == 0 || valueIO < 0));
+
+        if(valueIO > 0)
+            usablePower.setText(formatIO.format(valueIO + " W"));
+        else
+            usablePower.setText(formatIO.format("0") + " W");
     }
 
     /**

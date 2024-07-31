@@ -14,8 +14,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @ConfigurationPropertiesScan
 @JmixModule(dependsOn = DataConfiguration.class)
 public class ModbusConfiguration {
-    @Bean("modbusExecuter")
-    public TaskExecutor scrExecutor() {
+    @Bean("modbusExecutor")
+    public TaskExecutor modbusExecutor() {
         ThreadPoolTaskExecutor poolIO = new ThreadPoolTaskExecutor();
 
         poolIO.setCorePoolSize(1);

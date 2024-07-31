@@ -25,10 +25,18 @@ public class SCRJob implements Job {
         this.handlePower();
     }
 
+    /**
+     * Handles the power based on the system configuration.
+     * If a configuration is set, it calculates the usable power and performs the corresponding actions:
+     * - If the SCR type is PWM, it sets the PWM value.
+     * - It sets the cache value for frontend.
+     *
+     * Note: This method is private and is called internally by the execute() method of the SCRJob class.
+     */
     private void handlePower() {
-        if(config != null) {
+        if(config != null && config.getPower() != null) {
             // Calculate Usable Power.
-            double usablePower = this.calculateUsablePower((Double) CacheHandler.getValue("current-power"), config.getPower().getOffsetPower(), config.getPower().getMinPower());
+            double usablePower = this.calculateUsablePower((Double) CacheHandler.getValueOrDefault("current-power", (double) 0), config.getPower().getOffsetPower(), config.getPower().getMinPower());
 
             if (config.getScr().getType().equals(SCRType.PWM)) {
                 // Set PWM Value.
@@ -66,7 +74,7 @@ public class SCRJob implements Job {
             return Math.abs(currentPower) - offset;
         } else {
             // Andernfalls ist die nutzbare Leistung 0
-            return 0;
+            return (double) 0;
         }
     }
 }
