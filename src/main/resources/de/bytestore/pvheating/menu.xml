@@ -3,10 +3,9 @@
 
     <menu opened="true" id="application" title="msg://de.bytestore.pvheating/menu.application.title"
           icon="vaadin:dashboard">
-        <item view="heater_DashboardView" title="msg://de.bytestore.pvheating.view.dashboard/dashboardView.title"
-              icon="vaadin:dashboard"/>
         <item view="heater_GPIOView" id="menuGPIO" title="msg://de.bytestore.pvheating.view.gpio/GPIOView.title"
               icon="vaadin:info-circle-o"/>
+        <item view="heater_StatsView" title="msg://de.bytestore.pvheating.view.stats/statsView.title"/>
     </menu>
     <menu id="security" title="msg://de.bytestore.pvheating/menu.user.title" icon="vaadin:users">
         <item view="heater_User.list" title="msg://de.bytestore.pvheating.view.user/UserListView.title"
