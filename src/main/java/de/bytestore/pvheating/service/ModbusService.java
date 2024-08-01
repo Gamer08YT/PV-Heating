@@ -26,6 +26,7 @@ public class ModbusService {
     private static ModbusSerialMaster masterIO;
 
     @Setter
+    @Getter
     private SystemConfig config;
 
     @Getter
@@ -291,5 +292,15 @@ public class ModbusService {
             return config.getPower().getModbus().getPort();
         else
             return "Internal Error";
+    }
+
+    /**
+     * Resets the number of failed attempts to zero.
+     */
+    public void resetFails() {
+        fails = 0;
+
+        // Print Info about resetting failed attempts.
+        log.info("Resetting failed attempts.");
     }
 }

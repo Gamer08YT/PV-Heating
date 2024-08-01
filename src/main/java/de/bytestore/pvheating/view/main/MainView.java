@@ -2,6 +2,7 @@ package de.bytestore.pvheating.view.main;
 
 import com.pi4j.boardinfo.definition.PiModel;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -13,6 +14,7 @@ import de.bytestore.pvheating.service.Pi4JService;
 import io.jmix.core.Messages;
 import io.jmix.flowui.app.main.StandardMainView;
 import io.jmix.flowui.component.main.JmixListMenu;
+import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +65,12 @@ public class MainView extends StandardMainView {
     private VerticalLayout maxPowerCard;
     @ViewComponent
     private Span modbusMaxAttempts;
+    @ViewComponent
+    private Span wire1MaxAttempts;
+    @ViewComponent
+    private Span heaterPower;
+    @ViewComponent
+    private Span heaterWork;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -89,17 +97,47 @@ public class MainView extends StandardMainView {
      */
     private void refreshStats() {
         getUI().ifPresent(ui -> ui.access(() -> {
-            currentPower.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("current-power", 0.00)) + " W");
-            flowRate.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("flow-per-minute", 0.00)) + " l/min");
-            currentTemperature.setText(formatIO.format((Double) CacheHandler.getValueOrDefault("temperature", 0.00)) + " °C");
+            currentPower.setText(formatIO.format(CacheHandler.getValueOrDefault("current-power", 0.00)) + " W");
+            flowRate.setText(formatIO.format(CacheHandler.getValueOrDefault("flow-per-minute", 0.00)) + " l/min");
+            currentTemperature.setText(formatIO.format(CacheHandler.getValueOrDefault("temperature", 0.00)) + " °C");
+            heaterPower.setText(formatIO.format(CacheHandler.getValueOrDefault("heater-power", 0.00)) + " W");
+            heaterWork.setText(CacheHandler.getValueOrDefault("heater-electric-work", 0) + " kWh");
 
-            // Set Card Color (Working State).
-            setWorkingState((Double) CacheHandler.getValueOrDefault("usable-power", 0.00));
-
-            // Set Modbus Error State.
-            modbusMaxAttempts.setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
-            modbusMaxAttempts.setVisible(modbusService.getFails() <= 3);
+            checkForErrors();
         }));
+    }
+
+    /**
+     * Checks for errors and peSrforms certain actions based on the error conditions.
+     * <p>
+     * This method is responsible for performing the following actions:
+     * </p>
+     * <ul>
+     *     <li>Sets the working state based on the value obtained from the cache.</li>
+     *     <li>Sets the Modbus error state and updates the corresponding UI component if the modbusService fails more than or equal to 3 times.</li>
+     *     <li>Sets the error message for the 1Wire and updates the corresponding UI component if the service fails more than or equal to 3 times.</li>
+     * </ul>
+     * <p>
+     * This method does not return a value.
+     * </p>
+     */
+    private void checkForErrors() {
+        // Set Card Color (Working State).
+        setWorkingState((Double) CacheHandler.getValueOrDefault("usable-power", 0.00));
+
+        // Set Modbus Error State.
+        if(modbusService.getFails() >= 3) {
+            modbusMaxAttempts.setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
+        }
+
+        modbusMaxAttempts.setVisible(modbusService.getFails() >= 3);
+
+        // Print Error Message for 1Wire.
+        if(service.getWire1fails() >= 3) {
+            wire1MaxAttempts.setText(messageBundle.formatMessage("wire1MaxAttempts", modbusService.getConfig().getTemperature().getWire1Device()));
+        }
+
+        wire1MaxAttempts.setVisible(service.getWire1fails() >= 3);
     }
 
     /**
@@ -181,6 +219,19 @@ public class MainView extends StandardMainView {
             subscription.dispose();
         }
     }
+
+    @Subscribe(id = "resetModbus", subject = "clickListener")
+    public void onResetModbusClick(final ClickEvent<JmixButton> event) {
+        modbusService.resetFails();
+    }
+
+    @Subscribe(id = "resetWire1", subject = "clickListener")
+    public void onResetWire1Click(final ClickEvent<JmixButton> event) {
+        service.resetFails();
+    }
+
+
+
 
 
 }

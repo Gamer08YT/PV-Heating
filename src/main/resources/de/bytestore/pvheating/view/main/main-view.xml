@@ -43,7 +43,12 @@
         <initialLayout>
             <vbox>
                 <span id="nonSupportedBoard" visible="false" themeNames="error badge" text="msg://nonSupportedBoard"/>
-                <span id="modbusMaxAttempts" visible="false" themeNames="error badge" text="msg://modbusMaxAttempts"/>
+                <span id="modbusMaxAttempts" visible="false" themeNames="error badge" text="msg://modbusMaxAttempts">
+                    <button id="resetModbus" icon="lumo:reload" text="msg://reset"/>
+                </span>
+                <span id="wire1MaxAttempts" visible="false" themeNames="error badge" text="msg://wire1MaxAttempts">
+                    <button id="resetWire1" icon="lumo:reload" text="msg://reset"/>
+                </span>
                 <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
                 <hbox width="100%" alignItems="CENTER">
@@ -81,7 +86,7 @@
                         <vbox classNames="stats-card">
                             <span classNames="title" text="msg://real-power"/>
                             <span classNames="description" text="msg://description-real-power"/>
-                            <span classNames="value" text="0 W"/>
+                            <span classNames="value" id="heaterPower" text="0 W"/>
                         </vbox>
                     </hbox>
 
@@ -90,7 +95,7 @@
                     <vbox classNames="stats-card">
                         <span classNames="title" text="msg://work"/>
                         <span classNames="description" text="msg://description-work"/>
-                        <span classNames="value" text="0 kWh"/>
+                        <span classNames="value" id="heaterWork" text="0 kWh"/>
                     </vbox>
                 </vbox>
             </vbox>

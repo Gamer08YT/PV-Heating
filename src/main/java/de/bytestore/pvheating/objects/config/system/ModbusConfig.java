@@ -76,9 +76,10 @@ public class ModbusConfig {
      */
     private Map<String, Integer> sensors = Map.of(
             "total-work", 72,
-            "current-power", 52,
-            "current-power-l1", 12,
-            "current-power-l2", 14,
-            "current-power-l3", 16
+            "heater-power", 52,
+            "heater-power-l1", 12,
+            "heater-power-l2", 14,
+            "heater-power-l3", 16,
+            "heater-electric-work", 72
     );
 }

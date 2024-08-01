@@ -1,5 +1,6 @@
 package de.bytestore.pvheating.jobs;
 
+import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.ModbusConfig;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
@@ -50,7 +51,7 @@ public class ModbusJob implements Job {
 
             // Get all values from Slave.
             modbusIO.getSensors().forEach((keyIO, addressIO) -> {
-                service.readInput(1, addressIO, modbusIO.getRegisterType());
+                CacheHandler.setValue(keyIO, service.readInput(1, addressIO, modbusIO.getRegisterType()));
             });
 
         }

@@ -7,6 +7,7 @@ import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmType;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +27,9 @@ import static com.pi4j.io.gpio.digital.DigitalState.HIGH;
 public class Pi4JService {
     private static final Logger log = LoggerFactory.getLogger(Pi4JService.class);
     private final Context pi4jContext;
+
+    @Getter
+    private int wire1fails = 0;
 
     // Store already registered GPIO pins.
     private static HashMap<Integer, Object> provider = new HashMap<Integer, Object>();
@@ -113,11 +118,17 @@ public class Pi4JService {
      * @throws RuntimeException if an I/O error occurs while reading the file.
      */
     public List<String> get1Wire(String deviceIO, String dirIO) {
-        try {
-            return Files.readAllLines(new File(W1_DEVICE_FOLDER + deviceIO + "/" + dirIO).toPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if(wire1fails < 3) {
+            try {
+                return Files.readAllLines(new File(W1_DEVICE_FOLDER + deviceIO + "/" + dirIO).toPath());
+            } catch (IOException e) {
+                wire1fails++;
+
+                throw new RuntimeException(e);
+            }
         }
+
+        return new ArrayList<String>();
     }
 
     /**
@@ -162,11 +173,39 @@ public class Pi4JService {
     }
 
 
+    /**
+     * Retrieves the context of the Pi4J library.
+     * The context provides access to various Pi4J features and functionalities.
+     *
+     * @return The Pi4J context.
+     */
     public Context getPi4jContext() {
         return pi4jContext;
     }
 
+    /**
+     * Retrieves the board model associated with the Pi4J service.
+     *
+     * @return The board model.
+     */
     public BoardModel getModel() {
         return pi4jContext.boardInfo().getBoardModel();
+    }
+
+    /**
+     * Resets the number of failed attempts to read a specified 1-Wire file.
+     *
+     * This method sets the wire1fails variable to 0, indicating that the subsequent read attempts for the
+     * specified 1-Wire file should not be counted as failures.
+     *
+     * Additionally, this method logs an informational message indicating that the failed attempts are being reset.
+     *
+     * This method does not return a value.
+     */
+    public void resetFails() {
+        wire1fails = 0;
+
+        // Print Info about resetting failed attempts.
+        log.info("Resetting failed attempts.");
     }
 }
