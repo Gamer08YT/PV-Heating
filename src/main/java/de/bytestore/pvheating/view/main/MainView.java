@@ -134,21 +134,21 @@ public class MainView extends StandardMainView {
      */
     private void setSCRTooltip() {
         // Set PWM Tooltip if available.
-        Object pwmIO = (double) CacheHandler.getValue("scr-pwm");
+        Object pwmIO = CacheHandler.getValue("scr-pwm");
 
         if(pwmIO != null) {
             Tooltip.forComponent(usablePower).withText(pwmIO + " Hz");
         }
 
         // Set Voltage Tooltip if available.
-        Object voltageIO = (double) CacheHandler.getValue("scr-voltage");
+        Object voltageIO = CacheHandler.getValue("scr-voltage");
 
         if(voltageIO != null) {
             Tooltip.forComponent(usablePower).withText(voltageIO + " V");
         }
 
         // Set Voltage Tooltip if available.
-        Object currentIO = (double) CacheHandler.getValue("scr-current");
+        Object currentIO = CacheHandler.getValue("scr-current");
 
         if(currentIO != null) {
             Tooltip.forComponent(usablePower).withText(currentIO + " mA");
