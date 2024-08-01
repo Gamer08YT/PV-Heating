@@ -39,8 +39,13 @@ public class SCRJob implements Job {
             double usablePower = this.calculateUsablePower((Double) CacheHandler.getValueOrDefault("current-power", (double) 0), config.getPower().getOffsetPower(), config.getPower().getMinPower());
 
             if (config.getScr().getType().equals(SCRType.PWM)) {
+                Double pwmIO = calculatePWM(usablePower);
+
                 // Set PWM Value.
-                service.setPWM(19, calculatePWM(usablePower));
+                service.setPWM(19, pwmIO);
+
+                // Set Cache Value for Frontend.
+                CacheHandler.setValue("scr-pwm", pwmIO);
             }
 
             // Set Cache Value for Frontend.

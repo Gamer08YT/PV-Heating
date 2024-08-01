@@ -5,6 +5,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.service.ModbusService;
@@ -114,6 +115,44 @@ public class MainView extends StandardMainView {
             usablePower.setText(formatIO.format(valueIO) + " W");
         else
             usablePower.setText(formatIO.format(0) + " W");
+
+            setSCRTooltip();
+    }
+
+    /**
+     * Sets the SCR (Silicon Controlled Rectifier) tooltip for the usablePower component.
+     *
+     * The method retrieves values from a cache using the CacheHandler class for three different keys: "scr-pwm", "scr-voltage", and "scr-current".
+     * If a value is found for a key, a tooltip is set for the usablePower component, displaying the corresponding value followed by the appropriate unit (Hz, V, mA).
+     *
+     * This method does not return a value.
+     *
+     * @see CacheHandler#getValue(String)
+     * @see Tooltip#withText(String)
+     *
+     * @since (version number or release date)
+     */
+    private void setSCRTooltip() {
+        // Set PWM Tooltip if available.
+        Object pwmIO = (double) CacheHandler.getValue("scr-pwm");
+
+        if(pwmIO != null) {
+            Tooltip.forComponent(usablePower).withText(pwmIO + " Hz");
+        }
+
+        // Set Voltage Tooltip if available.
+        Object voltageIO = (double) CacheHandler.getValue("scr-voltage");
+
+        if(voltageIO != null) {
+            Tooltip.forComponent(usablePower).withText(voltageIO + " V");
+        }
+
+        // Set Voltage Tooltip if available.
+        Object currentIO = (double) CacheHandler.getValue("scr-current");
+
+        if(currentIO != null) {
+            Tooltip.forComponent(usablePower).withText(currentIO + " mA");
+        }
     }
 
     /**
