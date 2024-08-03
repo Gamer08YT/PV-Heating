@@ -43,12 +43,14 @@
         <initialLayout>
             <vbox>
                 <span id="nonSupportedBoard" visible="false" themeNames="error badge" text="msg://nonSupportedBoard"/>
-                <span id="modbusMaxAttempts" visible="false" themeNames="error badge" text="msg://modbusMaxAttempts">
+                <hbox id="modbusMaxAttempts" visible="false" themeNames="error badge">
+                    <span text="msg://modbusMaxAttempts"/>
                     <button id="resetModbus" icon="lumo:reload" text="msg://reset"/>
-                </span>
-                <span id="wire1MaxAttempts" visible="false" themeNames="error badge" text="msg://wire1MaxAttempts">
+                </hbox>
+                <hbox id="wire1MaxAttempts" visible="false" themeNames="error badge">
+                    <span text="msg://wire1MaxAttempts"/>
                     <button id="resetWire1" icon="lumo:reload" text="msg://reset"/>
-                </span>
+                </hbox>
                 <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
                 <hbox width="100%" alignItems="CENTER">

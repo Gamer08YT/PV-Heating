@@ -26,7 +26,7 @@
         </tabs>
 
         <formLayout id="sheetpower">
-            <select id="modbusConverter" label="msg://modbusSerialAdapter"></select>
+            <comboBox id="modbusConverter" label="msg://modbusSerialAdapter"/>
             <numberField label="msg://offsetPowerUsage" id="offsetPowerUsage" helperText="msg://helperOffsetPowerUsage"
                          stepButtonsVisible="true" step="100" min="0">
                 <suffix>
@@ -49,7 +49,7 @@
         </formLayout>
 
         <formLayout id="sheettemperature" visible="false">
-            <select itemsEnum="SensorType" label="msg://de.bytestore.pvheating.entity/SensorType"
+            <comboBox itemsEnum="SensorType" label="msg://de.bytestore.pvheating.entity/SensorType"
                     helperText="msg://helperSensor" id="sensorType"/>
 
             <formLayout id="analogSensors" visible="false" width="100%" colspan="12">
@@ -69,7 +69,7 @@
             </formLayout>
 
             <vbox visible="false" id="oneWire" padding="false">
-                <select width="100%" label="msg://de.bytestore.pvheating.entity/oneWireDevice"
+                <comboBox width="100%" label="msg://de.bytestore.pvheating.entity/oneWireDevice"
                         id="wire1Device"/>
                 <span id="oneWireError" visible="false" themeNames="badge error" text="msg://no1WireFound"/>
             </vbox>
@@ -77,7 +77,7 @@
 
         <formLayout id="sheetscr" visible="false">
             <formLayout colspan="12">
-                <select itemsEnum="SCRType" label="msg://de.bytestore.pvheating.entity/SCRType"
+                <comboBox itemsEnum="SCRType" label="msg://de.bytestore.pvheating.entity/SCRType"
                         helperText="msg://helperSCR" id="scrType"/>
             </formLayout>
 

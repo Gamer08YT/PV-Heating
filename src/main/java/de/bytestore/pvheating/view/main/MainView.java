@@ -5,6 +5,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.Route;
@@ -37,8 +38,9 @@ public class MainView extends StandardMainView {
     private JmixListMenu menu;
     @ViewComponent
     private Span useSupportedBoard;
-    @Autowired
+    @ViewComponent
     private MessageBundle messageBundle;
+
     @Autowired
     private Messages messages;
 
@@ -64,9 +66,11 @@ public class MainView extends StandardMainView {
     @ViewComponent
     private VerticalLayout maxPowerCard;
     @ViewComponent
-    private Span modbusMaxAttempts;
+    private HorizontalLayout modbusMaxAttempts;
+
     @ViewComponent
-    private Span wire1MaxAttempts;
+    private HorizontalLayout wire1MaxAttempts;
+
     @ViewComponent
     private Span heaterPower;
     @ViewComponent
@@ -127,14 +131,14 @@ public class MainView extends StandardMainView {
 
         // Set Modbus Error State.
         if(modbusService.getFails() >= 3) {
-            modbusMaxAttempts.setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
+            ((Span) modbusMaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
         }
 
         modbusMaxAttempts.setVisible(modbusService.getFails() >= 3);
 
         // Print Error Message for 1Wire.
         if(service.getWire1fails() >= 3) {
-            wire1MaxAttempts.setText(messageBundle.formatMessage("wire1MaxAttempts", modbusService.getConfig().getTemperature().getWire1Device()));
+            ((Span) wire1MaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("wire1MaxAttempts", modbusService.getConfig().getTemperature().getWire1Device()));
         }
 
         wire1MaxAttempts.setVisible(service.getWire1fails() >= 3);

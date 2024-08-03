@@ -4,6 +4,8 @@ package de.bytestore.pvheating.view.settings;
 import com.fazecast.jSerialComm.SerialPort;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.SvgIcon;
@@ -11,6 +13,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.entity.SensorType;
@@ -22,8 +25,8 @@ import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.core.Messages;
 import io.jmix.flowui.Notifications;
 import io.jmix.flowui.component.checkbox.JmixCheckbox;
+import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.formlayout.JmixFormLayout;
-import io.jmix.flowui.component.select.JmixSelect;
 import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
@@ -35,6 +38,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.bytestore.pvheating.entity.SensorType.NTC;
+import static de.bytestore.pvheating.entity.SensorType.PTC;
+
 @Route(value = "settings", layout = MainView.class)
 @ViewController("heater_SettingsView")
 @ViewDescriptor("settings-view.xml")
@@ -43,7 +49,7 @@ public class SettingsView extends StandardView {
     private static final Logger log = LoggerFactory.getLogger(SettingsView.class);
 
     @ViewComponent
-    private JmixSelect<SCRType> scrType;
+    private JmixComboBox<SCRType> scrType;
 
     @Autowired
     private Pi4JService pi4JService;
@@ -55,7 +61,7 @@ public class SettingsView extends StandardView {
     private Messages messages;
 
     @ViewComponent
-    private JmixSelect<SensorType> sensorType;
+    private JmixComboBox<SensorType> sensorType;
 
     @ViewComponent
     private JmixFormLayout currentRange;
@@ -93,7 +99,7 @@ public class SettingsView extends StandardView {
     @ViewComponent
     private JmixNumberField offsetPowerUsage;
     @ViewComponent
-    private JmixSelect<String> wire1Device;
+    private ComboBox<String> wire1Device;
     @ViewComponent
     private VerticalLayout oneWire;
     @ViewComponent
@@ -101,7 +107,7 @@ public class SettingsView extends StandardView {
     @ViewComponent
     private Span oneWireError;
     @ViewComponent
-    private JmixSelect<String> modbusConverter;
+    private ComboBox<String> modbusConverter;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -135,10 +141,10 @@ public class SettingsView extends StandardView {
      * Uses the minPower and maxPower properties of the PowerConfig class.
      */
     private void initPower() {
-        modbusConverter.setValue(config.getPower().getModbus().getPort());
         modbusConverter.setItems(Arrays.stream(modbusService.getSerialPorts())
                 .map(SerialPort::getSystemPortName)
                 .toArray(String[]::new));
+        modbusConverter.setValue(config.getPower().getModbus().getPort());
 
         minPowerUsage.setValue(config.getPower().getMinPower());
         maxPowerUsage.setValue(config.getPower().getMaxPower());
@@ -170,15 +176,15 @@ public class SettingsView extends StandardView {
         sensorResistance.setValue(config.getTemperature().getResistance());
         desiredTemperature.setValue(config.getTemperature().getDesiredTemperature());
 
-        // Set 1Wire Devices.
-        wire1Device.setValue(config.getTemperature().getWire1Device());
-
         try {
             List<String> wire1Devices = pi4JService.get1WireDevices();
 
-            if(wire1Devices.size() > 0)
+            if(wire1Devices.size() > 0) {
                 wire1Device.setItems(wire1Devices);
-            else
+
+                // Set 1Wire Devices.
+                wire1Device.setValue(config.getTemperature().getWire1Device());
+            } else
                 oneWireError.setVisible(true);
         } catch (Exception exceptionIO) {
             // todo: Show 1Wire Dialog.
@@ -189,7 +195,7 @@ public class SettingsView extends StandardView {
     }
 
     @Subscribe("sensorType")
-    public void onSensorTypeComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixSelect<?>, ?> event) {
+    public void onSensorTypeComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixComboBox<?>, ?> event) {
         setTemperatureSelectorFields();
     }
 
@@ -199,7 +205,7 @@ public class SettingsView extends StandardView {
      * If the sensor type is DS18B20, the oneWire field is displayed and the analogSensors field is hidden.
      */
     private void setTemperatureSelectorFields() {
-        if(sensorType.getValue() == SensorType.NTC || sensorType.getValue() == SensorType.PTC) {
+        if(sensorType.getValue() == NTC || sensorType.getValue() == PTC) {
             analogSensors.setVisible(true);
             oneWire.setVisible(false);
         } else if(sensorType.getValue() == SensorType.DS18B20) {
@@ -235,17 +241,17 @@ public class SettingsView extends StandardView {
     }
 
     @Supply(to = "sensorType", subject = "renderer")
-    private ComponentRenderer sensorTypeRenderer() {
-        return new ComponentRenderer(typeIO -> {
+    private Renderer<SensorType> sensorTypeRenderer() {
+        return new ComponentRenderer<Component, SensorType>(typeIO -> {
             SvgIcon iconIO = null;
 
-            switch ((SensorType) typeIO) {
+            switch (typeIO) {
                 case NTC -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/negative.svg");
                 case PTC -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/positive.svg");
                 default -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/chip.svg");
             }
 
-            VerticalLayout layoutIO = new VerticalLayout(iconIO, new Span(messages.getMessage((SensorType) typeIO)));
+            VerticalLayout layoutIO = new VerticalLayout(iconIO, new Span(messages.getMessage(typeIO)));
             layoutIO.setAlignItems(FlexComponent.Alignment.CENTER);
 
             return layoutIO;
@@ -254,17 +260,17 @@ public class SettingsView extends StandardView {
 
 
     @Supply(to = "scrType", subject = "renderer")
-    private ComponentRenderer scrTypeRenderer() {
-        return new ComponentRenderer(typeIO -> {
+    private Renderer<SCRType> scrTypeRenderer() {
+        return new ComponentRenderer<Component, SCRType>(typeIO -> {
             SvgIcon iconIO = null;
 
-            switch ((SCRType) typeIO) {
+            switch (typeIO) {
                 case PWM -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/pwm.svg");
                 case CURRENT -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/current.svg");
                 case VOLTAGE -> iconIO = new SvgIcon("VAADIN/themes/PV-Heating/icons/voltage.svg");
             }
 
-            VerticalLayout layoutIO = new VerticalLayout(iconIO, new Span(messages.getMessage((SCRType) typeIO)));
+            VerticalLayout layoutIO = new VerticalLayout(iconIO, new Span(messages.getMessage(typeIO)));
             layoutIO.setAlignItems(FlexComponent.Alignment.CENTER);
 
             return layoutIO;
@@ -272,7 +278,7 @@ public class SettingsView extends StandardView {
     }
 
     @Subscribe("scrType")
-    public void onScrTypeComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixSelect<?>, ?> eventIO) {
+    public void onScrTypeComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixComboBox<?>, ?> eventIO) {
         SCRType typeIO = (SCRType) scrType.getValue();
 
         currentRange.setVisible(typeIO == SCRType.CURRENT);
