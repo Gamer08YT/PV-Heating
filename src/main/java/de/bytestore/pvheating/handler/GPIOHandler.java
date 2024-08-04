@@ -2,8 +2,6 @@ package de.bytestore.pvheating.handler;
 
 import de.bytestore.pvheating.handler.devices.GPIODefinitions;
 import de.bytestore.pvheating.handler.devices.Raspberry;
-import de.bytestore.pvheating.handler.interfaces.ProviderTemplateInterface;
-import de.bytestore.pvheating.handler.templates.outputs.PumpTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,22 +23,22 @@ public class GPIOHandler {
         return configs;
     }
 
-    /**
-     * Returns a list of GPIOListeners.
-     *
-     * @return the list of GPIOListeners
-     */
-    public static ArrayList<ProviderTemplateInterface> getListeners() {
-        ArrayList<ProviderTemplateInterface> listeners = new ArrayList<ProviderTemplateInterface>();
-
-        listeners.add(new PumpTemplate());
-        listeners.add(new SCRAnalogListener());
-        listeners.add(new SCRPWMListener());
-        listeners.add(new TemperatureAnalogListener());
-        listeners.add(new TemperatureDigitalListener());
-
-        return listeners;
-    }
+//    /**
+//     * Returns a list of GPIOListeners.
+//     *
+//     * @return the list of GPIOListeners
+//     */
+//    public static ArrayList<ProviderTemplateInterface> getListeners() {
+//        ArrayList<ProviderTemplateInterface> listeners = new ArrayList<ProviderTemplateInterface>();
+//
+//        listeners.add(new PumpTemplate());
+//        listeners.add(new SCRAnalogListener());
+//        listeners.add(new SCRPWMListener());
+//        listeners.add(new TemperatureAnalogListener());
+//        listeners.add(new TemperatureDigitalListener());
+//
+//        return listeners;
+//    }
 
     public void enablePin() {
 

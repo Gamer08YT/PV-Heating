@@ -3,7 +3,9 @@ package de.bytestore.pvheating.handler.templates.status;
 import de.bytestore.pvheating.entity.GPIOChannelType;
 import de.bytestore.pvheating.entity.GPIOType;
 import de.bytestore.pvheating.handler.templates.ProviderTemplate;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LEDOperationTemplate extends ProviderTemplate {
     @Override
     public String name() {

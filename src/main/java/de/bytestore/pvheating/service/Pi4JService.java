@@ -90,20 +90,22 @@ public class Pi4JService {
     public double readDS18B20(String deviceIO) {
         List<String> lines = get1Wire(deviceIO, "w1_slave");
 
-        if (lines.get(0).contains("YES")) {
-
+        if(lines.size() > 0) {
             if (lines.get(0).contains("YES")) {
-                String tempLine = lines.get(1);
-                int tIndex = tempLine.indexOf("t=");
 
-                if (tIndex != -1) {
-                    String tempString = tempLine.substring(tIndex + 2);
+                if (lines.get(0).contains("YES")) {
+                    String tempLine = lines.get(1);
+                    int tIndex = tempLine.indexOf("t=");
 
-                    return Double.parseDouble(tempString) / 1000.0;
+                    if (tIndex != -1) {
+                        String tempString = tempLine.substring(tIndex + 2);
+
+                        return Double.parseDouble(tempString) / 1000.0;
+                    }
                 }
+            } else {
+                log.error("Error reading temperature for DS18B20 {}.", deviceIO);
             }
-        } else {
-            log.error("Error reading temperature for DS18B20 {}.", deviceIO);
         }
 
         return -1;

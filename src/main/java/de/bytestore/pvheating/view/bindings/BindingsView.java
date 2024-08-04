@@ -10,6 +10,7 @@ import de.bytestore.pvheating.handler.GPIOHandler;
 import de.bytestore.pvheating.objects.Provider;
 import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
+import de.bytestore.pvheating.service.ProviderBeanService;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.virtuallist.JmixVirtualList;
@@ -37,10 +38,17 @@ public class BindingsView extends StandardView {
     @ViewComponent
     private JmixComboBox<String> providerSelector;
 
+    @Autowired
+    private ProviderBeanService providerBeanService;
+
     @Subscribe
     public void onInit(final InitEvent event) {
+        //System.out.println(providerService.getChildren());
+
         //providerItems.setItems();
-        providerSelector.setItems(GPIOHandler.getListeners().stream().map(gpioListener -> gpioListener.name() != null ? gpioListener.name() : "Unknown").toArray(String[]::new));
+        providerBeanService.test();
+        //providerService.test();
+        //providerSelector.setItems(providerService.getChildren().stream().map(gpioListener -> gpioListener.name() != null ? gpioListener.name() : "Unknown").toArray(String[]::new));
         providerValue.setItems(getProviders());
     }
 
