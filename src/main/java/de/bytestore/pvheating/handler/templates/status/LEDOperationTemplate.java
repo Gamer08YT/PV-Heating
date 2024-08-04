@@ -1,7 +1,8 @@
-package de.bytestore.pvheating.handler.templates;
+package de.bytestore.pvheating.handler.templates.status;
 
 import de.bytestore.pvheating.entity.GPIOChannelType;
 import de.bytestore.pvheating.entity.GPIOType;
+import de.bytestore.pvheating.handler.templates.ProviderTemplate;
 
 public class LEDOperationTemplate extends ProviderTemplate {
     @Override

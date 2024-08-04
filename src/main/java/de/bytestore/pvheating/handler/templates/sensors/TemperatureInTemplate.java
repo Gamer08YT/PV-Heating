@@ -1,7 +1,8 @@
-package de.bytestore.pvheating.handler.templates;
+package de.bytestore.pvheating.handler.templates.sensors;
 
 import de.bytestore.pvheating.entity.GPIOChannelType;
 import de.bytestore.pvheating.entity.GPIOType;
+import de.bytestore.pvheating.handler.templates.ProviderTemplate;
 
 public class TemperatureInTemplate extends ProviderTemplate {
     @Override
@@ -17,5 +18,10 @@ public class TemperatureInTemplate extends ProviderTemplate {
     @Override
     public GPIOChannelType channelType() {
         return GPIOChannelType.INPUT;
+    }
+
+    @Override
+    public String suffix() {
+        return "°C";
     }
 }

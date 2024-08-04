@@ -3,7 +3,7 @@ package de.bytestore.pvheating.handler;
 import de.bytestore.pvheating.handler.devices.GPIODefinitions;
 import de.bytestore.pvheating.handler.devices.Raspberry;
 import de.bytestore.pvheating.handler.interfaces.ProviderTemplateInterface;
-import de.bytestore.pvheating.handler.templates.*;
+import de.bytestore.pvheating.handler.templates.outputs.PumpTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

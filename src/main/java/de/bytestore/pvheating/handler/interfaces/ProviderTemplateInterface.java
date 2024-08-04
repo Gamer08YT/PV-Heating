@@ -9,4 +9,8 @@ public interface ProviderTemplateInterface {
     GPIOType[] type();
 
     GPIOChannelType channelType();
+
+    void onInput(Object valueIO);
+
+    String suffix();
 }

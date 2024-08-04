@@ -5,6 +5,7 @@ import de.bytestore.pvheating.entity.GPIOType;
 import de.bytestore.pvheating.handler.interfaces.ProviderTemplateInterface;
 
 public class ProviderTemplate implements ProviderTemplateInterface {
+
     @Override
     public String name() {
         return "";
@@ -17,6 +18,16 @@ public class ProviderTemplate implements ProviderTemplateInterface {
 
     @Override
     public GPIOChannelType channelType() {
+        return null;
+    }
+
+    @Override
+    public void onInput(Object valueIO) {
+
+    }
+
+    @Override
+    public String suffix() {
         return null;
     }
 }

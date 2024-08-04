@@ -1,4 +1,4 @@
-package de.bytestore.pvheating.handler.templates;
+package de.bytestore.pvheating.handler.templates.sensors;
 
 public class TemperatureBoilerTemplate extends TemperatureInTemplate {
     @Override

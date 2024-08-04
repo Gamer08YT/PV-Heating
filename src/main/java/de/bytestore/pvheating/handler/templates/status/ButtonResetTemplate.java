@@ -1,12 +1,13 @@
-package de.bytestore.pvheating.handler.templates;
+package de.bytestore.pvheating.handler.templates.status;
 
 import de.bytestore.pvheating.entity.GPIOChannelType;
 import de.bytestore.pvheating.entity.GPIOType;
+import de.bytestore.pvheating.handler.templates.ProviderTemplate;
 
-public class PumpTemplate extends ProviderTemplate {
+public class ButtonResetTemplate extends ProviderTemplate {
     @Override
     public String name() {
-        return "pump";
+        return "button-reset";
     }
 
     @Override
@@ -16,6 +17,6 @@ public class PumpTemplate extends ProviderTemplate {
 
     @Override
     public GPIOChannelType channelType() {
-        return GPIOChannelType.OUTPUT;
+        return GPIOChannelType.INPUT;
     }
 }
