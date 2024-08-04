@@ -2,8 +2,8 @@ package de.bytestore.pvheating.handler;
 
 import de.bytestore.pvheating.handler.devices.GPIODefinitions;
 import de.bytestore.pvheating.handler.devices.Raspberry;
-import de.bytestore.pvheating.handler.interfaces.GPIOListener;
-import de.bytestore.pvheating.handler.listeners.*;
+import de.bytestore.pvheating.handler.interfaces.ProviderTemplateInterface;
+import de.bytestore.pvheating.handler.templates.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +30,10 @@ public class GPIOHandler {
      *
      * @return the list of GPIOListeners
      */
-    public static ArrayList<GPIOListener> getListeners() {
-        ArrayList<GPIOListener> listeners = new ArrayList<GPIOListener>();
+    public static ArrayList<ProviderTemplateInterface> getListeners() {
+        ArrayList<ProviderTemplateInterface> listeners = new ArrayList<ProviderTemplateInterface>();
 
-        listeners.add(new PumpListener());
+        listeners.add(new PumpTemplate());
         listeners.add(new SCRAnalogListener());
         listeners.add(new SCRPWMListener());
         listeners.add(new TemperatureAnalogListener());

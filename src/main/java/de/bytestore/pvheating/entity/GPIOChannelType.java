@@ -5,27 +5,24 @@ import io.jmix.core.metamodel.datatype.EnumClass;
 import org.springframework.lang.Nullable;
 
 
-public enum GPIOType implements EnumClass<Integer> {
+public enum GPIOChannelType implements EnumClass<String> {
 
-    ANALOG(10),
-    DIGITAL(20),
-    PWM(30),
-    MODBUS(40),
-    WIRE1(50);
+    INPUT("INPUT"),
+    OUTPUT("OUTPUT");
 
-    private final Integer id;
+    private final String id;
 
-    GPIOType(Integer id) {
+    GPIOChannelType(String id) {
         this.id = id;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
     @Nullable
-    public static GPIOType fromId(Integer id) {
-        for (GPIOType at : GPIOType.values()) {
+    public static GPIOChannelType fromId(String id) {
+        for (GPIOChannelType at : GPIOChannelType.values()) {
             if (at.getId().equals(id)) {
                 return at;
             }

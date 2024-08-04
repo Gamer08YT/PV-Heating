@@ -4,8 +4,8 @@
     <layout>
         <virtualList id="providerItems"/>
 
-        <hbox classNames="card" padding="true">
-            <formLayout>
+        <hbox classNames="card" padding="true" width="100%">
+            <formLayout width="100%">
                 <comboBox id="providerSelector" label="msg://provider">
                     <prefix>
                         <icon icon="vaadin:puzzle-piece"/>
