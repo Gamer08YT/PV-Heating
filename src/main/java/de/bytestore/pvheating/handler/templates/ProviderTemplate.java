@@ -16,6 +16,7 @@ public class ProviderTemplate implements ProviderTemplateInterface {
         return new GPIOType[0];
     }
 
+
     @Override
     public GPIOChannelType channelType() {
         return null;

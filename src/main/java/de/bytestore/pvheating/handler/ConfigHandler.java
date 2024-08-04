@@ -3,6 +3,7 @@ package de.bytestore.pvheating.handler;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.bytestore.pvheating.objects.config.gpio.GPIOConfig;
+import de.bytestore.pvheating.objects.config.provider.ProviderConfig;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
@@ -20,7 +21,7 @@ public class ConfigHandler {
     public static File config = new File("./config.json");
 
     @Getter
-    public static File gpio = new File("./gpio.json");
+    public static File provider = new File("./provider.json");
 
     @Getter
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -29,7 +30,7 @@ public class ConfigHandler {
     private static SystemConfig cached = null;
 
     @Getter
-    private static GPIOConfig gpioConfig = null;
+    private static ProviderConfig providerConfig = null;
 
     /**
      * Checks if the config file exists and creates it if it doesn't.
@@ -49,14 +50,14 @@ public class ConfigHandler {
             }
         }
 
-        if (!gpio.exists()) {
+        if (!provider.exists()) {
             String dataIO = getDefaultGPIOConfig();
 
             try {
                 // Write Config to Disk.
-                FileUtils.writeStringToFile(gpio, dataIO, Charset.defaultCharset());
+                FileUtils.writeStringToFile(provider, dataIO, Charset.defaultCharset());
             } catch (IOException e) {
-                log.error("Unable to write Default GPIO Config to Disk.", e);
+                log.error("Unable to write Default Provider Config to Disk.", e);
             }
         }
     }
@@ -103,13 +104,13 @@ public class ConfigHandler {
      * <p>
      * The configuration file is expected to be a JSON file located at the path specified by the 'config' field in the ConfigHandler class.
      */
-    public static void readGPIO() {
-        log.info("Reading GPIO configuration file.");
+    public static void readProvider() {
+        log.info("Reading Provider configuration file.");
 
         try {
-            gpioConfig = gson.fromJson(FileUtils.readFileToString(gpio, Charset.defaultCharset()), GPIOConfig.class);
+            providerConfig = gson.fromJson(FileUtils.readFileToString(provider, Charset.defaultCharset()), ProviderConfig.class);
         } catch (IOException e) {
-            log.error("Unable to read GPIO Config from disk.", e);
+            log.error("Unable to read Provider Config from disk.", e);
         }
     }
 
@@ -134,9 +135,9 @@ public class ConfigHandler {
      * and writes it to the file specified in the 'gpio' field of the ConfigHandler class.
      * If an error occurs while saving the configuration, an error message is logged.
      */
-    public static void saveGPIO() {
+    public static void saveProvider() {
         try {
-            FileUtils.writeStringToFile(gpio, gson.toJson(gpioConfig), Charset.defaultCharset());
+            FileUtils.writeStringToFile(provider, gson.toJson(providerConfig), Charset.defaultCharset());
         } catch (IOException e) {
             log.error("Unable to save GPIO Config to disk.", e);
         }

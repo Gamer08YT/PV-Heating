@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 public class LEDErrorTemplate extends LEDOperationTemplate {
     @Override
     public String name() {
-        return "led-erro";
+        return "led-error";
     }
 
 
