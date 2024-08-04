@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://bindingsView.title">
+    <layout>
+        <virtualList id="providerItems"/>
+
+        <hbox classNames="card" padding="true">
+            <formLayout>
+                <comboBox id="providerSelector" label="msg://provider">
+                    <prefix>
+                        <icon icon="vaadin:puzzle-piece"/>
+                    </prefix>
+                </comboBox>
+                <comboBox id="providerValue" label="msg://value">
+                    <prefix>
+                        <icon icon="vaadin:plug"/>
+                    </prefix>
+                </comboBox>
+                <button id="providerSave" icon="CHECK" text="msg://de.bytestore.pvheating.view.settings/save"/>
+            </formLayout>
+        </hbox>
+    </layout>
+</view>

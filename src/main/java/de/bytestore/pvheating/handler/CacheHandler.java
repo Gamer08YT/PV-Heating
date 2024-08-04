@@ -1,8 +1,11 @@
 package de.bytestore.pvheating.handler;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 
 public class CacheHandler {
+    @Getter
     private static HashMap<String, Object> cache = new HashMap<String, Object>();
 
     /**

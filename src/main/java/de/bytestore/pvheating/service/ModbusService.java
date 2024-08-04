@@ -3,10 +3,8 @@ package de.bytestore.pvheating.service;
 import com.fazecast.jSerialComm.SerialPort;
 import com.ghgande.j2mod.modbus.ModbusException;
 import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
-import com.ghgande.j2mod.modbus.net.ModbusSerialListener;
 import com.ghgande.j2mod.modbus.procimg.InputRegister;
 import com.ghgande.j2mod.modbus.util.BitVector;
-import com.ghgande.j2mod.modbus.util.ModbusUtil;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.ModbusConfig;
@@ -14,16 +12,22 @@ import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
 @Service
 public class ModbusService {
     private static ModbusSerialMaster masterIO;
+
+    private static final int BAUD_RATE = 9600;
+    private static final int DATA_BITS = 8;
+    private static final int STOP_BITS = 1;
+    private static final int PARITY = 0;
 
     @Setter
     @Getter
@@ -303,4 +307,57 @@ public class ModbusService {
         // Print Info about resetting failed attempts.
         log.info("Resetting failed attempts.");
     }
+
+    /**
+     * Lists the Modbus slave addresses that are responding on the specified communication port within the specified address range.
+     *
+     * @param commPortId   the ID of the communication port to use
+     * @param startAddress the starting address to check for slave responses
+     * @param endAddress   the ending address to check for slave responses
+     * @return a list of slave addresses that responded within the specified range
+     */
+    public static List<Integer> listModbusSlaves(String commPortId, int startAddress, int endAddress) {
+        List<Integer> slaveAddresses = new ArrayList<>();
+
+        SerialParameters params = new SerialParameters();
+        params.setPortName(commPortId);
+        params.setBaudRate(BAUD_RATE);
+        params.setDatabits(DATA_BITS);
+        params.setStopbits(STOP_BITS);
+        params.setParity(PARITY);
+        params.setEncoding("rtu");
+        params.setEcho(false);
+
+        ModbusSerialMaster master = new ModbusSerialMaster(params);
+
+        try {
+            master.connect();
+
+            for (int address = startAddress; address <= endAddress; address++) {
+                try {
+                    // Read input registers to check if the slave responds
+                    InputRegister[] registers = master.readInputRegisters(address, 0, 1);
+
+                    if (registers != null && registers.length > 0) {
+                        slaveAddresses.add(address);
+                        System.out.println("Valid response from slave at address " + address);
+                    }
+                } catch (ModbusException e) {
+                    // No response from this address
+                    System.out.println("No response from slave at address " + address);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                master.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return slaveAddresses;
+    }
+
 }
