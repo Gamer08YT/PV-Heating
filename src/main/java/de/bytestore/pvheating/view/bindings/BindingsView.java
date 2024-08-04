@@ -6,7 +6,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.router.Route;
+import de.bytestore.pvheating.entity.GPIOChannelType;
 import de.bytestore.pvheating.handler.GPIOHandler;
+import de.bytestore.pvheating.handler.templates.ProviderTemplate;
 import de.bytestore.pvheating.objects.Provider;
 import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
@@ -18,6 +20,8 @@ import io.jmix.flowui.view.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Route(value = "bindings-view", layout = MainView.class)
 @ViewController("heater_BindingsView")
@@ -36,7 +40,7 @@ public class BindingsView extends StandardView {
     private JmixComboBox<Provider> providerValue;
 
     @ViewComponent
-    private JmixComboBox<String> providerSelector;
+    private JmixComboBox<ProviderTemplate> providerSelector;
 
     @Autowired
     private ProviderBeanService providerBeanService;
@@ -46,10 +50,37 @@ public class BindingsView extends StandardView {
         //System.out.println(providerService.getChildren());
 
         //providerItems.setItems();
-        providerBeanService.test();
-        //providerService.test();
-        //providerSelector.setItems(providerService.getChildren().stream().map(gpioListener -> gpioListener.name() != null ? gpioListener.name() : "Unknown").toArray(String[]::new));
+        providerSelector.setItems(providerBeanService.getChildren());
         providerValue.setItems(getProviders());
+    }
+
+    @Supply(to = "providerSelector", subject = "renderer")
+    private Renderer<ProviderTemplate> providerSelectorRenderer() {
+        return new ComponentRenderer<>(object -> {
+            HorizontalLayout layoutIO = new HorizontalLayout();
+            layoutIO.setPadding(true);
+            layoutIO.addClassName("card");
+
+            layoutIO.add(new Span(object.name()));
+
+            // Add GPIO Type.
+            List.of(object.type()).forEach(gpioType -> {
+                Span badgeIO = new Span(gpioType.name());
+                badgeIO.getElement().getThemeList().add("badge");
+                badgeIO.getElement().getThemeList().add("success");
+
+                layoutIO.add(badgeIO);
+            });
+
+
+            Span badgeIO = new Span(object.channelType().name());
+            badgeIO.getElement().getThemeList().add("badge");
+            badgeIO.getElement().getThemeList().add((object.channelType().equals(GPIOChannelType.INPUT) ? "normal" : "contrast"));
+
+            layoutIO.add(badgeIO);
+
+            return layoutIO;
+        });
     }
 
     @Supply(to = "providerValue", subject = "renderer")
@@ -70,7 +101,6 @@ public class BindingsView extends StandardView {
             return layoutIO;
         });
     }
-
 
 
     /**
