@@ -21,6 +21,7 @@
     </actions>
     <layout>
         <formLayout id="form" dataContainer="modbusRegisterDc">
+            <textField id="nameField" property="name"/>
             <comboBox id="slaveField" property="slave"/>
             <textField id="addressField" property="address"/>
             <textField id="typeField" property="type"/>

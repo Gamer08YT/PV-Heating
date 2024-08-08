@@ -28,13 +28,16 @@ public class ModbusRegister {
     @Id
     private UUID id;
 
+    @Column(name = "NAME")
+    private String name;
+
     @Column(name = "ADDRESS")
     private Integer address;
 
     @Column(name = "TYPE_")
     private String type;
 
-    @OnDeleteInverse(DeletePolicy.UNLINK)
+    @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "SLAVE_ID")
     @ManyToOne(fetch = FetchType.LAZY)
     private ModbusSlave slave;
@@ -54,6 +57,14 @@ public class ModbusRegister {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public ModbusSlave getSlave() {
         return slave;

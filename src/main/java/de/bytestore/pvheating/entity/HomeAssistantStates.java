@@ -1,11 +1,8 @@
 package de.bytestore.pvheating.entity;
 
-import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
-import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
-import io.jmix.core.metamodel.datatype.DatatypeFormatter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,31 +16,17 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "HEATER_MODBUS_SLAVE")
-@Entity(name = "heater_ModbusSlave")
-public class ModbusSlave {
+@Table(name = "HEATER_HOME_ASSISTANT_STATES")
+@Entity(name = "heater_HomeAssistantStates")
+public class HomeAssistantStates {
     @JmixGeneratedValue
     @Column(name = "ID", nullable = false)
     @Id
     private UUID id;
 
+    @InstanceName
     @Column(name = "NAME")
     private String name;
-
-    @Column(name = "PORT")
-    private String port;
-
-    @Column(name = "BAUD")
-    private Integer baud = 9600;
-
-    @Column(name = "DATA_BITS")
-    private Integer dataBits = 8;
-
-    @Column(name = "STOP_BITS")
-    private Integer stopBits = 1;
-
-    @Column(name = "PARITY")
-    private Integer parity = 0;
 
     @CreatedBy
     @Column(name = "CREATED_BY")
@@ -67,46 +50,6 @@ public class ModbusSlave {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getParity() {
-        return parity;
-    }
-
-    public void setParity(Integer parity) {
-        this.parity = parity;
-    }
-
-    public Integer getStopBits() {
-        return stopBits;
-    }
-
-    public void setStopBits(Integer stopBits) {
-        this.stopBits = stopBits;
-    }
-
-    public Integer getDataBits() {
-        return dataBits;
-    }
-
-    public void setDataBits(Integer dataBits) {
-        this.dataBits = dataBits;
-    }
-
-    public Integer getBaud() {
-        return baud;
-    }
-
-    public void setBaud(Integer baud) {
-        this.baud = baud;
-    }
-
-    public String getPort() {
-        return port;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
     }
 
     public OffsetDateTime getLastModifiedDate() {
@@ -147,13 +90,5 @@ public class ModbusSlave {
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    @InstanceName
-    @DependsOnProperties({"port", "baud"})
-    public String getInstanceName(MetadataTools metadataTools, DatatypeFormatter datatypeFormatter) {
-        return String.format("%s (%s)",
-                metadataTools.format(port),
-                datatypeFormatter.formatInteger(baud));
     }
 }

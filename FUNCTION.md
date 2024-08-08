@@ -1,0 +1,38 @@
+# Function
+___
+
+### Working Principle
+
+```
+CURRENT_POWER = METER(IMPORT - EXPORT)
+
+IF CURRENT_POWER >= (OFFSET + MIN_POWER)
+    SET POWER TO CURRENT_POWER - OFFSET
+ELSE
+    SET POWER TO 0
+END
+```
+
+Examples:
+```
+CURRENT_POWER = -1000W (Exporting)
+OFFSET = 100W
+MIN_POWER = 300W
+
+POWER = 900W
+```
+
+OR
+
+```
+CURRENT_POWER = -300W (Exporting)
+OFFSET = 100W
+MIN_POWER = 300W
+
+POWER = 0W
+```
+
+### Calibration
+
+FROM 0kHz to 10kHz
+MEASURE POWER USAGE
