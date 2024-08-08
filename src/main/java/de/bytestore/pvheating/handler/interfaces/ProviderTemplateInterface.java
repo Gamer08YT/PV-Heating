@@ -13,4 +13,6 @@ public interface ProviderTemplateInterface {
     void onInput(Object valueIO);
 
     String suffix();
+
+    Object getValue();
 }

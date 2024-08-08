@@ -40,8 +40,5 @@ public class GPIOHandler {
 //        return listeners;
 //    }
 
-    public void enablePin() {
-
-    }
 
 }

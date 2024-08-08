@@ -56,9 +56,6 @@ public class ModbusService {
      * @throws RuntimeException if there was an error reading the IO register
      */
     public Object readInput(int slaveIO, int startIO, String typeIO) {
-        if(ModbusService.masterIO == null || !ModbusService.masterIO.isConnected())
-            connect();
-
         // Convert Var Type to Register Size.
         int lengthIO = convertType(typeIO);
 
@@ -96,18 +93,30 @@ public class ModbusService {
     }
 
     /**
-     * Reads a 32-bit floating-point value from the specified slave ID and start address.
+     * Reads a 32-bit floating point value from the specified modbus slave.
      *
-     * @param slaveId       the ID of the slave device to read from
-     * @param startAddress  the starting address of the 32-bit floating-point value in the slave device
-     * @return the 32-bit floating-point value read from the slave device
-     * @throws ModbusException  if there was an error during the Modbus operation
+     * @param slaveId the ID of the modbus slave device
+     * @param startAddress the starting address of the registers to read
+     * @return the 32-bit floating point value read from the slave device
+     * @throws ModbusException if there is an error communicating with the modbus slave device
      */
-    public static float readFloat32(int slaveId, int startAddress) throws ModbusException {
-        InputRegister[] registers = ModbusService.masterIO.readInputRegisters(slaveId, startAddress, 2);
-        int high = registers[0].getValue();
-        int low = registers[1].getValue();
-        return intToFloat32(high, low);
+    public float readFloat32(int slaveId, int startAddress) throws ModbusException {
+        if(ModbusService.masterIO == null || !ModbusService.masterIO.isConnected())
+            connect();
+
+        try {
+            if (masterIO != null) {
+                InputRegister[] registers = ModbusService.masterIO.readInputRegisters(slaveId, startAddress, 2);
+                int high = registers[0].getValue();
+                int low = registers[1].getValue();
+                return intToFloat32(high, low);
+            }
+        } catch (ModbusException exceptionIO) {
+            // Do nothing.
+            log.error(exceptionIO.getMessage());
+        }
+
+        return -1;
     }
 
     /**
@@ -267,7 +276,7 @@ public class ModbusService {
                 // Increment Fail Counter.
                 fails++;
 
-                throw new RuntimeException(e);
+                //throw new RuntimeException(e);
             }
         }
     }

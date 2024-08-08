@@ -32,12 +32,16 @@ import java.time.Duration;
 @ViewDescriptor("main-view.xml")
 public class MainView extends StandardMainView {
     private static final Logger log = LoggerFactory.getLogger(MainView.class);
+
     @ViewComponent
     private Span nonSupportedBoard;
+
     @ViewComponent
     private JmixListMenu menu;
+
     @ViewComponent
     private Span useSupportedBoard;
+
     @ViewComponent
     private MessageBundle messageBundle;
 
@@ -46,6 +50,10 @@ public class MainView extends StandardMainView {
 
     @Autowired
     private Pi4JService service;
+
+    @Autowired
+    private ModbusService modbusService;
+
     @ViewComponent
     private Span currentPower;
 
@@ -54,17 +62,18 @@ public class MainView extends StandardMainView {
     @ViewComponent
     private Span flowRate;
 
-    @Autowired
-    private ModbusService modbusService;
-
     // Create new Decimal Formatter Instance.
     private static DecimalFormat formatIO = new DecimalFormat("0.00");
+
     @ViewComponent
     private Span currentTemperature;
+
     @ViewComponent
     private Span usablePower;
+
     @ViewComponent
     private VerticalLayout maxPowerCard;
+
     @ViewComponent
     private HorizontalLayout modbusMaxAttempts;
 
@@ -73,6 +82,7 @@ public class MainView extends StandardMainView {
 
     @ViewComponent
     private Span heaterPower;
+
     @ViewComponent
     private Span heaterWork;
 
@@ -129,19 +139,23 @@ public class MainView extends StandardMainView {
         // Set Card Color (Working State).
         setWorkingState((Double) CacheHandler.getValueOrDefault("usable-power", 0.00));
 
-        // Set Modbus Error State.
-        if(modbusService.getFails() >= 3) {
-            ((Span) modbusMaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
+        if(modbusService != null) {
+            // Set Modbus Error State.
+            if (modbusService.getFails() >= 3) {
+                ((Span) modbusMaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
+            }
+
+            modbusMaxAttempts.setVisible(modbusService.getFails() >= 3);
         }
 
-        modbusMaxAttempts.setVisible(modbusService.getFails() >= 3);
+        if(service != null) {
+            // Print Error Message for 1Wire.
+            if (service.getWire1fails() >= 3) {
+                ((Span) wire1MaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("wire1MaxAttempts", modbusService.getConfig().getTemperature().getWire1Device()));
+            }
 
-        // Print Error Message for 1Wire.
-        if(service.getWire1fails() >= 3) {
-            ((Span) wire1MaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("wire1MaxAttempts", modbusService.getConfig().getTemperature().getWire1Device()));
+            wire1MaxAttempts.setVisible(service.getWire1fails() >= 3);
         }
-
-        wire1MaxAttempts.setVisible(service.getWire1fails() >= 3);
     }
 
     /**

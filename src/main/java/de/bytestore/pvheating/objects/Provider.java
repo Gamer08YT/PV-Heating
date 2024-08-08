@@ -13,8 +13,10 @@ public class Provider {
         this.provider = provider;
     }
 
+    // For eq. Pump Output
     private String name;
 
+    // For example Modbus
     private String provider;
 
     private GPIOType[] types;

@@ -2,6 +2,7 @@ package de.bytestore.pvheating.jobs;
 
 import de.bytestore.pvheating.entity.Stats;
 import de.bytestore.pvheating.handler.CacheHandler;
+import de.bytestore.pvheating.handler.HAHandler;
 import io.jmix.core.DataManager;
 import io.jmix.core.querycondition.LogicalCondition;
 import io.jmix.core.querycondition.PropertyCondition;
@@ -35,13 +36,15 @@ public class StatsJob implements Job {
      * Adds the cache values to the database.
      */
     private void addCache() {
-        CacheHandler.getCache().forEach((keyIO, valueIO) -> {
-            Stats statsIO = manager.create(Stats.class);
-            statsIO.setType(keyIO);
-            statsIO.setValue(valueIO.toString());
+        if(CacheHandler.getCache() != null) {
+            CacheHandler.getCache().forEach((keyIO, valueIO) -> {
+                Stats statsIO = manager.create(Stats.class);
+                statsIO.setType(keyIO);
+                statsIO.setValue(valueIO.toString());
 
-            manager.save(statsIO);
-        });
+                manager.save(statsIO);
+            });
+        }
     }
 
     /**
