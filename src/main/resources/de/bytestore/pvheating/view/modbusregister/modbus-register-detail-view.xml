@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <view xmlns="http://jmix.io/schema/flowui/view"
-      title="msg://modbusSlaveDetailView.title"
+      title="msg://modbusRegisterDetailView.title"
       focusComponent="form">
     <data>
-        <instance id="modbusSlaveDc"
-                  class="de.bytestore.pvheating.entity.ModbusSlave">
-            <fetchPlan extends="_base"/>
-            <loader id="modbusSlaveDl"/>
+        <instance id="modbusRegisterDc"
+                  class="de.bytestore.pvheating.entity.ModbusRegister">
+            <loader id="modbusRegisterDl">
+                <query>
+                    <![CDATA[select e from heater_ModbusRegister e]]>
+                </query>
+            </loader>
         </instance>
     </data>
     <facets>
@@ -17,12 +20,10 @@
         <action id="closeAction" type="detail_close"/>
     </actions>
     <layout>
-        <formLayout id="form" dataContainer="modbusSlaveDc">
-            <comboBox id="portField" property="port"/>
-            <textField id="baudField" property="baud"/>
-            <textField id="dataBitsField" property="dataBits"/>
-            <textField id="stopBitsField" property="stopBits"/>
-            <textField id="parityField" property="parity"/>
+        <formLayout id="form" dataContainer="modbusRegisterDc">
+            <comboBox id="slaveField" property="slave"/>
+            <textField id="addressField" property="address"/>
+            <textField id="typeField" property="type"/>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseBtn" action="saveAction"/>

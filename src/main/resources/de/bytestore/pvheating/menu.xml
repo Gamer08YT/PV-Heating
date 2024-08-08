@@ -7,6 +7,8 @@
         <item view="heater_BindingsView" title="msg://de.bytestore.pvheating.view.bindings/bindingsView.title"/>
         <item view="heater_ModbusSlave.list"
               title="msg://de.bytestore.pvheating.view.modbusslave/modbusSlaveListView.title"/>
+        <item view="heater_ModbusRegister.list"
+              title="msg://de.bytestore.pvheating.view.modbusregister/modbusRegisterListView.title"/>
     </menu>
     <menu id="security" title="msg://de.bytestore.pvheating/menu.user.title" icon="vaadin:users">
         <item view="heater_User.list" title="msg://de.bytestore.pvheating.view.user/UserListView.title"
