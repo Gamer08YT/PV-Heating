@@ -1,10 +1,13 @@
 package de.bytestore.pvheating.jobs;
 
+import de.bytestore.pvheating.entity.ModbusRegister;
+import de.bytestore.pvheating.entity.ModbusSlave;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.ModbusConfig;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import de.bytestore.pvheating.service.ModbusService;
+import io.jmix.core.DataManager;
 import io.jmix.core.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
@@ -12,12 +15,17 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @Slf4j
 public class ModbusJob implements Job {
     private SystemConfig config = ConfigHandler.getCached();
 
     @Autowired
     private ModbusService service;
+
+    @Autowired
+    private DataManager dataManager;
 
 
 //    public ModbusJob() {
@@ -43,18 +51,16 @@ public class ModbusJob implements Job {
      * @see ModbusJob
      * @see ModbusConfig
      * @see ModbusService
-     * @see ModbusService#readInput(int, int, String)
      */
     private void queryValues() {
-        if(config != null && config.getPower().getModbus() != null && config.getPower().getModbus().isEnabled()) {
-            ModbusConfig modbusIO = config.getPower().getModbus();
+        List<ModbusRegister> registersIO = dataManager.load(ModbusRegister.class).all().list();
 
-            // Get all values from Slave.
-            modbusIO.getSensors().forEach((keyIO, addressIO) -> {
-                CacheHandler.setValue(keyIO, service.readInput(1, addressIO, modbusIO.getRegisterType()));
-            });
+        registersIO.forEach(modbusRegister -> {
+            ModbusSlave slaveIO = modbusRegister.getSlave();
 
-        }
+            // Set Value to Cache.
+            CacheHandler.setValue("modbus." + modbusRegister.getName(), service.readInput(slaveIO, modbusRegister.getSelect(), modbusRegister.getAddress(), modbusRegister.getType()));
+        });
     }
 
 

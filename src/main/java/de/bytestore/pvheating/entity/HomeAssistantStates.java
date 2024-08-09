@@ -28,6 +28,9 @@ public class HomeAssistantStates {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "REFRESH_DELAY")
+    private Integer refreshDelay;
+
     @CreatedBy
     @Column(name = "CREATED_BY")
     private String createdBy;
@@ -43,6 +46,14 @@ public class HomeAssistantStates {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    public Integer getRefreshDelay() {
+        return refreshDelay;
+    }
+
+    public void setRefreshDelay(Integer refreshDelay) {
+        this.refreshDelay = refreshDelay;
+    }
 
     public String getName() {
         return name;

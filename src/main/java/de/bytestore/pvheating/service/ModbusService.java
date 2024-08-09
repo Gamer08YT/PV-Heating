@@ -6,8 +6,7 @@ import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.InputRegister;
 import com.ghgande.j2mod.modbus.util.BitVector;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
-import de.bytestore.pvheating.handler.ConfigHandler;
-import de.bytestore.pvheating.objects.config.system.ModbusConfig;
+import de.bytestore.pvheating.entity.ModbusSlave;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,13 +15,17 @@ import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
+
+import static de.bytestore.pvheating.handler.ConfigHandler.config;
 
 
 @Slf4j
 @Service
 public class ModbusService {
-    private static ModbusSerialMaster masterIO;
+    private static HashMap<UUID, ModbusSerialMaster> masterIO =  new HashMap<UUID, ModbusSerialMaster>();
 
     private static final int BAUD_RATE = 9600;
     private static final int DATA_BITS = 8;
@@ -47,22 +50,16 @@ public class ModbusService {
     //    parity: N
 
     /**
-     * Reads input from a specific slave IO device.
      *
-     * @param slaveIO the slave ID of the IO device to read from
-     * @param startIO the starting address of the IO register to read
-     * @param typeIO the type of IO register to read (e.g., float, int)
-     * @return the value read from the IO register
-     * @throws RuntimeException if there was an error reading the IO register
      */
-    public Object readInput(int slaveIO, int startIO, String typeIO) {
+    public Object readInput(ModbusSlave converterIO, int slaveIO, int startIO, String typeIO) {
         // Convert Var Type to Register Size.
         int lengthIO = convertType(typeIO);
 
         float valueIO = 0;
 
         try {
-            valueIO = readFloat32(slaveIO, startIO);
+            valueIO = readFloat32(converterIO, slaveIO, startIO);
         } catch (ModbusException e) {
             throw new RuntimeException(e);
         }
@@ -95,18 +92,19 @@ public class ModbusService {
     /**
      * Reads a 32-bit floating point value from the specified modbus slave.
      *
-     * @param slaveId the ID of the modbus slave device
+     * @param converterIO
+     * @param slaveId      the ID of the modbus slave device
      * @param startAddress the starting address of the registers to read
      * @return the 32-bit floating point value read from the slave device
      * @throws ModbusException if there is an error communicating with the modbus slave device
      */
-    public float readFloat32(int slaveId, int startAddress) throws ModbusException {
-        if(ModbusService.masterIO == null || !ModbusService.masterIO.isConnected())
-            connect();
+    public float readFloat32(ModbusSlave converterIO, int slaveId, int startAddress) throws ModbusException {
+        if(!ModbusService.masterIO.containsKey(converterIO.getId()) || !ModbusService.masterIO.get(converterIO.getId()).isConnected())
+            connect(converterIO);
 
         try {
-            if (masterIO != null) {
-                InputRegister[] registers = ModbusService.masterIO.readInputRegisters(slaveId, startAddress, 2);
+            if (masterIO.size() > 0) {
+                InputRegister[] registers = ModbusService.masterIO.get(converterIO.getId()).readInputRegisters(slaveId, startAddress, 2);
                 int high = registers[0].getValue();
                 int low = registers[1].getValue();
                 return intToFloat32(high, low);
@@ -127,8 +125,8 @@ public class ModbusService {
      * @return the 32-bit integer read from the slave device
      * @throws ModbusException if there is an error while reading the integer value
      */
-    public static int readInt32(int slaveId, int startAddress) throws ModbusException {
-        InputRegister[] registers = ModbusService.masterIO.readInputRegisters(slaveId, startAddress, 2);
+    public static int readInt32(ModbusSlave converterIO, int slaveId, int startAddress) throws ModbusException {
+        InputRegister[] registers = ModbusService.masterIO.get(converterIO.getId()).readInputRegisters(slaveId, startAddress, 2);
         int high = registers[0].getValue();
         int low = registers[1].getValue();
         return intToInt32(high, low);
@@ -142,8 +140,8 @@ public class ModbusService {
      * @return the 64-bit integer value read from the input registers
      * @throws ModbusException if a Modbus exception occurred during the communication process
      */
-    public static long readInt64(int slaveId, int startAddress) throws ModbusException {
-        InputRegister[] registers = ModbusService.masterIO.readInputRegisters(slaveId, startAddress, 4);
+    public static long readInt64(ModbusSlave converterIO, int slaveId, int startAddress) throws ModbusException {
+        InputRegister[] registers = ModbusService.masterIO.get(converterIO.getId()).readInputRegisters(slaveId, startAddress, 4);
         int highHigh = registers[0].getValue();
         int highLow = registers[1].getValue();
         int lowHigh = registers[2].getValue();
@@ -220,12 +218,12 @@ public class ModbusService {
      * @return a BitVector object representing the value retrieved from the Modbus slave device
      * @throws RuntimeException if an exception occurs during the retrieval process
      */
-    public BitVector getValue(int addressIO, int countIO) {
-        if(ModbusService.masterIO == null || !ModbusService.masterIO.isConnected())
-            connect();
+    public BitVector getValue(ModbusSlave converterIO, int addressIO, int countIO) {
+        if(ModbusService.masterIO == null || !ModbusService.masterIO.get(converterIO.getId()).isConnected())
+            connect(converterIO);
 
         try {
-            return ModbusService.masterIO.readCoils(addressIO, countIO);
+            return ModbusService.masterIO.get(converterIO.getId()).readCoils(addressIO, countIO);
         } catch (ModbusException e) {
             throw new RuntimeException(e);
         }
@@ -240,37 +238,31 @@ public class ModbusService {
      * Finally, it connects to the slave device using the master instance.
      * If any exception occurs during the connection, it throws a RuntimeException.
      */
-    public void connect() {
-        if(config == null)
-            config = ConfigHandler.getCached();
-
-        if(config != null && config.getPower().getModbus() != null) {
-            ModbusConfig configIO = config.getPower().getModbus();
-
+    public void connect(ModbusSlave converterIO) {
             // Create new Serial Config.
             SerialParameters parametersIO = new SerialParameters();
 
-            parametersIO.setPortName(configIO.getPort());
-            parametersIO.setBaudRate(configIO.getBaud());
-            parametersIO.setDatabits(configIO.getDataBits());
-            parametersIO.setStopbits(configIO.getStopBits());
+            parametersIO.setPortName(converterIO.getPort());
+            parametersIO.setBaudRate(converterIO.getBaud());
+            parametersIO.setDatabits(converterIO.getDataBits());
+            parametersIO.setStopbits(converterIO.getStopBits());
             parametersIO.setParity(parametersIO.getParity());
 
             // Create new Master Instance.
-            ModbusService.masterIO = new ModbusSerialMaster(parametersIO);
+            masterIO.put(converterIO.getId(), new ModbusSerialMaster(parametersIO));
 
             try {
                 // Connect to Slave.
-                ModbusService.masterIO.connect();
+                ModbusService.masterIO.get(converterIO.getId()).connect();
 
                 // Print Success Message.
-                log.info("Connected to Modbus via {}.", configIO.getPort());
+                log.info("Connected to Modbus via {}.", converterIO.getPort());
 
                 // Reset Fail Counter.
                 fails = 0;
             } catch (Exception e) {
                 if(fails == 2) {
-                    log.error("Canceled Modus connection to {}, max attempts reached.", configIO.getPort());
+                    log.error("Canceled Modus connection to {}, max attempts reached.", converterIO.getPort());
                 }
 
                 // Increment Fail Counter.
@@ -279,7 +271,6 @@ public class ModbusService {
                 //throw new RuntimeException(e);
             }
         }
-    }
 
     /**
      * Retrieves an array of available serial ports.

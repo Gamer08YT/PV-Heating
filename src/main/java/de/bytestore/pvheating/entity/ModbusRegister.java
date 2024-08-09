@@ -28,6 +28,12 @@ public class ModbusRegister {
     @Id
     private UUID id;
 
+    @Column(name = "SELECT_")
+    private Integer select = 1;
+
+    @Column(name = "REFRESH_DELAY")
+    private Integer refreshDelay;
+
     @Column(name = "NAME")
     private String name;
 
@@ -35,7 +41,7 @@ public class ModbusRegister {
     private Integer address;
 
     @Column(name = "TYPE_")
-    private String type;
+    private String type = "float32";
 
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @JoinColumn(name = "SLAVE_ID")
@@ -57,6 +63,22 @@ public class ModbusRegister {
     @LastModifiedDate
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
+
+    public Integer getSelect() {
+        return select;
+    }
+
+    public void setSelect(Integer select) {
+        this.select = select;
+    }
+
+    public Integer getRefreshDelay() {
+        return refreshDelay;
+    }
+
+    public void setRefreshDelay(Integer refreshDelay) {
+        this.refreshDelay = refreshDelay;
+    }
 
     public String getName() {
         return name;

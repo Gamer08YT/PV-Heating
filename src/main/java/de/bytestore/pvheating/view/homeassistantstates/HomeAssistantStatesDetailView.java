@@ -17,7 +17,7 @@ import io.jmix.flowui.view.*;
 @EditedEntityContainer("homeAssistantStatesDc")
 public class HomeAssistantStatesDetailView extends StandardDetailView<HomeAssistantStates> {
     @ViewComponent
-    private JmixComboBox<JsonObject> nameField;
+    private JmixComboBox<String> nameField;
 
     @Subscribe
     public void onInit(final InitEvent event) {
