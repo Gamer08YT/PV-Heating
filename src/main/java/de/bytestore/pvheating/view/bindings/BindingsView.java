@@ -176,8 +176,8 @@ public class BindingsView extends StandardView {
             });
         }
 
-        modbusService.getConfig().getPower().getModbus().getSensors().forEach((keyIO, addressIO) -> {
-            providersIO.add(new Provider(keyIO, "modbus", new GPIOType[]{
+        modbusService.getRegisters().forEach(modbusRegister -> {
+            providersIO.add(new Provider(modbusRegister.getName(), "modbus", new GPIOType[]{
                     GPIOType.MODBUS
             }));
         });

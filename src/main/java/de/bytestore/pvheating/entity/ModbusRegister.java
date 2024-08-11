@@ -1,5 +1,6 @@
 package de.bytestore.pvheating.entity;
 
+import de.bytestore.pvheating.handler.CacheHandler;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
@@ -158,5 +159,19 @@ public class ModbusRegister {
         return String.format("%s %s",
                 metadataTools.format(slave),
                 datatypeFormatter.formatInteger(address));
+    }
+
+    /**
+     *
+     */
+    public boolean hasValue() {
+        return getValue(null) != null;
+    }
+
+    /**
+     *
+     */
+    public Object getValue(Object defaultValue) {
+        return CacheHandler.getValueOrDefault("modbus." + getName(), defaultValue);
     }
 }

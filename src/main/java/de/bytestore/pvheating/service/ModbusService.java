@@ -6,10 +6,10 @@ import com.ghgande.j2mod.modbus.facade.ModbusSerialMaster;
 import com.ghgande.j2mod.modbus.procimg.InputRegister;
 import com.ghgande.j2mod.modbus.util.BitVector;
 import com.ghgande.j2mod.modbus.util.SerialParameters;
+import de.bytestore.pvheating.entity.ModbusRegister;
 import de.bytestore.pvheating.entity.ModbusSlave;
-import de.bytestore.pvheating.objects.config.system.SystemConfig;
+import io.jmix.core.DataManager;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
-import static de.bytestore.pvheating.handler.ConfigHandler.config;
 
 
 @Slf4j
@@ -31,13 +29,14 @@ public class ModbusService {
     private static final int DATA_BITS = 8;
     private static final int STOP_BITS = 1;
     private static final int PARITY = 0;
-
-    @Setter
-    @Getter
-    private SystemConfig config;
+    private final DataManager dataManager;
 
     @Getter
     private int fails = 0;
+
+    public ModbusService(DataManager dataManager) {
+        this.dataManager = dataManager;
+    }
 
     // HA Example:
     //    name: sdm72dm
@@ -282,23 +281,6 @@ public class ModbusService {
     }
 
     /**
-     * Returns the port number used for Modbus communication.
-     * <p>
-     * This method retrieves the port number from the configuration object if it exists. If the configuration object,
-     * the power object, or the Modbus object is null, or if the port is not specified in the Modbus object,
-     * it returns the string "Internal Error".
-     * </p>
-     *
-     * @return the port number used for Modbus communication, or the string "Internal Error" if not found or configured incorrectly.
-     */
-    public String getPort() {
-        if(config != null && config.getPower() != null && config.getPower().getModbus() != null)
-            return config.getPower().getModbus().getPort();
-        else
-            return "Internal Error";
-    }
-
-    /**
      * Resets the number of failed attempts to zero.
      */
     public void resetFails() {
@@ -360,4 +342,11 @@ public class ModbusService {
         return slaveAddresses;
     }
 
+
+    /**
+     *
+     */
+    public List<ModbusRegister> getRegisters() {
+        return dataManager.load(ModbusRegister.class).all().list();
+    }
 }

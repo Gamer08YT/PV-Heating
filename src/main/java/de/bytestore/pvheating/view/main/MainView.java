@@ -139,23 +139,23 @@ public class MainView extends StandardMainView {
         // Set Card Color (Working State).
         setWorkingState((Double) CacheHandler.getValueOrDefault("usable-power", 0.00));
 
-        if(modbusService != null) {
-            // Set Modbus Error State.
-            if (modbusService.getFails() >= 3) {
-                ((Span) modbusMaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
-            }
+//        if(modbusService != null) {
+//            // Set Modbus Error State.
+//            if (modbusService.getFails() >= 3) {
+//                ((Span) modbusMaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("modbusMaxAttempts", modbusService.getPort()));
+//            }
+//
+//            modbusMaxAttempts.setVisible(modbusService.getFails() >= 3);
+//        }
 
-            modbusMaxAttempts.setVisible(modbusService.getFails() >= 3);
-        }
-
-        if(service != null) {
-            // Print Error Message for 1Wire.
-            if (service.getWire1fails() >= 3) {
-                ((Span) wire1MaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("wire1MaxAttempts", modbusService.getConfig().getTemperature().getWire1Device()));
-            }
-
-            wire1MaxAttempts.setVisible(service.getWire1fails() >= 3);
-        }
+//        if(service != null) {
+//            // Print Error Message for 1Wire.
+//            if (service.getWire1fails() >= 3) {
+//                ((Span) wire1MaxAttempts.getComponentAt(0)).setText(messageBundle.formatMessage("wire1MaxAttempts", service.getConfig().getTemperature().getWire1Device()));
+//            }
+//
+//            wire1MaxAttempts.setVisible(service.getWire1fails() >= 3);
+//        }
     }
 
     /**

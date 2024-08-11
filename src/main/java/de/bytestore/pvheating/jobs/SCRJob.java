@@ -38,15 +38,21 @@ public class SCRJob implements Job {
             // Calculate Usable Power.
             double usablePower = this.calculateUsablePower((Double) CacheHandler.getValueOrDefault("current-power", (double) 0), config.getPower().getOffsetPower(), config.getPower().getMinPower());
 
-            if (config.getScr().getType().equals(SCRType.PWM)) {
-                Double pwmIO = calculatePWM(usablePower);
+//            if(usablePower > 0 && usablePower > config.getPower().getMinPower()) {
+                if (config.getScr().getType().equals(SCRType.PWM)) {
+                    Double pwmIO = calculatePWM(usablePower);
 
-                // Set PWM Value.
-                service.setPWM(19, pwmIO);
+                    // Set PWM Value.
+                    service.setPWM(19, pwmIO);
 
-                // Set Cache Value for Frontend.
-                CacheHandler.setValue("scr-pwm", pwmIO);
-            }
+                    // Set Cache Value for Frontend.
+                    CacheHandler.setValue("scr-pwm", pwmIO);
+                }
+
+  //          } else {
+                // Set Usable Power to 0 for Stats.
+    //            usablePower = 0;
+    //        }
 
             // Set Cache Value for Frontend.
             CacheHandler.setValue("usable-power", usablePower);
@@ -62,7 +68,7 @@ public class SCRJob implements Job {
     private Double calculatePWM(double usablePower) {
         double maxPWM = config.getScr().getMaxPWM() - config.getScr().getMinPWM();
 
-        return (maxPWM / config.getPower().getMaxPower()) * usablePower;
+        return Math.round(maxPWM / config.getPower().getMaxPower()) * usablePower;
     }
 
     /**
@@ -74,7 +80,7 @@ public class SCRJob implements Job {
      * @return the usable power value
      */
     public static double calculateUsablePower(double currentPower, double offset, double minPower) {
-        if (currentPower < -minPower) {
+        if (currentPower < -(minPower+offset)) {
             // Falls der Stromverbrauch (Einspeisung) kleiner ist als -minPower, berechnen wir usablePower
             return Math.abs(currentPower) - offset;
         } else {

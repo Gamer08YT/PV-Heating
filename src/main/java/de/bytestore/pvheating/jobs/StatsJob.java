@@ -1,13 +1,11 @@
 package de.bytestore.pvheating.jobs;
 
-import de.bytestore.pvheating.entity.Stats;
+import de.bytestore.pvheating.entity.StatsItem;
 import de.bytestore.pvheating.handler.CacheHandler;
-import de.bytestore.pvheating.handler.HAHandler;
+import de.bytestore.pvheating.service.StatsService;
 import io.jmix.core.DataManager;
-import io.jmix.core.querycondition.LogicalCondition;
 import io.jmix.core.querycondition.PropertyCondition;
 import io.jmix.core.security.Authenticated;
-import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -21,6 +19,9 @@ public class StatsJob implements Job {
 
     @Autowired
     private DataManager manager;
+
+    @Autowired
+    private StatsService statsService;
 
 //    @Autowired
 //    private EntityManager entityManager;
@@ -36,14 +37,15 @@ public class StatsJob implements Job {
      * Adds the cache values to the database.
      */
     private void addCache() {
-        if(CacheHandler.getCache() != null) {
-            CacheHandler.getCache().forEach((keyIO, valueIO) -> {
-                Stats statsIO = manager.create(Stats.class);
-                statsIO.setType(keyIO);
-                statsIO.setValue(valueIO.toString());
-
-                manager.save(statsIO);
-            });
+        try {
+            if (CacheHandler.getCache() != null) {
+                CacheHandler.getCache().forEach((keyIO, valueIO) -> {
+                    if (keyIO != null && valueIO != null)
+                        statsService.publish(keyIO, valueIO);
+                });
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
     }
 
@@ -53,7 +55,7 @@ public class StatsJob implements Job {
     private void removeOld() {
         OffsetDateTime dateTime = OffsetDateTime.now().minusDays(30);
 
-        manager.load(Stats.class).condition(PropertyCondition.less("createdDate", dateTime));
+        manager.load(StatsItem.class).condition(PropertyCondition.less("createdDate", dateTime));
     }
 
 }
