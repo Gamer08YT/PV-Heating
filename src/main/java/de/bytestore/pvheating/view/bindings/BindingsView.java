@@ -18,14 +18,17 @@ import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.service.ProviderBeanService;
 import de.bytestore.pvheating.view.main.MainView;
+import io.jmix.flowui.Dialogs;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.virtuallist.JmixVirtualList;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+@Slf4j
 @Route(value = "bindings-view", layout = MainView.class)
 @ViewController("heater_BindingsView")
 @ViewDescriptor("bindings-view.xml")
@@ -49,16 +52,32 @@ public class BindingsView extends StandardView {
     private ProviderBeanService providerBeanService;
     @Autowired
     private MessageBundle messageBundle;
+    @Autowired
+    private Dialogs dialogs;
 
     @Subscribe
     public void onInit(final InitEvent event) {
         //System.out.println(providerService.getChildren());
 
-        //providerItems.setItems();
+        setItems();
         providerSelector.setItems(providerBeanService.getChildren());
         providerValue.setItems(getProviders());
 
         this.setProviderConfig();
+    }
+
+    /**
+     * Sets the items for the providerItems based on the configuration obtained from the ConfigHandler.
+     * If the provider configuration and the list of providers are not null, the providerItems are updated
+     * with the list of providers obtained from the configuration.
+     * <p>
+     * Note: This method relies on the ConfigHandler class to obtain the provider configuration.
+     * If the ConfigHandler class has not been initialized or the provider configuration is not available,
+     * the providerItems will not be updated.
+     */
+    private void setItems() {
+        if (ConfigHandler.getProviderConfig() != null && ConfigHandler.getProviderConfig().getProviders() != null)
+            providerItems.setItems(ConfigHandler.getProviderConfig().getProviders());
     }
 
     /**
@@ -83,22 +102,26 @@ public class BindingsView extends StandardView {
     private void setValueSelector(ProviderTemplate valueIO) {
         ArrayList<Provider> valueProvider = getProviders();
 
-        if (!valueProvider.isEmpty()) {
-            ArrayList<Provider> newItems = new ArrayList<>();
 
-            Set<GPIOType> set = new HashSet<>(Arrays.asList(valueIO.type()));
+        ArrayList<Provider> newItems = new ArrayList<>();
 
-            valueProvider.forEach(provider -> {
-                boolean anyMatch = Arrays.stream(provider.getTypes())
-                        .anyMatch(set::contains);
+        Set<GPIOType> set = new HashSet<>(Arrays.asList(valueIO.type()));
 
-                if (anyMatch) {
-                    newItems.add(provider);
-                }
-            });
+        valueProvider.forEach(provider -> {
+            boolean anyMatch = Arrays.stream(provider.getTypes())
+                    .anyMatch(set::contains);
 
+            if (anyMatch) {
+                newItems.add(provider);
+            }
+        });
+
+        if (!newItems.isEmpty()) {
+            providerValue.setEnabled(true);
+            providerValue.setHelperText("");
             providerValue.setItems(newItems);
         } else {
+            log.info("Disable");
             providerValue.setEnabled(false);
             providerValue.setHelperText(messageBundle.getMessage("noProviderFound"));
         }
@@ -134,8 +157,36 @@ public class BindingsView extends StandardView {
         });
     }
 
-    @Supply(to = "providerValue", subject = "renderer")
+    @Supply(to = "providerItems", subject = "renderer")
     private Renderer<Provider> providerItemsRenderer() {
+        return new ComponentRenderer<>(object -> {
+            HorizontalLayout layoutIO = new HorizontalLayout();
+            layoutIO.setPadding(true);
+            layoutIO.getStyle().setMarginBottom("0.25rem");
+            layoutIO.addClassName("card");
+
+            layoutIO.add(new Span(object.getType()));
+
+            Arrays.stream(object.getTypes()).forEach(gpioType -> {
+                Span badgeIO = new Span(gpioType.name());
+                badgeIO.getElement().getThemeList().add("badge");
+                badgeIO.getElement().getThemeList().add("success");
+
+                layoutIO.add(badgeIO);
+            });
+
+            Span badgeIO = new Span(object.getName());
+            badgeIO.getElement().getThemeList().add("badge");
+            badgeIO.getElement().getThemeList().add("normal");
+
+            layoutIO.add(badgeIO);
+
+            return layoutIO;
+        });
+    }
+
+    @Supply(to = "providerValue", subject = "renderer")
+    private Renderer<Provider> providerValueRenderer() {
         return new ComponentRenderer<>(object -> {
             HorizontalLayout layoutIO = new HorizontalLayout();
             layoutIO.setPadding(true);
@@ -195,10 +246,15 @@ public class BindingsView extends StandardView {
 
     @Subscribe(id = "providerSave", subject = "clickListener")
     public void onProviderSaveClick(final ClickEvent<JmixButton> event) {
-        if (providerSelector.getValue() != null && providerValue.getValue() != null) {
-            ConfigHandler.getProviderConfig().setProvider(providerSelector.getValue().name(), providerValue.getValue());
+        if (providerSelector.getValue() != null && providerValue.getValue() != null && ConfigHandler.getProviderConfig() != null) {
+            ConfigHandler.getProviderConfig().setProvider(providerSelector.getValue().name(), providerValue.getValue(), providerSelector.getValue().name());
             ConfigHandler.saveProvider();
-        }
+
+            log.info("Saved Binding {}.", providerSelector.getValue().name());
+
+            setItems();
+        } else
+            dialogs.createMessageDialog().withText(messageBundle.formatMessage("cantSaveBinding", providerSelector.getValue().name())).open();
     }
 
 }
