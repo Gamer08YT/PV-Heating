@@ -47,6 +47,8 @@ public class BindingsView extends StandardView {
 
     @Autowired
     private ProviderBeanService providerBeanService;
+    @Autowired
+    private MessageBundle messageBundle;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -80,20 +82,26 @@ public class BindingsView extends StandardView {
      */
     private void setValueSelector(ProviderTemplate valueIO) {
         ArrayList<Provider> valueProvider = getProviders();
-        ArrayList<Provider> newItems = new ArrayList<>();
 
-        Set<GPIOType> set = new HashSet<>(Arrays.asList(valueIO.type()));
+        if (!valueProvider.isEmpty()) {
+            ArrayList<Provider> newItems = new ArrayList<>();
 
-        valueProvider.forEach(provider -> {
-            boolean anyMatch = Arrays.stream(provider.getTypes())
-                    .anyMatch(set::contains);
+            Set<GPIOType> set = new HashSet<>(Arrays.asList(valueIO.type()));
 
-            if(anyMatch) {
-                newItems.add(provider);
-            }
-        });
+            valueProvider.forEach(provider -> {
+                boolean anyMatch = Arrays.stream(provider.getTypes())
+                        .anyMatch(set::contains);
 
-        providerValue.setItems(newItems);
+                if (anyMatch) {
+                    newItems.add(provider);
+                }
+            });
+
+            providerValue.setItems(newItems);
+        } else {
+            providerValue.setEnabled(false);
+            providerValue.setHelperText(messageBundle.getMessage("noProviderFound"));
+        }
     }
 
 
@@ -168,7 +176,7 @@ public class BindingsView extends StandardView {
         });
 
         // Add 1 Wire provider.
-        if(pi4JService.getWire1fails() < 3) {
+        if (pi4JService.getWire1fails() < 3) {
             pi4JService.get1WireDevices().forEach(deviceItem -> {
                 providersIO.add(new Provider(deviceItem, "wire1", new GPIOType[]{
                         GPIOType.WIRE1
@@ -187,7 +195,7 @@ public class BindingsView extends StandardView {
 
     @Subscribe(id = "providerSave", subject = "clickListener")
     public void onProviderSaveClick(final ClickEvent<JmixButton> event) {
-        if(providerSelector.getValue() != null && providerValue.getValue() != null) {
+        if (providerSelector.getValue() != null && providerValue.getValue() != null) {
             ConfigHandler.getProviderConfig().setProvider(providerSelector.getValue().name(), providerValue.getValue());
             ConfigHandler.saveProvider();
         }
