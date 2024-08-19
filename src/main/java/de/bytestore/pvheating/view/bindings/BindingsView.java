@@ -187,8 +187,10 @@ public class BindingsView extends StandardView {
 
     @Subscribe(id = "providerSave", subject = "clickListener")
     public void onProviderSaveClick(final ClickEvent<JmixButton> event) {
-        ConfigHandler.getProviderConfig().setProvider(providerSelector.getValue().name(), providerValue.getValue());
-        ConfigHandler.saveProvider();
+        if(providerSelector.getValue() != null && providerValue.getValue() != null) {
+            ConfigHandler.getProviderConfig().setProvider(providerSelector.getValue().name(), providerValue.getValue());
+            ConfigHandler.saveProvider();
+        }
     }
 
 }
