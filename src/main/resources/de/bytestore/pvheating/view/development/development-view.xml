@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://developmentView.title">
+    <layout>
+        <hbox>
+            <vbox id="valuesBox" width="100%" classNames="card">
+
+            </vbox>
+
+            <hbox spacing="false">
+                <checkbox id="enable" label="Enable SCR"/>
+                <button id="resetError" text="Reset Error" icon="REFRESH"/>
+            </hbox>
+        </hbox>
+
+        <vbox classNames="card" spacing="false" padding="true">
+            <vbox spacing="false" padding="false" width="100%">
+                <span text="Usable Power -10kW to 10kW"/>
+                <rangeInput width="100%" id="usablePower" min="-10000" max="10000" valueChangeMode="EAGER"/>
+            </vbox>
+            <numberField min="-10000" max="10000" id="usablePowerInput" value="0" label="Power" stepButtonsVisible="true"
+                         valueChangeMode="EAGER"/>
+        </vbox>
+    </layout>
+</view>
