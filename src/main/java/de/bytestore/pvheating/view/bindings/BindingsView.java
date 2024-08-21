@@ -10,6 +10,7 @@ import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.entity.GPIOChannelType;
 import de.bytestore.pvheating.entity.GPIOType;
+import de.bytestore.pvheating.entity.HomeAssistantStates;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.handler.GPIOHandler;
 import de.bytestore.pvheating.handler.templates.ProviderTemplate;
@@ -18,6 +19,7 @@ import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.service.ProviderBeanService;
 import de.bytestore.pvheating.view.main.MainView;
+import io.jmix.core.DataManager;
 import io.jmix.flowui.Dialogs;
 import io.jmix.flowui.component.combobox.JmixComboBox;
 import io.jmix.flowui.component.virtuallist.JmixVirtualList;
@@ -54,6 +56,8 @@ public class BindingsView extends StandardView {
     private MessageBundle messageBundle;
     @Autowired
     private Dialogs dialogs;
+    @Autowired
+    private DataManager dataManager;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -240,6 +244,13 @@ public class BindingsView extends StandardView {
                     GPIOType.MODBUS
             }));
         });
+
+        dataManager.load(HomeAssistantStates.class).all().list().forEach(homeAssistantStates -> {
+            providersIO.add(new Provider(homeAssistantStates.getName(), "homeasssistant", new GPIOType[]{
+                    GPIOType.HOMEASSISTANT
+            }));
+        });
+
 
         return providersIO;
     }

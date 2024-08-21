@@ -36,14 +36,14 @@ public class SCRJob implements Job {
     private void handlePower() {
         if(config != null && config.getPower() != null) {
             // Calculate Usable Power.
-            double usablePower = this.calculateUsablePower((Double) CacheHandler.getValueOrDefault("current-power", (double) 0), config.getPower().getOffsetPower(), config.getPower().getMinPower());
+            double usablePower = calculateUsablePower((Double) CacheHandler.getValueOrDefault("current-power", (double) 0), config.getPower().getOffsetPower(), config.getPower().getMinPower());
 
 //            if(usablePower > 0 && usablePower > config.getPower().getMinPower()) {
                 if (config.getScr().getType().equals(SCRType.PWM)) {
                     Double pwmIO = calculatePWM(usablePower);
 
                     // Set PWM Value.
-                    service.setPWM(19, pwmIO);
+                    service.setPWM(13, pwmIO);
 
                     // Set Cache Value for Frontend.
                     CacheHandler.setValue("scr-pwm", pwmIO);

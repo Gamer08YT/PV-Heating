@@ -2,6 +2,7 @@ package de.bytestore.pvheating.jobs;
 
 import de.bytestore.pvheating.entity.StatsItem;
 import de.bytestore.pvheating.handler.CacheHandler;
+import de.bytestore.pvheating.handler.CalcHandler;
 import de.bytestore.pvheating.service.StatsService;
 import io.jmix.core.DataManager;
 import io.jmix.core.querycondition.PropertyCondition;
@@ -29,8 +30,14 @@ public class StatsJob implements Job {
     @Authenticated
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        this.calc();
         this.addCache();
         this.removeOld();
+    }
+
+
+    private void calc() {
+        CacheHandler.setValue("heating.time.needed", CalcHandler.calcTime((Double) CacheHandler.getValueOrDefault("temperature", 0.00), (Double) CacheHandler.getValueOrDefault("heater-power", 0.00)));
     }
 
     /**
@@ -40,8 +47,9 @@ public class StatsJob implements Job {
         try {
             if (CacheHandler.getCache() != null) {
                 CacheHandler.getCache().forEach((keyIO, valueIO) -> {
-                    if (keyIO != null && valueIO != null)
-                        statsService.publish(keyIO, valueIO);
+                    if (!keyIO.startsWith("dev") && !keyIO.startsWith("homeassistant") && !keyIO.startsWith("modbus") && !keyIO.startsWith("gpio") && !keyIO.startsWith("1wire"))
+                        if (keyIO != null && valueIO != null)
+                            statsService.publish(keyIO, valueIO);
                 });
             }
         } catch (Exception e) {

@@ -88,9 +88,9 @@ bootBuildImage {
     publish = false
 }
 
-java {
-    // Set Java version to 17
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
+//java {
+//    // Set Java version to 17
+//    toolchain {
+//        languageVersion = JavaLanguageVersion.of(17)
+//    }
+//}

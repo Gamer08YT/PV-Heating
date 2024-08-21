@@ -41,7 +41,7 @@ public class SystemJob implements Job {
 
         // Read Flow Sensor.
         this.readFlowSensor();
-        
+
         // Read Temperature Sensor.
         this.readTemperatureSensor();
     }
@@ -52,7 +52,7 @@ public class SystemJob implements Job {
      * value is read from the sensor and stored in the cache with the key "temperature".
      */
     private void readTemperatureSensor() {
-        if(config != null) {
+        if (config != null) {
             if (config.getTemperature().getSensorType().equals(SensorType.DS18B20)) {
                 CacheHandler.setValue("temperature", service.readDS18B20(config.getTemperature().getWire1Device()));
             }
@@ -99,7 +99,7 @@ public class SystemJob implements Job {
 
     /**
      * Handles communication with the Home Assistant system.
-     *
+     * <p>
      * This method retrieves the current power sensor state from the Home Assistant system and caches it if available.
      * If the power state is available, it is stored in the cache with the key "current-power".
      */
@@ -107,7 +107,7 @@ public class SystemJob implements Job {
         JsonObject powerIO = HAHandler.getSensorState("sensor.derzeitige_wirkleistung");
 
         // Check if Power is available.
-        if(powerIO.has("state")) {
+        if (powerIO.has("state") && (CacheHandler.getValueOrDefault("devPowerOverride", false).equals(false))) {
             CacheHandler.setValue("current-power", powerIO.get("state").getAsDouble());
         }
     }

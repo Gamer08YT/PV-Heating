@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 @Data
 public class ProviderConfig {
-    private ArrayList< Provider> providers = new ArrayList<>();
+    private ArrayList<Provider> providers = new ArrayList<>();
 
     /**
      * Retrieves the provider with the specified name.
@@ -18,7 +18,7 @@ public class ProviderConfig {
      */
     public static Provider getProvider(String nameIO) {
         for (Provider provider : ConfigHandler.getProviderConfig().getProviders()) {
-            if (provider.getName().equals(nameIO))
+            if (provider != null && provider.getType().equals(nameIO))
                 return provider;
         }
 
@@ -29,16 +29,19 @@ public class ProviderConfig {
      * Sets the provider configuration by adding or updating a provider with the specified name and configuration.
      * If a provider with the same name already exists, it will be updated with the new configuration. If not, a new provider will be added.
      *
-     * @param nameIO           the name of the provider
-     * @param configurationIO  the configuration of the provider
+     * @param nameIO          the name of the provider
+     * @param configurationIO the configuration of the provider
+     * @param name
      */
-    public void setProvider(String nameIO, Provider configurationIO) {
-        Provider providerIO = getProvider(nameIO);
+    public void setProvider(String nameIO, Provider configurationIO, String name) {
+        Provider providerIO = getProvider(name);
 
-        if(providers.contains(providerIO))
+        if (providerIO != null)
             providers.remove(providerIO);
 
-        providers.add(providerIO);
+        configurationIO.setType(name);
+
+        providers.add(configurationIO);
     }
 
 

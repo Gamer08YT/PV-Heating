@@ -11,7 +11,8 @@ public enum GPIOType implements EnumClass<Integer> {
     DIGITAL(20),
     PWM(30),
     MODBUS(40),
-    WIRE1(50);
+    WIRE1(50),
+    HOMEASSISTANT(60);
 
     private final Integer id;
 

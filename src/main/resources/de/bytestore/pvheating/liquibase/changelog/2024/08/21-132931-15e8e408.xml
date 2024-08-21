@@ -6,11 +6,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
         objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
     <changeSet id="1" author="heater">
-        <dropForeignKeyConstraint baseTableName="HEATER_STATS_ITEM" constraintName="FK_HEATER_STATS_ITEM_ON_STATS"/>
-    </changeSet>
-    <changeSet id="2" author="heater">
-        <addForeignKeyConstraint baseColumnNames="STATS_ID" baseTableName="HEATER_STATS_ITEM"
-                                 constraintName="FK_HEATER_STATS_ITEM_ON_STATS" onDelete="CASCADE"
-                                 referencedColumnNames="ID" referencedTableName="HEATER_STATS"/>
+        <addNotNullConstraint columnDataType="UUID" columnName="SLAVE_ID" tableName="HEATER_MODBUS_REGISTER"
+                              validate="true"/>
     </changeSet>
 </databaseChangeLog>

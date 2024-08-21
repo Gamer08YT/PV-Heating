@@ -10,6 +10,7 @@ import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.core.metamodel.datatype.DatatypeFormatter;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 @JmixEntity
 @Table(name = "HEATER_MODBUS_REGISTER", indexes = {
-        @Index(name = "IDX_HEATER_MODBUS_REGISTER_SLAVE", columnList = "SLAVE_ID")
+        @Index(name = "IDX_HEATER_MODBUS_REGISTER_SLAVE", columnList = "ID")
 })
 @Entity(name = "heater_ModbusRegister")
 public class ModbusRegister {
@@ -45,8 +46,9 @@ public class ModbusRegister {
     private String type = "float32";
 
     @OnDeleteInverse(DeletePolicy.CASCADE)
-    @JoinColumn(name = "SLAVE_ID")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    @JoinColumn(name = "SLAVE_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private ModbusSlave slave;
 
     @CreatedBy

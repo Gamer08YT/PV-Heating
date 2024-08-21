@@ -14,7 +14,7 @@ public class TemperatureInTemplate extends ProviderTemplate {
 
     @Override
     public GPIOType[] type() {
-        return new GPIOType[] {GPIOType.ANALOG, GPIOType.MODBUS, GPIOType.WIRE1};
+        return new GPIOType[]{GPIOType.ANALOG, GPIOType.MODBUS, GPIOType.WIRE1, GPIOType.HOMEASSISTANT};
     }
 
     @Override

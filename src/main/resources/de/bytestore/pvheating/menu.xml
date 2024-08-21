@@ -4,15 +4,6 @@
     <menu opened="true" id="application" title="msg://de.bytestore.pvheating/menu.application.title"
           icon="vaadin:dashboard">
         <item view="heater_StatsView" icon="vaadin:spline-chart" title="msg://de.bytestore.pvheating.view.stats/statsView.title"/>
-        <item view="heater_BindingsView" title="msg://de.bytestore.pvheating.view.bindings/bindingsView.title" icon="vaadin:warning"/>
-        <item view="heater_ModbusSlave.list" icon="vaadin:bus"
-              title="msg://de.bytestore.pvheating.view.modbusslave/modbusSlaveListView.title"/>
-        <item view="heater_ModbusRegister.list" icon="vaadin:bus"
-              title="msg://de.bytestore.pvheating.view.modbusregister/modbusRegisterListView.title"/>
-        <item view="heater_HomeAssistantStates.list" icon="vaadin:home"
-              title="msg://de.bytestore.pvheating.view.homeassistantstates/homeAssistantStatesListView.title"/>
-        <item view="heater_DevelopmentView"
-              title="msg://de.bytestore.pvheating.view.development/developmentView.title"/>
     </menu>
     <menu id="security" title="msg://de.bytestore.pvheating/menu.user.title" icon="vaadin:users">
         <item view="heater_User.list" title="msg://de.bytestore.pvheating.view.user/UserListView.title"
@@ -26,6 +17,15 @@
         <item view="datatl_entityInspectorListView" title="msg://io.jmix.datatoolsflowui.view.entityinspector/listTitle"
               icon="vaadin:database"/>
         <item view="quartz_JobModel.list" icon="lumo:clock" title="msg://io.jmix.quartzflowui.view.jobs/jobModelListView.menu"/>
+        <item view="heater_BindingsView" title="msg://de.bytestore.pvheating.view.bindings/bindingsView.title" icon="vaadin:warning"/>
+        <item view="heater_ModbusSlave.list" icon="vaadin:bus"
+              title="msg://de.bytestore.pvheating.view.modbusslave/modbusSlaveListView.title"/>
+        <item view="heater_ModbusRegister.list" icon="vaadin:bus"
+              title="msg://de.bytestore.pvheating.view.modbusregister/modbusRegisterListView.title"/>
+        <item view="heater_HomeAssistantStates.list" icon="vaadin:home"
+              title="msg://de.bytestore.pvheating.view.homeassistantstates/homeAssistantStatesListView.title"/>
+        <item icon="vaadin:code" view="heater_DevelopmentView"
+              title="msg://de.bytestore.pvheating.view.development/developmentView.title"/>
         <item view="heater_SettingsView" title="msg://de.bytestore.pvheating.view.settings/settingsView.title"
               icon="vaadin:wrench"/>
     </menu>

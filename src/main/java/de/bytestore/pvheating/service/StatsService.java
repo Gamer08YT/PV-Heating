@@ -56,4 +56,13 @@ public class StatsService {
     public List<StatsItem> getByType(String keyIO) {
         return this.getParent(keyIO).getValues();
     }
+
+    /**
+     * Retrieves all Stats entities from the data manager.
+     *
+     * @return ArrayList of Stats objects containing all the retrieved entities.
+     */
+    public List<Stats> getAll() {
+        return (List<Stats>) dataManager.load(Stats.class).all().list();
+    }
 }

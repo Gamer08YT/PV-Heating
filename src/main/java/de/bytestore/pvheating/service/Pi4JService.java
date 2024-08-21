@@ -43,7 +43,7 @@ public class Pi4JService {
     /**
      * Sets the state of a pin based on the given pin number and state.
      *
-     * @param pinIO The pin number to set the state for.
+     * @param pinIO   The pin number to set the state for.
      * @param stateIO The state to set for the pin (true for HIGH, false for LOW).
      */
     public void setPinState(int pinIO, boolean stateIO) {
@@ -85,12 +85,12 @@ public class Pi4JService {
      *
      * @param deviceIO The name of the 1-Wire device folder containing the DS18B20 sensor.
      * @return The temperature value in Celsius read from the DS18B20 sensor.
-     *         Returns -1 if there was an error reading the temperature.
+     * Returns -1 if there was an error reading the temperature.
      */
     public double readDS18B20(String deviceIO) {
         List<String> lines = get1Wire(deviceIO, "w1_slave");
 
-        if(lines.size() > 0) {
+        if (lines.size() > 0) {
             if (lines.get(0).contains("YES")) {
 
                 if (lines.get(0).contains("YES")) {
@@ -115,12 +115,12 @@ public class Pi4JService {
      * Retrieves the contents of a specified 1-Wire file.
      *
      * @param deviceIO The name of the 1-Wire device folder.
-     * @param dirIO The name of the 1-Wire file within the device folder.
+     * @param dirIO    The name of the 1-Wire file within the device folder.
      * @return A list of strings representing the contents of the specified 1-Wire file.
      * @throws RuntimeException if an I/O error occurs while reading the file.
      */
     public List<String> get1Wire(String deviceIO, String dirIO) {
-        if(wire1fails < 3) {
+        if (wire1fails < 3) {
             try {
                 return Files.readAllLines(new File(W1_DEVICE_FOLDER + deviceIO + "/" + dirIO).toPath());
             } catch (IOException e) {
@@ -161,15 +161,15 @@ public class Pi4JService {
         Pwm pwmConfig = null;
 
         if (!Pi4JService.provider.containsKey(pinIO)) {
-            pwmConfig = pi4jContext.create(Pwm.newConfigBuilder(pi4jContext).pwmType(PwmType.SOFTWARE).initial(0).shutdown(0).address(pinIO).build()) ;
+            pwmConfig = pi4jContext.create(Pwm.newConfigBuilder(pi4jContext).pwmType(PwmType.SOFTWARE).initial(0).shutdown(0).address(pinIO).build());
 
             // Put Provider to Cache.
             Pi4JService.provider.put(pinIO, pwmConfig);
         } else
             pwmConfig = (Pwm) Pi4JService.provider.get(pinIO);
 
-        if(value > 0)
-            pwmConfig.on(value);
+        if (value > 0)
+            pwmConfig.on(50, value.intValue());
         else
             pwmConfig.off();
     }
@@ -196,12 +196,12 @@ public class Pi4JService {
 
     /**
      * Resets the number of failed attempts to read a specified 1-Wire file.
-     *
+     * <p>
      * This method sets the wire1fails variable to 0, indicating that the subsequent read attempts for the
      * specified 1-Wire file should not be counted as failures.
-     *
+     * <p>
      * Additionally, this method logs an informational message indicating that the failed attempts are being reset.
-     *
+     * <p>
      * This method does not return a value.
      */
     public void resetFails() {

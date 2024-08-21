@@ -14,7 +14,7 @@ public class CurrentPowerTemplate extends ProviderTemplate {
 
     @Override
     public GPIOType[] type() {
-        return new GPIOType[] {GPIOType.MODBUS};
+        return new GPIOType[]{GPIOType.MODBUS, GPIOType.HOMEASSISTANT};
     }
 
     @Override
