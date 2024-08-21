@@ -1,16 +1,12 @@
 package de.bytestore.pvheating.entity;
 
-import de.bytestore.pvheating.handler.CacheHandler;
-import io.jmix.core.DeletePolicy;
 import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
-import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.DependsOnProperties;
 import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import io.jmix.core.metamodel.datatype.DatatypeFormatter;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -20,9 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @JmixEntity
-@Table(name = "HEATER_MODBUS_REGISTER", indexes = {
-        @Index(name = "IDX_HEATER_MODBUS_REGISTER_SLAVE", columnList = "ID")
-})
+@Table(name = "HEATER_MODBUS_REGISTER")
 @Entity(name = "heater_ModbusRegister")
 public class ModbusRegister {
     @JmixGeneratedValue
@@ -30,14 +24,14 @@ public class ModbusRegister {
     @Id
     private UUID id;
 
+    @Column(name = "NAME")
+    private String name;
+
     @Column(name = "SELECT_")
     private Integer select = 1;
 
     @Column(name = "REFRESH_DELAY")
     private Integer refreshDelay;
-
-    @Column(name = "NAME")
-    private String name;
 
     @Column(name = "ADDRESS")
     private Integer address;
@@ -45,10 +39,8 @@ public class ModbusRegister {
     @Column(name = "TYPE_")
     private String type = "float32";
 
-    @OnDeleteInverse(DeletePolicy.CASCADE)
-    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "SLAVE_ID", nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private ModbusSlave slave;
 
     @CreatedBy
@@ -67,6 +59,24 @@ public class ModbusRegister {
     @Column(name = "LAST_MODIFIED_DATE")
     private OffsetDateTime lastModifiedDate;
 
+    // Getters and setters for all fields
+
+    public ModbusSlave getSlave() {
+        return slave;
+    }
+
+    public void setSlave(ModbusSlave slave) {
+        this.slave = slave;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Integer getSelect() {
         return select;
     }
@@ -83,20 +93,12 @@ public class ModbusRegister {
         this.refreshDelay = refreshDelay;
     }
 
-    public String getName() {
-        return name;
+    public Integer getAddress() {
+        return address;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ModbusSlave getSlave() {
-        return slave;
-    }
-
-    public void setSlave(ModbusSlave slave) {
-        this.slave = slave;
+    public void setAddress(Integer address) {
+        this.address = address;
     }
 
     public String getType() {
@@ -105,14 +107,6 @@ public class ModbusRegister {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public Integer getAddress() {
-        return address;
-    }
-
-    public void setAddress(Integer address) {
-        this.address = address;
     }
 
     public OffsetDateTime getLastModifiedDate() {
@@ -156,24 +150,8 @@ public class ModbusRegister {
     }
 
     @InstanceName
-    @DependsOnProperties({"slave", "address"})
-    public String getInstanceName(MetadataTools metadataTools, DatatypeFormatter datatypeFormatter) {
-        return String.format("%s %s",
-                metadataTools.format(slave),
-                datatypeFormatter.formatInteger(address));
-    }
-
-    /**
-     *
-     */
-    public boolean hasValue() {
-        return getValue(null) != null;
-    }
-
-    /**
-     *
-     */
-    public Object getValue(Object defaultValue) {
-        return CacheHandler.getValueOrDefault("modbus." + getName(), defaultValue);
+    @DependsOnProperties({"name", "address"})
+    public String getInstanceName(MetadataTools metadataTools) {
+        return String.format("%s (%d)", name, address);
     }
 }

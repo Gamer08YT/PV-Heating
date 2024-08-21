@@ -13,6 +13,11 @@
             </hbox>
         </hbox>
 
+        <vbox>
+            <progressBar id="calibrationProgress" value="0"/>
+            <button id="calibrationBtn" text="Calibrate" icon="ABACUS"/>
+        </vbox>
+
         <vbox classNames="card" spacing="false" padding="true">
             <vbox spacing="false" padding="false" width="100%">
                 <span text="Usable Power -10kW to 10kW"/>

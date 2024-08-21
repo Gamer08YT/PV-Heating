@@ -3,15 +3,22 @@ package de.bytestore.pvheating.view.development;
 
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.html.RangeInput;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.router.Route;
+import de.bytestore.pvheating.entity.ModbusSlave;
 import de.bytestore.pvheating.handler.CacheHandler;
+import de.bytestore.pvheating.handler.ConfigHandler;
+import de.bytestore.pvheating.service.ModbusService;
+import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.service.StatsService;
 import de.bytestore.pvheating.view.main.MainView;
 import io.jmix.flowui.component.textfield.JmixNumberField;
+import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +47,12 @@ public class DevelopmentView extends StandardView {
     private RangeInput usablePower;
     @ViewComponent
     private JmixNumberField usablePowerInput;
+    private ModbusService modbusService;
+    @Autowired
+    private Pi4JService pi4JService;
+    @ViewComponent
+    private ProgressBar calibrationProgress;
+
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -56,6 +69,83 @@ public class DevelopmentView extends StandardView {
         });
 
         usablePower.setValue(0.0);
+    }
+
+    @Subscribe(id = "calibrationBtn", subject = "clickListener")
+    public void onCalibrationBtnClick(final ClickEvent<JmixButton> event) {
+
+    }
+
+    public void calibrate() {
+        int MAX_PWM_FREQUENCY = Double.valueOf(ConfigHandler.getCached().getScr().getMaxPWM()).intValue();
+        int PWM_STEP = 100;
+        int PAUSE_DURATION = 10;
+
+        int[] pwmValues = new int[MAX_PWM_FREQUENCY / PWM_STEP];
+        double[] powerValues = new double[MAX_PWM_FREQUENCY / PWM_STEP];
+
+        calibrationProgress.setMax(MAX_PWM_FREQUENCY);
+        calibrationProgress.setValue(0);
+
+        int index = 0;
+
+        for (int frequency = 0; frequency <= MAX_PWM_FREQUENCY; frequency += PWM_STEP) {
+            // Setze die PWM-Frequenz
+            pi4JService.setPWM(13, Double.valueOf(frequency));
+
+            // Warte kurz, um das System stabilisieren zu lassen
+            try {
+                Thread.sleep(PAUSE_DURATION);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // Dummy-Aufruf der Methode, die die Leistung misst
+            double power = getPower();
+
+            CacheHandler.setValue("scr-power", power);
+
+            // Werte speichern
+            pwmValues[index] = frequency;
+            powerValues[index] = power;
+
+            index++;
+
+            calibrationProgress.setValue(frequency);
+        }
+
+        // Berechne den Kalibrierungsfaktor
+        calculateCalibrationFactor(pwmValues, powerValues);
+    }
+
+    /**
+     * Calculates and returns the power value from a connected device.
+     *
+     * @return The power value as a double.
+     */
+    private double getPower() {
+        ModbusSlave slaveIO = new ModbusSlave();
+        slaveIO.setBaud(9600);
+        slaveIO.setDataBits(8);
+        slaveIO.setStopBits(1);
+        slaveIO.setParity(0);
+        slaveIO.setPort("/dev/ttyUSB0");
+
+        return ((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue();
+    }
+
+
+    private void calculateCalibrationFactor(int[] pwmValues, double[] powerValues) {
+        double totalPwm = 0;
+        double totalPower = 0;
+
+        for (int i = 0; i < pwmValues.length; i++) {
+            totalPwm += pwmValues[i];
+            totalPower += powerValues[i];
+        }
+
+        double calibrationFactor = totalPower / totalPwm;
+        System.out.println("Kalibrierungsfaktor (1 W = X PWM): " + calibrationFactor);
     }
 
     /**
@@ -95,8 +185,8 @@ public class DevelopmentView extends StandardView {
      * Handles the power update with the given value and inputIO flag.
      * This method updates the usable power value and stores the current power value in the cache.
      *
-     * @param value    the new power value
-     * @param inputIO  a flag indicating whether the power update is from input or output
+     * @param value   the new power value
+     * @param inputIO a flag indicating whether the power update is from input or output
      */
     private void handlePowerUpdate(Double value, boolean inputIO) {
         log.info("Set Usable Power to {}.", value);
