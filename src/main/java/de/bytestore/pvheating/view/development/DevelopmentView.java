@@ -140,7 +140,7 @@ public class DevelopmentView extends StandardView {
             double PWM_STEP = 0.5;
             int PAUSE_DURATION = 500;
 
-            int arraySize = (int) (MAX_PWM_FREQUENCY / PWM_STEP);
+            int arraySize = (int) (MAX_PWM_FREQUENCY / PWM_STEP) + 1;
             double[] pwmValues = new double[arraySize];
             double[] powerValues = new double[arraySize];
 
