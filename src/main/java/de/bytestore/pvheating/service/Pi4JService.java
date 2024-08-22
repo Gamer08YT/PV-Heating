@@ -158,6 +158,23 @@ public class Pi4JService {
      * @param value The PWM value to be set. A positive value turns the pin on, while a negative value turns it off.
      */
     public void setPWM(int pinIO, Double value) {
+        Pwm pwmConfig = getPWM(pinIO);
+
+        if (value > 0)
+            pwmConfig.on(60, value.intValue());
+        else
+            pwmConfig.off();
+    }
+
+    /**
+     * Retrieves the PWM configuration for the specified pin. If the configuration is not found in the provider cache,
+     * it creates a new configuration using the pi4jContext and adds it to the cache. If the configuration is already
+     * present in the cache, it retrieves it from the cache and returns it.
+     *
+     * @param pinIO The pin number for which the PWM configuration is required.
+     * @return The PWM configuration for the specified pin.
+     */
+    public Pwm getPWM(int pinIO) {
         Pwm pwmConfig = null;
 
         if (!Pi4JService.provider.containsKey(pinIO)) {
@@ -168,10 +185,7 @@ public class Pi4JService {
         } else
             pwmConfig = (Pwm) Pi4JService.provider.get(pinIO);
 
-        if (value > 0)
-            pwmConfig.on(50, value.intValue());
-        else
-            pwmConfig.off();
+        return pwmConfig;
     }
 
 

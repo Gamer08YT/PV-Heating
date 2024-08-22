@@ -17,6 +17,11 @@ import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.service.StatsService;
 import de.bytestore.pvheating.view.main.MainView;
+import io.jmix.flowui.Dialogs;
+import io.jmix.flowui.Notifications;
+import io.jmix.flowui.backgroundtask.BackgroundTask;
+import io.jmix.flowui.backgroundtask.BackgroundWorker;
+import io.jmix.flowui.backgroundtask.TaskLifeCycle;
 import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
@@ -27,6 +32,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Route(value = "development-view", layout = MainView.class)
@@ -47,11 +53,26 @@ public class DevelopmentView extends StandardView {
     private RangeInput usablePower;
     @ViewComponent
     private JmixNumberField usablePowerInput;
+
+    @Autowired
     private ModbusService modbusService;
+
     @Autowired
     private Pi4JService pi4JService;
     @ViewComponent
     private ProgressBar calibrationProgress;
+    @ViewComponent
+    private Span currentPower;
+    @ViewComponent
+    private Span currentPWM;
+    @Autowired
+    private BackgroundWorker backgroundWorker;
+    @Autowired
+    private Dialogs dialogs;
+    @Autowired
+    private Notifications notifications;
+    @ViewComponent
+    private Span factor;
 
 
     @Subscribe
@@ -73,49 +94,108 @@ public class DevelopmentView extends StandardView {
 
     @Subscribe(id = "calibrationBtn", subject = "clickListener")
     public void onCalibrationBtnClick(final ClickEvent<JmixButton> event) {
+        backgroundWorker.handle(new BackgroundTask<Object, Object>(TimeUnit.MINUTES.toSeconds(1)) {
+            @Override
+            public Object run(TaskLifeCycle<Object> taskLifeCycle) throws Exception {
+                calibrate();
+
+                return null;
+            }
+        }).execute();
 
     }
 
+    /**
+     * This method is used to calibrate the system.
+     * It sets the "devCalibration" cache value to true.
+     * It logs the start of the calibration process.
+     * <p>
+     * It gets the maximum PWM frequency and PWM step from the configuration.
+     * It also gets the pause duration for stabilization.
+     * <p>
+     * It initializes arrays to store the PWM values and power values.
+     * <p>
+     * It sets the maximum value of the calibration progress and initializes it to 0.
+     * <p>
+     * It iterates from 0 to the maximum PWM frequency with the specified PWM step.
+     * In each iteration, it sets the PWM frequency using the pi4JService.
+     * It waits for a short duration to let the system stabilize.
+     * It retrieves the power value using the getPower() method.
+     * It updates the user interface with the current power and PWM frequency values.
+     * It saves the power value in the cache.
+     * It saves the PWM and power values in the corresponding arrays.
+     * It updates the calibration progress.
+     * <p>
+     * After the iteration is complete, it calculates the calibration factor using the stored PWM and power values.
+     */
     public void calibrate() {
-        int MAX_PWM_FREQUENCY = Double.valueOf(ConfigHandler.getCached().getScr().getMaxPWM()).intValue();
-        int PWM_STEP = 100;
-        int PAUSE_DURATION = 10;
+        try {
+            CacheHandler.setValue("devCalibration", true);
 
-        int[] pwmValues = new int[MAX_PWM_FREQUENCY / PWM_STEP];
-        double[] powerValues = new double[MAX_PWM_FREQUENCY / PWM_STEP];
+            pi4JService.getPWM(13).frequency(Double.valueOf(ConfigHandler.getCached().getScr().getMaxPWM()).intValue());
 
-        calibrationProgress.setMax(MAX_PWM_FREQUENCY);
-        calibrationProgress.setValue(0);
+            log.info("Starting Calibration Process.");
 
-        int index = 0;
+            double MAX_PWM_FREQUENCY = 100;//Double.valueOf(ConfigHandler.getCached().getScr().getMaxPWM()).intValue();
+            double PWM_STEP = 0.5;
+            int PAUSE_DURATION = 500;
 
-        for (int frequency = 0; frequency <= MAX_PWM_FREQUENCY; frequency += PWM_STEP) {
-            // Setze die PWM-Frequenz
-            pi4JService.setPWM(13, Double.valueOf(frequency));
+            int arraySize = (int) (MAX_PWM_FREQUENCY / PWM_STEP);
+            double[] pwmValues = new double[arraySize];
+            double[] powerValues = new double[arraySize];
 
-            // Warte kurz, um das System stabilisieren zu lassen
-            try {
-                Thread.sleep(PAUSE_DURATION);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            calibrationProgress.setMax(MAX_PWM_FREQUENCY);
+            calibrationProgress.setValue(0);
+
+            int index = 0;
+
+            for (double frequency = 0; frequency <= MAX_PWM_FREQUENCY; frequency += PWM_STEP) {
+                log.debug("Current frequency: " + frequency + " / Max frequency: " + MAX_PWM_FREQUENCY);
+
+                // Setze die PWM-Frequenz
+                pi4JService.getPWM(13).on(frequency);
+
+                // Warte kurz, um das System stabilisieren zu lassen
+                try {
+                    Thread.sleep(PAUSE_DURATION);
+                } catch (InterruptedException e) {
+                    log.error("Error", e);
+                }
+
+                // Dummy-Aufruf der Methode, die die Leistung misst
+                Double power = getPower();
+
+                // Set Span Text.
+                double finalFrequency = frequency;
+
+                getUI().ifPresent(ui -> ui.access(() -> {
+                    currentPower.setText(power.intValue() + " W");
+                    currentPWM.setText(finalFrequency + " %");
+                }));
+
+                CacheHandler.setValue("scr-power", power);
+
+                // Werte speichern
+                pwmValues[index] = frequency;
+                powerValues[index] = power;
+
+                index++;
+
+                calibrationProgress.setValue(frequency);
             }
+            log.info("Calibration Process finished.");
 
-            // Dummy-Aufruf der Methode, die die Leistung misst
-            double power = getPower();
+            // Shutdown SCR.
+            pi4JService.setPWM(13, 0.00);
 
-            CacheHandler.setValue("scr-power", power);
+            // Calculate Calibration Factor.
+            calculateCalibrationFactor(pwmValues, powerValues);
+        } catch (Exception exceptionIO) {
+            // Shutdown SCR.
+            pi4JService.setPWM(13, 0.00);
 
-            // Werte speichern
-            pwmValues[index] = frequency;
-            powerValues[index] = power;
-
-            index++;
-
-            calibrationProgress.setValue(frequency);
+            log.error("Calibration Error", exceptionIO);
         }
-
-        // Berechne den Kalibrierungsfaktor
-        calculateCalibrationFactor(pwmValues, powerValues);
     }
 
     /**
@@ -135,7 +215,16 @@ public class DevelopmentView extends StandardView {
     }
 
 
-    private void calculateCalibrationFactor(int[] pwmValues, double[] powerValues) {
+    /**
+     * Calculates the calibration factor based on the given arrays of PWM values and power values.
+     *
+     * @param pwmValues   the array of PWM values
+     * @param powerValues the array of power values
+     * @throws NullPointerException if pwmValues or powerValues is null
+     */
+    private void calculateCalibrationFactor(double[] pwmValues, double[] powerValues) {
+        log.info("Calculating Calibration Factor.");
+
         double totalPwm = 0;
         double totalPower = 0;
 
@@ -145,7 +234,13 @@ public class DevelopmentView extends StandardView {
         }
 
         double calibrationFactor = totalPower / totalPwm;
-        System.out.println("Kalibrierungsfaktor (1 W = X PWM): " + calibrationFactor);
+
+
+        getUI().ifPresent(ui -> ui.access(() -> {
+            factor.setText(calibrationFactor + " W/PWM");
+        }));
+
+        log.info("Calibration Factor (1 W = X PWM): " + calibrationFactor);
     }
 
     /**
@@ -229,6 +324,7 @@ public class DevelopmentView extends StandardView {
     public void onDetachEvent(final DetachEvent event) {
         CacheHandler.setValue("devMode", false);
         CacheHandler.setValue("devPowerOverride", false);
+        CacheHandler.setValue("devCalibration", false);
 
         if (subscription != null && !subscription.isDisposed()) {
             subscription.dispose();

@@ -30,29 +30,31 @@ public class SCRJob implements Job {
      * If a configuration is set, it calculates the usable power and performs the corresponding actions:
      * - If the SCR type is PWM, it sets the PWM value.
      * - It sets the cache value for frontend.
-     *
+     * <p>
      * Note: This method is private and is called internally by the execute() method of the SCRJob class.
      */
     private void handlePower() {
-        if(config != null && config.getPower() != null) {
+        if (config != null && config.getPower() != null) {
             // Calculate Usable Power.
             double usablePower = calculateUsablePower((Double) CacheHandler.getValueOrDefault("current-power", (double) 0), config.getPower().getOffsetPower(), config.getPower().getMinPower());
 
 //            if(usablePower > 0 && usablePower > config.getPower().getMinPower()) {
+            if ((boolean) CacheHandler.getValueOrDefault("devCalibration", false) != true) {
                 if (config.getScr().getType().equals(SCRType.PWM)) {
                     Double pwmIO = calculatePWM(usablePower);
 
                     // Set PWM Value.
-                    service.setPWM(13, pwmIO);
+                    //service.setPWM(13, pwmIO);
 
                     // Set Cache Value for Frontend.
                     CacheHandler.setValue("scr-pwm", pwmIO);
                 }
+            }
 
-  //          } else {
-                // Set Usable Power to 0 for Stats.
-    //            usablePower = 0;
-    //        }
+            //          } else {
+            // Set Usable Power to 0 for Stats.
+            //            usablePower = 0;
+            //        }
 
             // Set Cache Value for Frontend.
             CacheHandler.setValue("usable-power", usablePower);
@@ -75,12 +77,12 @@ public class SCRJob implements Job {
      * Calculates the usable power based on the current power consumption, offset, and minimum power threshold.
      *
      * @param currentPower the current power consumption
-     * @param offset the offset value to be subtracted from the absolute value of currentPower
-     * @param minPower the minimum power threshold
+     * @param offset       the offset value to be subtracted from the absolute value of currentPower
+     * @param minPower     the minimum power threshold
      * @return the usable power value
      */
     public static double calculateUsablePower(double currentPower, double offset, double minPower) {
-        if (currentPower < -(minPower+offset)) {
+        if (currentPower < -(minPower + offset)) {
             // Falls der Stromverbrauch (Einspeisung) kleiner ist als -minPower, berechnen wir usablePower
             return Math.abs(currentPower) - offset;
         } else {

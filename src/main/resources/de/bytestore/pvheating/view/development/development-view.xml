@@ -14,6 +14,11 @@
         </hbox>
 
         <vbox>
+            <hbox>
+                <span id="currentPower"/>
+                <span id="currentPWM"/>
+                <span id="factor" text="-"/>
+            </hbox>
             <progressBar id="calibrationProgress" value="0"/>
             <button id="calibrationBtn" text="Calibrate" icon="ABACUS"/>
         </vbox>
@@ -23,7 +28,8 @@
                 <span text="Usable Power -10kW to 10kW"/>
                 <rangeInput width="100%" id="usablePower" min="-10000" max="10000" valueChangeMode="EAGER"/>
             </vbox>
-            <numberField min="-10000" max="10000" id="usablePowerInput" value="0" label="Power" stepButtonsVisible="true"
+            <numberField min="-10000" max="10000" id="usablePowerInput" value="0" label="Power"
+                         stepButtonsVisible="true"
                          valueChangeMode="EAGER"/>
         </vbox>
     </layout>
