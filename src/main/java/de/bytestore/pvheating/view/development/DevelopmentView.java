@@ -94,7 +94,7 @@ public class DevelopmentView extends StandardView {
 
     @Subscribe(id = "calibrationBtn", subject = "clickListener")
     public void onCalibrationBtnClick(final ClickEvent<JmixButton> event) {
-        backgroundWorker.handle(new BackgroundTask<Object, Object>(TimeUnit.MINUTES.toSeconds(1)) {
+        backgroundWorker.handle(new BackgroundTask<Object, Object>(TimeUnit.MINUTES.toSeconds(2)) {
             @Override
             public Object run(TaskLifeCycle<Object> taskLifeCycle) throws Exception {
                 calibrate();

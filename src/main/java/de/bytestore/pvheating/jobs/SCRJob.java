@@ -1,9 +1,11 @@
 package de.bytestore.pvheating.jobs;
 
+import de.bytestore.pvheating.entity.ModbusSlave;
 import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
+import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import io.jmix.core.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +19,11 @@ public class SCRJob implements Job {
     @Autowired
     public Pi4JService service;
 
+    @Autowired
+    public ModbusService modbusService;
+
     private SystemConfig config = ConfigHandler.getCached();
+    private static int maxPWM = 0;
 
     @Authenticated
     @Override
@@ -39,14 +45,25 @@ public class SCRJob implements Job {
             double usablePower = calculateUsablePower((Double) CacheHandler.getValueOrDefault("current-power", (double) 0), config.getPower().getOffsetPower(), config.getPower().getMinPower());
 
 //            if(usablePower > 0 && usablePower > config.getPower().getMinPower()) {
-            if ((boolean) CacheHandler.getValueOrDefault("devCalibration", false) != true) {
+            if (!((boolean) CacheHandler.getValueOrDefault("devCalibration", false))) {
                 if (config.getScr().getType().equals(SCRType.PWM)) {
                     Double pwmIO = calculatePWM(usablePower);
+                    double powerIO = getPower();
+
+                    if (powerIO > usablePower) {
+                        maxPWM = maxPWM -1;
+                    } else if (powerIO < usablePower) {
+                        maxPWM = maxPWM +1;
+                    }
+
+
+                    log.info("SET PWM TO " + maxPWM);
 
                     // Set PWM Value.
-                    //service.setPWM(13, pwmIO);
+                    service.setPWM(13, (double) maxPWM);
 
                     // Set Cache Value for Frontend.
+                    CacheHandler.setValue("scr-power", powerIO);
                     CacheHandler.setValue("scr-pwm", pwmIO);
                 }
             }
@@ -89,5 +106,16 @@ public class SCRJob implements Job {
             // Andernfalls ist die nutzbare Leistung 0
             return (double) 0;
         }
+    }
+
+    private double getPower() {
+        ModbusSlave slaveIO = new ModbusSlave();
+        slaveIO.setBaud(9600);
+        slaveIO.setDataBits(8);
+        slaveIO.setStopBits(1);
+        slaveIO.setParity(0);
+        slaveIO.setPort("/dev/ttyUSB0");
+
+        return ((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue();
     }
 }

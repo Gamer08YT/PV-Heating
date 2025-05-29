@@ -88,6 +88,7 @@ public class MainView extends StandardMainView {
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
+
         if(service.getModel() == null || service.getModel().getModel() == PiModel.UNKNOWN) {
             // Show Error Message.
             nonSupportedBoard.setVisible(true);
