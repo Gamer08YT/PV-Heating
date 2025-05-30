@@ -60,6 +60,7 @@ public class ModbusJob implements Job {
 
             // Set Value to Cache.
             CacheHandler.setValue("modbus." + modbusRegister.getName(), service.readInput(slaveIO, modbusRegister.getSelect(), modbusRegister.getAddress(), modbusRegister.getType()));
+
         });
     }
 

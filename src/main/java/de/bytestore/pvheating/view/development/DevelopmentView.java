@@ -13,6 +13,7 @@ import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.entity.ModbusSlave;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
+import de.bytestore.pvheating.jobs.SCRJob;
 import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import de.bytestore.pvheating.service.StatsService;
@@ -22,6 +23,7 @@ import io.jmix.flowui.Notifications;
 import io.jmix.flowui.backgroundtask.BackgroundTask;
 import io.jmix.flowui.backgroundtask.BackgroundWorker;
 import io.jmix.flowui.backgroundtask.TaskLifeCycle;
+import io.jmix.flowui.component.checkbox.JmixCheckbox;
 import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
@@ -134,6 +136,9 @@ public class DevelopmentView extends StandardView {
 
             pi4JService.getPWM(13).frequency(Double.valueOf(ConfigHandler.getCached().getScr().getMaxPWM()).intValue());
 
+            pi4JService.setPumpState(true);
+            pi4JService.setSCRState(true);
+
             log.info("Starting Calibration Process.");
 
             double MAX_PWM_FREQUENCY = 100;//Double.valueOf(ConfigHandler.getCached().getScr().getMaxPWM()).intValue();
@@ -173,7 +178,7 @@ public class DevelopmentView extends StandardView {
                     currentPWM.setText(finalFrequency + " %");
                 }));
 
-                CacheHandler.setValue("scr-power", power);
+                CacheHandler.setValue("heater-power", power);
 
                 // Werte speichern
                 pwmValues[index] = frequency;
@@ -187,6 +192,9 @@ public class DevelopmentView extends StandardView {
 
             // Shutdown SCR.
             pi4JService.setPWM(13, 0.00);
+
+            pi4JService.setPumpState(false);
+            pi4JService.setSCRState(false);
 
             // Calculate Calibration Factor.
             calculateCalibrationFactor(pwmValues, powerValues);
@@ -331,6 +339,30 @@ public class DevelopmentView extends StandardView {
         }
 
         log.info("Set DevMode to false.");
+    }
+
+    @Subscribe(id = "resetPWMDuty", subject = "clickListener")
+    public void onResetPWMDutyClick(final ClickEvent<JmixButton> event) {
+        SCRJob.maxPWM = 0;
+
+        dialogs.createMessageDialog().withHeader("Development").withText("PWM Duty Counter reset to 0.").open();
+
+        log.info("PWM Duty Counter reset to 0.");
+    }
+
+    @Subscribe("enableError")
+    public void onEnableErrorComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
+        pi4JService.setErrorStatus(((JmixCheckbox) event.getSource()).getValue());
+    }
+
+    @Subscribe("enablePump")
+    public void onEnablePumpComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
+        pi4JService.setPumpState(((JmixCheckbox) event.getSource()).getValue());
+    }
+
+    @Subscribe("enableStatus")
+    public void onEnableStatusComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
+        pi4JService.setEnableStatus(((JmixCheckbox) event.getSource()).getValue());
     }
 
 

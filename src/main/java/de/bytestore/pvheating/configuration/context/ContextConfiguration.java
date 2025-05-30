@@ -38,7 +38,7 @@ public class ContextConfiguration {
 
 
 
-            PiGpio piGpio = PiGpio.newSocketInstance("192.168.3.196", 8888);
+            PiGpio piGpio = PiGpio.newSocketInstance("192.168.3.193", 8888);
 
             // Register Providers (Remote).
             this.pi4j = Pi4J.newContextBuilder().addPlatform(PiGpioDigitalInputProvider.newInstance(piGpio), PiGpioDigitalOutputProvider.newInstance(piGpio), PiGpioPwmProvider.newInstance(piGpio)).build();

@@ -2,11 +2,13 @@ package de.bytestore.pvheating.service;
 
 import com.pi4j.boardinfo.definition.BoardModel;
 import com.pi4j.context.Context;
+import com.pi4j.io.gpio.digital.Digital;
 import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmType;
+import de.bytestore.pvheating.configuration.DefaultPinout;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +40,8 @@ public class Pi4JService {
     @Autowired
     public Pi4JService(@Autowired Context pi4jContext) {
         this.pi4jContext = pi4jContext;
+
+        this.setDefaultStates();
     }
 
     /**
@@ -58,6 +62,8 @@ public class Pi4JService {
             digitalOutput = (DigitalOutput) Pi4JService.provider.get(pinIO);
 
         digitalOutput.state(DigitalState.getState(stateIO));
+
+        log.debug("Set Pin {} to {}.", pinIO, stateIO);
     }
 
     /**
@@ -223,5 +229,89 @@ public class Pi4JService {
 
         // Print Info about resetting failed attempts.
         log.info("Resetting failed attempts.");
+    }
+
+    /**
+     * Retrieves the current state of a digital GPIO pin.
+     *
+     * @param pinIO The GPIO pin number to check.
+     * @return true if the digital pin is in a high state, false otherwise.
+     */
+    public boolean getDigitalPin(int pinIO) {
+        if (Pi4JService.provider.containsKey(pinIO)) {
+            return ((Digital) Pi4JService.provider.get(pinIO)).state().isHigh();
+        }
+
+        return false;
+    }
+
+    /**
+     * Resets the system states to their default values.
+     * This method is used to initialize or reset the state of the system by setting
+     * specific components to their default state. Specifically, it ensures that the
+     * SCR state and the pump state are both set to false.
+     */
+    public void setDefaultStates() {
+        this.setSCRState(false);
+        this.setPumpState(false);
+    }
+
+    /**
+     * Sets the state of the pump by controlling the digital output on GPIO Pin 16.
+     * If the current state differs from the desired state, the method will toggle the pin's state.
+     * A log message will be generated to indicate the updated pump state.
+     *
+     * @param stateIO the desired state of the pump.
+     *        True represents the pump being on, and false represents the pump being off.
+     */
+    public void setPumpState(boolean stateIO) {
+        if (getDigitalPin(DefaultPinout.PUMP_ENABLE_GPIO) != stateIO) {
+            setPinState(DefaultPinout.PUMP_ENABLE_GPIO, !stateIO);
+
+            log.info("Set Pump State to {} on GPIO Pin " + DefaultPinout.PUMP_ENABLE_GPIO, stateIO);
+        }
+    }
+
+    /**
+     * Sets the state of the SCR (Silicon Controlled Rectifier) on GPIO pin 23.
+     * If the desired state differs from the current state of the pin, it toggles the pin state
+     * and logs the operation.
+     *
+     * @param stateIO the desired state to set for the SCR; true for ON, false for OFF
+     */
+    public void setSCRState(boolean stateIO) {
+        if (getDigitalPin(DefaultPinout.SCR_ENABLE_GPIO) != stateIO) {
+            setPinState(DefaultPinout.SCR_ENABLE_GPIO, !stateIO);
+
+            log.info("Set SCR State to {} on GPIO Pin " + DefaultPinout.SCR_ENABLE_GPIO, stateIO);
+        }
+    }
+
+    /**
+     * Sets the error status for the system by updating the state of a specified GPIO pin.
+     *
+     * @param stateIO the desired error status to set. If true, it indicates an error state;
+     *                if false, it indicates a non-error state.
+     */
+    public void setErrorStatus(boolean stateIO) {
+        if (getPWM(DefaultPinout.FAULT_BUTTON_PWM_GPIO).isOn() != stateIO) {
+            setPWM(DefaultPinout.FAULT_BUTTON_PWM_GPIO, Double.valueOf((stateIO ? 100 : 0)));
+
+            log.info("Set Error State to {} on GPIO Pin " + DefaultPinout.FAULT_BUTTON_PWM_GPIO, stateIO);
+        }
+    }
+
+    /**
+     * Sets the enable status of the status button based on the specified state.
+     *
+     * @param stateIO a boolean value representing the desired status.
+     *                If true, the status button will be enabled. If false, it will be disabled.
+     */
+    public void setEnableStatus(boolean stateIO) {
+        if (getPWM(DefaultPinout.STATUS_BUTTON_PWM_GPIO).isOn() != stateIO) {
+            setPWM(DefaultPinout.STATUS_BUTTON_PWM_GPIO, Double.valueOf((stateIO ? 100 : 0)));
+
+            log.info("Set Status State to {} on GPIO Pin " + DefaultPinout.STATUS_BUTTON_PWM_GPIO, stateIO);
+        }
     }
 }

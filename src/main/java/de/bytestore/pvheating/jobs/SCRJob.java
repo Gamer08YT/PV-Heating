@@ -23,7 +23,8 @@ public class SCRJob implements Job {
     public ModbusService modbusService;
 
     private SystemConfig config = ConfigHandler.getCached();
-    private static int maxPWM = 0;
+
+    public static int maxPWM = 0;
 
     @Authenticated
     @Override
@@ -51,9 +52,16 @@ public class SCRJob implements Job {
                     double powerIO = getPower();
 
                     if (powerIO > usablePower) {
-                        maxPWM = maxPWM -1;
+                        if (maxPWM > 0) {
+                            maxPWM = maxPWM - 1;
+                        }
+
+                        service.setSCRState(false);
                     } else if (powerIO < usablePower) {
-                        maxPWM = maxPWM +1;
+                        maxPWM = maxPWM + 1;
+
+                        service.setSCRState(true);
+                        service.setPumpState(true);
                     }
 
 
@@ -63,8 +71,10 @@ public class SCRJob implements Job {
                     service.setPWM(13, (double) maxPWM);
 
                     // Set Cache Value for Frontend.
-                    CacheHandler.setValue("scr-power", powerIO);
+                    CacheHandler.setValue("heater-power", powerIO);
                     CacheHandler.setValue("scr-pwm", pwmIO);
+
+
                 }
             }
 
@@ -77,6 +87,8 @@ public class SCRJob implements Job {
             CacheHandler.setValue("usable-power", usablePower);
         }
     }
+
+
 
     /**
      * Calculates the PWM (Pulse Width Modulation) value based on the usable power.

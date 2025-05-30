@@ -284,8 +284,8 @@ public class SettingsView extends StandardView {
         currentRange.setVisible(typeIO == SCRType.CURRENT);
         voltageRange.setVisible(typeIO == SCRType.VOLTAGE);
 
-        if (typeIO != SCRType.PWM)
-            throw new NotImplementedException(messageBundle.getMessage("pwmNotImplemented"));
+//        if (typeIO != SCRType.PWM)
+//            throw new NotImplementedException(messageBundle.getMessage("pwmNotImplemented"));
     }
 
     @Subscribe(id = "save", subject = "clickListener")
