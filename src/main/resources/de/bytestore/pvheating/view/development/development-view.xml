@@ -13,6 +13,11 @@
                     <checkbox id="enablePump" label="Enable Pump"/>
                     <checkbox id="enableStatus" label="Enable Status"/>
                     <checkbox id="enableError" label="Enable Error"/>
+                    <formLayout>
+                        <integerField id="pwmDuty" value="0"/>
+                        <integerField id="pwmFrequency" value="0"/>
+                    </formLayout>
+
                     <button id="resetError" text="Reset Error" icon="REFRESH"/>
                     <button id="resetPWMDuty" text="Reset PWM Duty" themeNames="success" icon="CLOSE"/>
                 </formLayout>

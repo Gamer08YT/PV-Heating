@@ -1,5 +1,9 @@
 package de.bytestore.pvheating.service;
 
+import com.pi4j.io.binding.DigitalBinding;
+import com.pi4j.io.gpio.digital.DigitalInputConfig;
+import com.pi4j.io.gpio.digital.DigitalOutput;
+import com.pi4j.io.gpio.digital.PullResistance;
 import de.bytestore.pvheating.configuration.DefaultPinout;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +30,10 @@ public class GPIOService {
 //            }
 //        }
 
-        service.getPi4jContext().getDigitalInputProvider().create(DefaultPinout.FLOW_METER_GPIO).addListener(event -> {
+
+        var builderIO = DigitalInputConfig.newBuilder(service.getPi4jContext()).address(DefaultPinout.FLOW_METER_GPIO).debounce(100L).name("FlowMeter").pull(PullResistance.PULL_UP).build();
+
+        service.getPi4jContext().create(builderIO).addListener(event -> {
             System.out.println("PIN CHANGED " + event.state().toString());
 
             if (event.state().isHigh()) {

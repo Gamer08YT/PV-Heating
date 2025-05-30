@@ -25,6 +25,7 @@ import io.jmix.flowui.backgroundtask.BackgroundTask;
 import io.jmix.flowui.backgroundtask.BackgroundWorker;
 import io.jmix.flowui.backgroundtask.TaskLifeCycle;
 import io.jmix.flowui.component.checkbox.JmixCheckbox;
+import io.jmix.flowui.component.textfield.JmixIntegerField;
 import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
@@ -387,6 +388,34 @@ public class DevelopmentView extends StandardView {
     public void onEnableStatusComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
         if (event.isFromClient())
             pi4JService.setEnableStatus(((JmixCheckbox) event.getSource()).getValue());
+    }
+
+    /**
+     * Handles the value change event for the PWM Frequency component.
+     * This method updates the PWM frequency associated with the SCR pin
+     * to the new value provided by the event and logs the update.
+     *
+     * @param event the component value change event containing the new value of the PWM frequency
+     */
+    @Subscribe("pwmFrequency")
+    public void onPwmFrequencyComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixIntegerField, ?> event) {
+        pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency((Integer) event.getValue());
+
+        log.info("Set PWM Frequency to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency());
+    }
+
+    /**
+     * Handles the value change event for the PWM Duty input component.
+     * This method retrieves the PWM configuration for the SCR pin and updates its duty cycle
+     * based on the new value provided by the event.
+     *
+     * @param event the component value change event containing the new value of the PWM Duty input
+     */
+    @Subscribe("pwmDuty")
+    public void onPwmDutyComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixIntegerField, ?> event) {
+        pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle((Integer) event.getValue());
+
+        log.info("Set PWM Duty to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle());
     }
 
 
