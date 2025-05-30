@@ -23,7 +23,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ModbusService {
-    private static HashMap<UUID, ModbusSerialMaster> masterIO =  new HashMap<UUID, ModbusSerialMaster>();
+    private static HashMap<UUID, ModbusSerialMaster> masterIO = new HashMap<UUID, ModbusSerialMaster>();
 
     private static final int BAUD_RATE = 9600;
     private static final int DATA_BITS = 8;
@@ -64,7 +64,7 @@ public class ModbusService {
         }
 
         // Print Debug Message.
-        log.info("Register " + startIO + " value (float32): " + valueIO);
+        log.debug("Register {} value (float32): {}", startIO, valueIO);
 
         return valueIO;
 //        if (registers != null && registers.length == lengthIO) {
@@ -98,7 +98,7 @@ public class ModbusService {
      * @throws ModbusException if there is an error communicating with the modbus slave device
      */
     public float readFloat32(ModbusSlave converterIO, int slaveId, int startAddress) throws ModbusException {
-        if(!ModbusService.masterIO.containsKey(converterIO.getId()) || !ModbusService.masterIO.get(converterIO.getId()).isConnected())
+        if (!ModbusService.masterIO.containsKey(converterIO.getId()) || !ModbusService.masterIO.get(converterIO.getId()).isConnected())
             connect(converterIO);
 
         try {
@@ -157,7 +157,7 @@ public class ModbusService {
      */
     private static float intToFloat32(int high, int low) {
         int combined = (high << 16) | (low & 0xFFFF);
-        return ByteBuffer.wrap(new byte[] {
+        return ByteBuffer.wrap(new byte[]{
                 (byte) (combined >> 24),
                 (byte) (combined >> 16),
                 (byte) (combined >> 8),
@@ -218,7 +218,7 @@ public class ModbusService {
      * @throws RuntimeException if an exception occurs during the retrieval process
      */
     public BitVector getValue(ModbusSlave converterIO, int addressIO, int countIO) {
-        if(ModbusService.masterIO == null || !ModbusService.masterIO.get(converterIO.getId()).isConnected())
+        if (ModbusService.masterIO == null || !ModbusService.masterIO.get(converterIO.getId()).isConnected())
             connect(converterIO);
 
         try {
@@ -238,38 +238,38 @@ public class ModbusService {
      * If any exception occurs during the connection, it throws a RuntimeException.
      */
     public void connect(ModbusSlave converterIO) {
-            // Create new Serial Config.
-            SerialParameters parametersIO = new SerialParameters();
+        // Create new Serial Config.
+        SerialParameters parametersIO = new SerialParameters();
 
-            parametersIO.setPortName(converterIO.getPort());
-            parametersIO.setBaudRate(converterIO.getBaud());
-            parametersIO.setDatabits(converterIO.getDataBits());
-            parametersIO.setStopbits(converterIO.getStopBits());
-            parametersIO.setParity(parametersIO.getParity());
+        parametersIO.setPortName(converterIO.getPort());
+        parametersIO.setBaudRate(converterIO.getBaud());
+        parametersIO.setDatabits(converterIO.getDataBits());
+        parametersIO.setStopbits(converterIO.getStopBits());
+        parametersIO.setParity(parametersIO.getParity());
 
-            // Create new Master Instance.
-            masterIO.put(converterIO.getId(), new ModbusSerialMaster(parametersIO));
+        // Create new Master Instance.
+        masterIO.put(converterIO.getId(), new ModbusSerialMaster(parametersIO));
 
-            try {
-                // Connect to Slave.
-                ModbusService.masterIO.get(converterIO.getId()).connect();
+        try {
+            // Connect to Slave.
+            ModbusService.masterIO.get(converterIO.getId()).connect();
 
-                // Print Success Message.
-                log.info("Connected to Modbus via {}.", converterIO.getPort());
+            // Print Success Message.
+            log.info("Connected to Modbus via {}.", converterIO.getPort());
 
-                // Reset Fail Counter.
-                fails = 0;
-            } catch (Exception e) {
-                if(fails == 2) {
-                    log.error("Canceled Modus connection to {}, max attempts reached.", converterIO.getPort());
-                }
-
-                // Increment Fail Counter.
-                fails++;
-
-                //throw new RuntimeException(e);
+            // Reset Fail Counter.
+            fails = 0;
+        } catch (Exception e) {
+            if (fails == 2) {
+                log.error("Canceled Modus connection to {}, max attempts reached.", converterIO.getPort());
             }
+
+            // Increment Fail Counter.
+            fails++;
+
+            //throw new RuntimeException(e);
         }
+    }
 
     /**
      * Retrieves an array of available serial ports.

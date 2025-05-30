@@ -10,6 +10,7 @@ import de.bytestore.pvheating.service.ModbusService;
 import io.jmix.core.DataManager;
 import io.jmix.core.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.numbers.core.Precision;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -71,7 +72,7 @@ public class ModbusJob implements Job {
         slaveIO.setParity(0);
         slaveIO.setPort("/dev/ttyUSB0");
 
-        return ((Float) service.readInput(slaveIO, 1, 72, "")).doubleValue();
+        return Precision.round(((Float) service.readInput(slaveIO, 1, 72, "")).doubleValue(), 2);
     }
 
     /**
