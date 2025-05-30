@@ -14,8 +14,10 @@
                     <checkbox id="enableStatus" label="Enable Status"/>
                     <checkbox id="enableError" label="Enable Error"/>
                     <formLayout>
-                        <integerField id="pwmDuty" value="0"/>
-                        <integerField id="pwmFrequency" value="0"/>
+                        <numberField label="PWM Duty" id="pwmDuty" value="0" stepButtonsVisible="true"
+                                      clearButtonVisible="true"/>
+                        <integerField label="PWM Frequency" id="pwmFrequency" stepButtonsVisible="true"
+                                      clearButtonVisible="true" value="0"/>
                     </formLayout>
 
                     <button id="resetError" text="Reset Error" icon="REFRESH"/>

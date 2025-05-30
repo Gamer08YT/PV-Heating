@@ -74,6 +74,9 @@ dependencies {
 
     // Modbus Lib.
     implementation 'com.ghgande:j2mod:3.2.1'
+
+    // Apache Commons
+    implementation 'org.apache.commons:commons-math4-core:4.0-beta1'
 }
 
 configurations.implementation {

@@ -1,5 +1,6 @@
 package de.bytestore.pvheating.jobs;
 
+import de.bytestore.pvheating.configuration.DefaultPinout;
 import de.bytestore.pvheating.entity.ModbusSlave;
 import de.bytestore.pvheating.entity.SCRType;
 import de.bytestore.pvheating.handler.CacheHandler;
@@ -49,32 +50,32 @@ public class SCRJob implements Job {
             if (!((boolean) CacheHandler.getValueOrDefault("devCalibration", false))) {
                 if (config.getScr().getType().equals(SCRType.PWM)) {
                     Double pwmIO = calculatePWM(usablePower);
-                    double powerIO = getPower();
+                    double powerIO = (double) CacheHandler.getValueOrDefault("heater-power", -1);
 
-                    if (powerIO > usablePower) {
-                        if (maxPWM > 0) {
-                            maxPWM = maxPWM - 1;
+                    if (powerIO != -1) {
+                        if (powerIO > usablePower) {
+                            if (maxPWM > 0) {
+                                maxPWM = maxPWM - 1;
+                            }
+
+                            service.setSCRState(false);
+                        } else if (powerIO < usablePower) {
+                            maxPWM = maxPWM + 1;
+
+                            service.setSCRState(true);
+                            service.setPumpState(true);
                         }
 
-                        service.setSCRState(false);
-                    } else if (powerIO < usablePower) {
-                        maxPWM = maxPWM + 1;
 
-                        service.setSCRState(true);
-                        service.setPumpState(true);
+                        log.info("SET PWM TO " + maxPWM);
+
+                        // Set PWM Value.
+                        service.setPWM(DefaultPinout.SCR_PWM_GPIO, (double) maxPWM);
+
+                        // Set Cache Value for Frontend.
+                        CacheHandler.setValue("scr-pwm", pwmIO);
+
                     }
-
-
-                    log.info("SET PWM TO " + maxPWM);
-
-                    // Set PWM Value.
-                    service.setPWM(13, (double) maxPWM);
-
-                    // Set Cache Value for Frontend.
-                    CacheHandler.setValue("heater-power", powerIO);
-                    CacheHandler.setValue("scr-pwm", pwmIO);
-
-
                 }
             }
 
@@ -87,7 +88,6 @@ public class SCRJob implements Job {
             CacheHandler.setValue("usable-power", usablePower);
         }
     }
-
 
 
     /**
@@ -120,14 +120,5 @@ public class SCRJob implements Job {
         }
     }
 
-    private double getPower() {
-        ModbusSlave slaveIO = new ModbusSlave();
-        slaveIO.setBaud(9600);
-        slaveIO.setDataBits(8);
-        slaveIO.setStopBits(1);
-        slaveIO.setParity(0);
-        slaveIO.setPort("/dev/ttyUSB0");
 
-        return ((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue();
-    }
 }

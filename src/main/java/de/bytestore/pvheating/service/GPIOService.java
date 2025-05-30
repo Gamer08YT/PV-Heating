@@ -20,22 +20,9 @@ public class GPIOService {
 
     @Autowired
     public GPIOService(@Autowired Pi4JService service) {
-//        while (true) {
-//            try {
-//                System.out.println(service.getPinState(4));
-//
-//                Thread.sleep(500);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }
-
-
-        var builderIO = DigitalInputConfig.newBuilder(service.getPi4jContext()).address(DefaultPinout.FLOW_METER_GPIO).debounce(100L).name("FlowMeter").pull(PullResistance.PULL_UP).build();
+        var builderIO = DigitalInputConfig.newBuilder(service.getPi4jContext()).address(DefaultPinout.FLOW_METER_GPIO).debounce(500L).name("FlowMeter").pull(PullResistance.PULL_UP).build();
 
         service.getPi4jContext().create(builderIO).addListener(event -> {
-            System.out.println("PIN CHANGED " + event.state().toString());
-
             if (event.state().isHigh()) {
                 // Increment Pulses.
                 GPIOService.FLOW_PULSE_COUNT++;

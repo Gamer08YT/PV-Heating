@@ -30,6 +30,8 @@ import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.kit.component.button.JmixButton;
 import io.jmix.flowui.view.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.numbers.core.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.Disposable;
 import reactor.core.publisher.Flux;
@@ -85,6 +87,10 @@ public class DevelopmentView extends StandardView {
     private JmixCheckbox enablePump;
     @ViewComponent
     private JmixCheckbox enableSCR;
+    @ViewComponent
+    private JmixIntegerField pwmFrequency;
+    @ViewComponent
+    private JmixNumberField pwmDuty;
 
 
     @Subscribe
@@ -201,7 +207,7 @@ public class DevelopmentView extends StandardView {
             log.info("Calibration Process finished.");
 
             // Shutdown SCR.
-            pi4JService.setPWM(13, 0.00);
+            pi4JService.setPWM(DefaultPinout.SCR_PWM_GPIO, 0.00);
 
             pi4JService.setPumpState(false);
             pi4JService.setSCRState(false);
@@ -210,7 +216,7 @@ public class DevelopmentView extends StandardView {
             calculateCalibrationFactor(pwmValues, powerValues);
         } catch (Exception exceptionIO) {
             // Shutdown SCR.
-            pi4JService.setPWM(13, 0.00);
+            pi4JService.setPWM(DefaultPinout.SCR_PWM_GPIO, 0.00);
 
             log.error("Calibration Error", exceptionIO);
         }
@@ -229,7 +235,7 @@ public class DevelopmentView extends StandardView {
         slaveIO.setParity(0);
         slaveIO.setPort("/dev/ttyUSB0");
 
-        return ((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue();
+        return Precision.round(((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue(),2);
     }
 
 
@@ -285,6 +291,9 @@ public class DevelopmentView extends StandardView {
             enableError.setValue(pi4JService.getPWM(DefaultPinout.FAULT_BUTTON_PWM_GPIO).isOn());
             enablePump.setValue(pi4JService.isPumpEnabled());
             enableSCR.setValue(pi4JService.isSCREnabled());
+
+            pwmFrequency.setValue(pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency());
+            pwmDuty.setValue((double) pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).getDutyCycle());
         }));
     }
 
@@ -401,7 +410,34 @@ public class DevelopmentView extends StandardView {
     public void onPwmFrequencyComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixIntegerField, ?> event) {
         pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency((Integer) event.getValue());
 
+        checkSCREnableState();
+
         log.info("Set PWM Frequency to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency());
+    }
+
+    /**
+     * Checks the enable state of the Silicon Controlled Rectifier (SCR) and updates its state based on
+     * the current values of the PWM frequency and duty cycle. If both the PWM frequency and duty cycle
+     * are zero, the SCR is disabled. Otherwise, the SCR and pump are enabled.
+     *
+     * This method ensures that the system state reflects the output requirements determined by the PWM
+     * configuration. It also logs the resulting state of the SCR and pump for diagnostic purposes.
+     *
+     * The method uses the {@code pi4JService} to control the digital output state of connected devices:
+     * - Calls {@code setSCRState} to enable or disable the SCR.
+     * - Calls {@code setPumpState} to enable the pump when the SCR is active.
+     */
+    private void checkSCREnableState() {
+        if (pwmFrequency.getValue() == 0 && pwmDuty.getValue() == 0) {
+            pi4JService.setSCRState(false);
+
+            log.info("Set SCR to false via Check SRC Enable State.");
+        } else {
+            pi4JService.setSCRState(true);
+            pi4JService.setPumpState(true);
+
+            log.info("Set SCR and Pump to true via Check SRC Enable State.");
+        }
     }
 
     /**
@@ -413,7 +449,9 @@ public class DevelopmentView extends StandardView {
      */
     @Subscribe("pwmDuty")
     public void onPwmDutyComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixIntegerField, ?> event) {
-        pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle((Integer) event.getValue());
+        pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle(NumberUtils.toFloat(event.getValue().toString()));
+
+        checkSCREnableState();
 
         log.info("Set PWM Duty to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle());
     }
