@@ -44,9 +44,6 @@ public class SystemJob implements Job {
         // Handle Smart Meter via Home Assistant.
         this.handleHomeAssistant();
 
-        // Read Temperature Sensor.
-        this.readTemperatureSensor();
-
         // Read Power from Lokal Power Sensor.
         this.readLocalPower();
     }
@@ -66,18 +63,7 @@ public class SystemJob implements Job {
         return ((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue();
     }
 
-    /**
-     * Reads the temperature from a temperature sensor based on the configuration.
-     * If the configuration is not null and the sensor type is DS18B20, the temperature
-     * value is read from the sensor and stored in the cache with the key "temperature".
-     */
-    private void readTemperatureSensor() {
-        if (config != null) {
-            if (config.getTemperature().getSensorType().equals(SensorType.DS18B20)) {
-                CacheHandler.setValue("temperature", service.readDS18B20(config.getTemperature().getWire1Device()));
-            }
-        }
-    }
+
 
     /**
      * Handles communication with the Home Assistant system.
