@@ -36,10 +36,42 @@ public class ModbusJob implements Job {
     @Authenticated
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        // Only execute if not exceeded fail limit.
-        if(service.getFails() <= 3) {
-            queryValues();
-        }
+        readElectricalWork();
+
+//        // Only execute if not exceeded fail limit.
+//        if(service.getFails() <= 3) {
+//            queryValues();
+//        }
+    }
+
+    /**
+     * Reads the electrical work value and updates the cached data with the retrieved value.
+     * This method fetches the electrical work value using the {@code getWork} method and stores it
+     * in the cache with a predefined key ("heater-electric-work").
+     *
+     */
+    private void readElectricalWork() {
+
+        CacheHandler.setValue("heater-electric-work", getWork());
+    }
+
+    /**
+     * Reads the electrical work value from a Modbus slave device.
+     * This method initializes a ModbusSlave instance with predefined parameters,
+     * such as baud rate, data bits, stop bits, parity, and port. After setting up
+     * the ModbusSlave, it reads the input value from the device using the ModbusService.
+     *
+     * @return The electrical work value as a double, which is read from the Modbus slave device.
+     */
+    private double getWork() {
+        ModbusSlave slaveIO = new ModbusSlave();
+        slaveIO.setBaud(9600);
+        slaveIO.setDataBits(8);
+        slaveIO.setStopBits(1);
+        slaveIO.setParity(0);
+        slaveIO.setPort("/dev/ttyUSB0");
+
+        return ((Float) service.readInput(slaveIO, 1, 72, "")).doubleValue();
     }
 
     /**
