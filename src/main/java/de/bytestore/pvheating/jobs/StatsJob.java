@@ -8,6 +8,7 @@ import io.jmix.core.DataManager;
 import io.jmix.core.querycondition.PropertyCondition;
 import io.jmix.core.security.Authenticated;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.numbers.core.Precision;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -37,7 +38,7 @@ public class StatsJob implements Job {
 
 
     private void calc() {
-        CacheHandler.setValue("heating.time.needed", CalcHandler.calcTime((Double) CacheHandler.getValueOrDefault("temperature", 0.00), (Double) CacheHandler.getValueOrDefault("heater-power", 0.00)));
+        CacheHandler.setValue("heating.time.needed", Precision.round(CalcHandler.calcTime((Double) CacheHandler.getValueOrDefault("temperature", 0.00), (Double) CacheHandler.getValueOrDefault("heater-power", 0.00)), 2));
     }
 
     /**
