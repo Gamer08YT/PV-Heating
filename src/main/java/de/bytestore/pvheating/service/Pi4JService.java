@@ -8,6 +8,7 @@ import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.gpio.digital.DigitalState;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmType;
+import com.pi4j.plugin.pigpio.provider.gpio.digital.PiGpioDigitalOutput;
 import de.bytestore.pvheating.configuration.DefaultPinout;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class Pi4JService {
     public Pi4JService(@Autowired Context pi4jContext) {
         this.pi4jContext = pi4jContext;
 
-        this.setDefaultStates();
+        //this.setDefaultStates();
     }
 
     /**
@@ -239,7 +240,9 @@ public class Pi4JService {
      */
     public boolean getDigitalPin(int pinIO) {
         if (Pi4JService.provider.containsKey(pinIO)) {
-            return ((Digital) Pi4JService.provider.get(pinIO)).state().isHigh();
+            if (Pi4JService.provider.get(pinIO) instanceof PiGpioDigitalOutput) {
+                return ((PiGpioDigitalOutput) Pi4JService.provider.get(pinIO)).isHigh();
+            }
         }
 
         return false;
@@ -265,11 +268,11 @@ public class Pi4JService {
      *        True represents the pump being on, and false represents the pump being off.
      */
     public void setPumpState(boolean stateIO) {
-        if (getDigitalPin(DefaultPinout.PUMP_ENABLE_GPIO) != stateIO) {
-            setPinState(DefaultPinout.PUMP_ENABLE_GPIO, !stateIO);
+        //if (getDigitalPin(DefaultPinout.PUMP_ENABLE_GPIO) == stateIO) {
+        setPinState(DefaultPinout.PUMP_ENABLE_GPIO, !stateIO);
 
-            log.info("Set Pump State to {} on GPIO Pin " + DefaultPinout.PUMP_ENABLE_GPIO, stateIO);
-        }
+        log.info("Set Pump State to {} on GPIO Pin " + DefaultPinout.PUMP_ENABLE_GPIO, stateIO);
+        //}
     }
 
     /**
@@ -280,11 +283,11 @@ public class Pi4JService {
      * @param stateIO the desired state to set for the SCR; true for ON, false for OFF
      */
     public void setSCRState(boolean stateIO) {
-        if (getDigitalPin(DefaultPinout.SCR_ENABLE_GPIO) != stateIO) {
-            setPinState(DefaultPinout.SCR_ENABLE_GPIO, !stateIO);
+        //if (getDigitalPin(DefaultPinout.SCR_ENABLE_GPIO) == stateIO) {
+        setPinState(DefaultPinout.SCR_ENABLE_GPIO, !stateIO);
 
-            log.info("Set SCR State to {} on GPIO Pin " + DefaultPinout.SCR_ENABLE_GPIO, stateIO);
-        }
+        log.info("Set SCR State to {} on GPIO Pin " + DefaultPinout.SCR_ENABLE_GPIO, stateIO);
+        //}
     }
 
     /**
@@ -313,5 +316,23 @@ public class Pi4JService {
 
             log.info("Set Status State to {} on GPIO Pin " + DefaultPinout.STATUS_BUTTON_PWM_GPIO, stateIO);
         }
+    }
+
+    /**
+     * Checks if the SCR (Silicon Controlled Rectifier) is enabled by reading the state of the designated GPIO pin.
+     *
+     * @return true if SCR is enabled; false otherwise.
+     */
+    public Boolean isSCREnabled() {
+        return !getDigitalPin(DefaultPinout.SCR_ENABLE_GPIO);
+    }
+
+    /**
+     * Checks whether the pump is currently enabled.
+     *
+     * @return true if the pump is enabled, otherwise false
+     */
+    public Boolean isPumpEnabled() {
+        return !getDigitalPin(DefaultPinout.PUMP_ENABLE_GPIO);
     }
 }

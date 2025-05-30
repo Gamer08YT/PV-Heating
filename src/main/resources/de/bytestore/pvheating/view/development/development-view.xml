@@ -2,20 +2,22 @@
 <view xmlns="http://jmix.io/schema/flowui/view"
       title="msg://developmentView.title">
     <layout>
-        <hbox>
+        <formLayout>
             <vbox id="valuesBox" width="100%" classNames="card">
 
             </vbox>
 
             <hbox spacing="false">
-                <checkbox id="enable" label="Enable SCR"/>
-                <checkbox id="enablePump" label="Enable Pump"/>
-                <checkbox id="enableStatus" label="Enable Status"/>
-                <checkbox id="enableError" label="Enable Error"/>
-                <button id="resetError" text="Reset Error" icon="REFRESH"/>
-                <button id="resetPWMDuty" text="Reset PWM Duty" themeNames="success" icon="CLOSE"/>
+                <formLayout>
+                    <checkbox id="enableSCR" label="Enable SCR"/>
+                    <checkbox id="enablePump" label="Enable Pump"/>
+                    <checkbox id="enableStatus" label="Enable Status"/>
+                    <checkbox id="enableError" label="Enable Error"/>
+                    <button id="resetError" text="Reset Error" icon="REFRESH"/>
+                    <button id="resetPWMDuty" text="Reset PWM Duty" themeNames="success" icon="CLOSE"/>
+                </formLayout>
             </hbox>
-        </hbox>
+        </formLayout>
 
         <vbox>
             <hbox>

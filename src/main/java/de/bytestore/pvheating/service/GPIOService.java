@@ -1,5 +1,6 @@
 package de.bytestore.pvheating.service;
 
+import de.bytestore.pvheating.configuration.DefaultPinout;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,10 +26,10 @@ public class GPIOService {
 //            }
 //        }
 
-        service.getPi4jContext().getDigitalInputProvider().create(22).addListener(event -> {
+        service.getPi4jContext().getDigitalInputProvider().create(DefaultPinout.FLOW_METER_GPIO).addListener(event -> {
             System.out.println("PIN CHANGED " + event.state().toString());
 
-            if(event.state().isHigh()) {
+            if (event.state().isHigh()) {
                 // Increment Pulses.
                 GPIOService.FLOW_PULSE_COUNT++;
             }

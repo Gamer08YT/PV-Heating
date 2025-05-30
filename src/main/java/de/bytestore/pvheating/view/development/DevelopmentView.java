@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.router.Route;
+import de.bytestore.pvheating.configuration.DefaultPinout;
 import de.bytestore.pvheating.entity.ModbusSlave;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
@@ -75,6 +76,14 @@ public class DevelopmentView extends StandardView {
     private Notifications notifications;
     @ViewComponent
     private Span factor;
+    @ViewComponent
+    private JmixCheckbox enableStatus;
+    @ViewComponent
+    private JmixCheckbox enableError;
+    @ViewComponent
+    private JmixCheckbox enablePump;
+    @ViewComponent
+    private JmixCheckbox enableSCR;
 
 
     @Subscribe
@@ -270,6 +279,11 @@ public class DevelopmentView extends StandardView {
                     }
                 });
             });
+
+            enableStatus.setValue(pi4JService.getPWM(DefaultPinout.STATUS_BUTTON_PWM_GPIO).isOn());
+            enableError.setValue(pi4JService.getPWM(DefaultPinout.FAULT_BUTTON_PWM_GPIO).isOn());
+            enablePump.setValue(pi4JService.isPumpEnabled());
+            enableSCR.setValue(pi4JService.isSCREnabled());
         }));
     }
 
@@ -350,19 +364,29 @@ public class DevelopmentView extends StandardView {
         log.info("PWM Duty Counter reset to 0.");
     }
 
+    @Subscribe("enableSCR")
+    public void onEnableSCRComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
+        if (event.isFromClient())
+            pi4JService.setSCRState(((JmixCheckbox) event.getSource()).getValue());
+    }
+
+
     @Subscribe("enableError")
     public void onEnableErrorComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        pi4JService.setErrorStatus(((JmixCheckbox) event.getSource()).getValue());
+        if (event.isFromClient())
+            pi4JService.setErrorStatus(((JmixCheckbox) event.getSource()).getValue());
     }
 
     @Subscribe("enablePump")
     public void onEnablePumpComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        pi4JService.setPumpState(((JmixCheckbox) event.getSource()).getValue());
+        if (event.isFromClient())
+            pi4JService.setPumpState(((JmixCheckbox) event.getSource()).getValue());
     }
 
     @Subscribe("enableStatus")
     public void onEnableStatusComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        pi4JService.setEnableStatus(((JmixCheckbox) event.getSource()).getValue());
+        if (event.isFromClient())
+            pi4JService.setEnableStatus(((JmixCheckbox) event.getSource()).getValue());
     }
 
 

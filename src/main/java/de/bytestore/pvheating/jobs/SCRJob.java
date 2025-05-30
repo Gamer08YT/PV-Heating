@@ -29,7 +29,7 @@ public class SCRJob implements Job {
     @Authenticated
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        this.handlePower();
+        //this.handlePower();
     }
 
     /**
