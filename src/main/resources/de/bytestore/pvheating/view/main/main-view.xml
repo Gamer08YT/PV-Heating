@@ -71,7 +71,7 @@
                     <vbox classNames="stats-card">
                         <span classNames="title" text="msg://flow"/>
                         <hbox>
-                            <svgIcon resource="VAADIN/themes/PV-Heating/icons/fan.svg"/>
+                            <svgIcon id="pumpIcon" resource="VAADIN/themes/PV-Heating/icons/fan.svg"/>
                             <span classNames="value" id="flowRate" text="0 l/min"/>
                         </hbox>
                     </vbox>

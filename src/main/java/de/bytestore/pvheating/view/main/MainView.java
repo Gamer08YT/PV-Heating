@@ -5,6 +5,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.DetachEvent;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.shared.Tooltip;
@@ -85,11 +86,13 @@ public class MainView extends StandardMainView {
 
     @ViewComponent
     private Span heaterWork;
+    @ViewComponent
+    private SvgIcon pumpIcon;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
 
-        if(service.getModel() == null || service.getModel().getModel() == PiModel.UNKNOWN) {
+        if (service.getModel() == null || service.getModel().getModel() == PiModel.UNKNOWN) {
             // Show Error Message.
             nonSupportedBoard.setVisible(true);
 
@@ -99,7 +102,7 @@ public class MainView extends StandardMainView {
             useSupportedBoard.setText(messageBundle.formatMessage("hasSupportedBoard", service.getModel().getLabel()));
             useSupportedBoard.setVisible(true);
         }
-        
+
     }
 
     @Subscribe
@@ -117,6 +120,16 @@ public class MainView extends StandardMainView {
             currentTemperature.setText(formatIO.format(CacheHandler.getValueOrDefault("temperature", 0.00)) + " °C");
             heaterPower.setText(formatIO.format(CacheHandler.getValueOrDefault("heater-power", 0.00)) + " W");
             heaterWork.setText(CacheHandler.getValueOrDefault("heater-electric-work", 0) + " kWh");
+
+            var flowRate = (Double) CacheHandler.getValueOrDefault("flow-per-minute", 0.00);
+
+            if (flowRate > 0) {
+                if (!pumpIcon.hasClassName("spin"))
+                    pumpIcon.addClassName("spin");
+            } else {
+                if (pumpIcon.hasClassName("spin"))
+                    pumpIcon.removeClassName("spin");
+            }
 
             checkForErrors();
         }));
@@ -168,12 +181,12 @@ public class MainView extends StandardMainView {
         maxPowerCard.setClassName("online", (valueIO > 0));
         maxPowerCard.setClassName("offline", (valueIO == 0 || valueIO < 0));
 
-        if(valueIO > 0)
+        if (valueIO > 0)
             usablePower.setText(formatIO.format(valueIO) + " W");
         else
             usablePower.setText(formatIO.format(0) + " W");
 
-            setSCRTooltip();
+        setSCRTooltip();
     }
 
     /**
@@ -193,21 +206,21 @@ public class MainView extends StandardMainView {
         // Set PWM Tooltip if available.
         Object pwmIO = CacheHandler.getValue("scr-pwm");
 
-        if(pwmIO != null) {
+        if (pwmIO != null) {
             Tooltip.forComponent(usablePower).withText(pwmIO + " Hz");
         }
 
         // Set Voltage Tooltip if available.
         Object voltageIO = CacheHandler.getValue("scr-voltage");
 
-        if(voltageIO != null) {
+        if (voltageIO != null) {
             Tooltip.forComponent(usablePower).withText(voltageIO + " V");
         }
 
         // Set Voltage Tooltip if available.
         Object currentIO = CacheHandler.getValue("scr-current");
 
-        if(currentIO != null) {
+        if (currentIO != null) {
             Tooltip.forComponent(usablePower).withText(currentIO + " mA");
         }
     }
@@ -248,9 +261,6 @@ public class MainView extends StandardMainView {
     public void onResetWire1Click(final ClickEvent<JmixButton> event) {
         service.resetFails();
     }
-
-
-
 
 
 }
