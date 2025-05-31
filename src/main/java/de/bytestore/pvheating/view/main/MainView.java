@@ -88,6 +88,8 @@ public class MainView extends StandardMainView {
     private Span heaterWork;
     @ViewComponent
     private SvgIcon pumpIcon;
+    @ViewComponent
+    private Span heatingTime;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -117,6 +119,7 @@ public class MainView extends StandardMainView {
         getUI().ifPresent(ui -> ui.access(() -> {
             currentPower.setText(formatIO.format(CacheHandler.getValueOrDefault("current-power", 0.00)) + " W");
             flowRate.setText(formatIO.format(CacheHandler.getValueOrDefault("flow-per-minute", 0.00)) + " l/min");
+            heatingTime.setText(formatIO.format(CacheHandler.getValueOrDefault("heating.time.needed", 0.00)) + " h");
             currentTemperature.setText(formatIO.format(CacheHandler.getValueOrDefault("temperature", 0.00)) + " °C");
             heaterPower.setText(formatIO.format(CacheHandler.getValueOrDefault("heater-power", 0.00)) + " W");
             heaterWork.setText(CacheHandler.getValueOrDefault("heater-electric-work", 0) + " kWh");

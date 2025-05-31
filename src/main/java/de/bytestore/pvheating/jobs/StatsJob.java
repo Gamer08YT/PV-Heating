@@ -38,7 +38,14 @@ public class StatsJob implements Job {
 
 
     private void calc() {
-        CacheHandler.setValue("heating.time.needed", Precision.round(CalcHandler.calcTime((Double) CacheHandler.getValueOrDefault("temperature", 0.00), (Double) CacheHandler.getValueOrDefault("heater-power", 0.00)), 2));
+        // If Power > 50W start calc, otherwise return 0h.
+        if ((Double) CacheHandler.getValueOrDefault("heater-power", 0.00) > 50) {
+            var calcTime = Precision.round(CalcHandler.calcTime((Double) CacheHandler.getValueOrDefault("temperature", 0.00), (Double) CacheHandler.getValueOrDefault("heater-power", 0.00)), 2);
+
+            CacheHandler.setValue("heating.time.needed", calcTime);
+        } else {
+            CacheHandler.setValue("heating.time.needed", 0);
+        }
     }
 
     /**

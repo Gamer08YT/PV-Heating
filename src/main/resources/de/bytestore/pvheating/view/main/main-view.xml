@@ -45,11 +45,13 @@
                 <span id="nonSupportedBoard" visible="false" themeNames="error badge" text="msg://nonSupportedBoard"/>
                 <hbox id="modbusMaxAttempts" visible="false" spacing="true" themeNames="error badge">
                     <span text="msg://modbusMaxAttempts"/>
-                    <button css="margin-left: 0.5rem" themeNames="small" id="resetModbus" icon="lumo:reload" text="msg://reset"/>
+                    <button css="margin-left: 0.5rem" themeNames="small" id="resetModbus" icon="lumo:reload"
+                            text="msg://reset"/>
                 </hbox>
                 <hbox id="wire1MaxAttempts" visible="false" spacing="true" themeNames="error badge">
                     <span text="msg://wire1MaxAttempts"/>
-                    <button css="margin-left: 0.5rem" themeNames="small" id="resetWire1" icon="lumo:reload" text="msg://reset"/>
+                    <button css="margin-left: 0.5rem" themeNames="small" id="resetWire1" icon="lumo:reload"
+                            text="msg://reset"/>
                 </hbox>
                 <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
@@ -73,6 +75,13 @@
                         <hbox>
                             <svgIcon id="pumpIcon" resource="VAADIN/themes/PV-Heating/icons/fan.svg"/>
                             <span classNames="value" id="flowRate" text="0 l/min"/>
+                        </hbox>
+                    </vbox>
+                    <vbox classNames="stats-card">
+                        <span classNames="title" text="msg://heatingTime"/>
+                        <hbox>
+                            <svgIcon resource="VAADIN/themes/PV-Heating/icons/clock.svg"/>
+                            <span classNames="value" id="heatingTime" text="0h"/>
                         </hbox>
                     </vbox>
                 </hbox>

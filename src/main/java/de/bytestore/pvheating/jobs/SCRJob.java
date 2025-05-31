@@ -118,7 +118,9 @@ public class SCRJob implements Job {
                                 // Reset Standby Counter.
                                 standbyCounter = 0;
 
-                                log.info("Resetting Standbye Counter");
+                                CacheHandler.setValue("standbyCounter", standbyCounter);
+
+                                log.info("Resetting Standby Counter");
 
                                 // Reenable SCR and Pump.
                                 enablePumpAndSCR();
@@ -153,6 +155,9 @@ public class SCRJob implements Job {
                 }
             } else {
                 maxPWM = 0;
+
+                // Set Cache Value for Frontend.
+                CacheHandler.setValue("scr-pwm", maxPWM);
             }
 
             //          } else {
@@ -201,6 +206,8 @@ public class SCRJob implements Job {
             if (standbyCounter >= 60) {
                 service.setSCRState(false);
                 service.setPumpState(false);
+
+                CacheHandler.setValue("standbyCounter", standbyCounter);
 
                 log.info("Standby Counter Reached. SCR and Pump Disabled.");
             }
