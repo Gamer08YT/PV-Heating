@@ -37,6 +37,11 @@ public class TemperatureJob implements Job {
                 double temperatureIO = Precision.round(service.readDS18B20(config.getTemperature().getWire1Device()), 2);
 
                 CacheHandler.setValue("temperature", temperatureIO);
+
+                // Trigger Temperature Limit Error.
+                if (temperatureIO > 60) {
+                    service.triggerError("Temperature limit reached.", 20);
+                }
             }
         }
     }

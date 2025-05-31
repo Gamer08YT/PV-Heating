@@ -19,8 +19,8 @@ public class SCRConfiguration {
         ThreadPoolTaskExecutor poolIO = new ThreadPoolTaskExecutor();
 
         poolIO.setCorePoolSize(1);
-        poolIO.setMaxPoolSize(2);
-        poolIO.setQueueCapacity(10);
+        poolIO.setMaxPoolSize(1);
+        poolIO.setQueueCapacity(1);
 
         return poolIO;
     }

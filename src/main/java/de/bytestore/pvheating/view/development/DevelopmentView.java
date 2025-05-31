@@ -12,6 +12,7 @@ import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.configuration.DefaultPinout;
 import de.bytestore.pvheating.entity.ModbusSlave;
+import de.bytestore.pvheating.entity.ModeSelect;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
 import de.bytestore.pvheating.jobs.SCRJob;
@@ -25,6 +26,7 @@ import io.jmix.flowui.backgroundtask.BackgroundTask;
 import io.jmix.flowui.backgroundtask.BackgroundWorker;
 import io.jmix.flowui.backgroundtask.TaskLifeCycle;
 import io.jmix.flowui.component.checkbox.JmixCheckbox;
+import io.jmix.flowui.component.select.JmixSelect;
 import io.jmix.flowui.component.textfield.JmixIntegerField;
 import io.jmix.flowui.component.textfield.JmixNumberField;
 import io.jmix.flowui.kit.component.button.JmixButton;
@@ -91,6 +93,8 @@ public class DevelopmentView extends StandardView {
     private JmixIntegerField pwmFrequency;
     @ViewComponent
     private JmixNumberField pwmDuty;
+    @ViewComponent
+    private JmixSelect<Object> modeSelect;
 
 
     @Subscribe
@@ -200,6 +204,7 @@ public class DevelopmentView extends StandardView {
                 pwmValues[index] = frequency;
                 powerValues[index] = power;
 
+
                 index++;
 
                 calibrationProgress.setValue(frequency);
@@ -235,7 +240,7 @@ public class DevelopmentView extends StandardView {
         slaveIO.setParity(0);
         slaveIO.setPort("/dev/ttyUSB0");
 
-        return Precision.round(((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue(),2);
+        return Precision.round(((Float) modbusService.readInput(slaveIO, 1, 52, "")).doubleValue(), 2);
     }
 
 
@@ -291,6 +296,8 @@ public class DevelopmentView extends StandardView {
             enableError.setValue(pi4JService.getPWM(DefaultPinout.FAULT_BUTTON_PWM_GPIO).isOn());
             enablePump.setValue(pi4JService.isPumpEnabled());
             enableSCR.setValue(pi4JService.isSCREnabled());
+
+            modeSelect.setValue(ModeSelect.fromId((String) CacheHandler.getValueOrDefault("mode", "standby")));
 
             pwmFrequency.setValue(pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency());
             pwmDuty.setValue((double) pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).getDutyCycle());
@@ -365,6 +372,12 @@ public class DevelopmentView extends StandardView {
         log.info("Set DevMode to false.");
     }
 
+    /**
+     * Resets the PWM duty counter to 0 and displays a confirmation message to the user.
+     * This method also logs an informational message indicating the reset action.
+     *
+     * @param event the click event triggered when the user interacts with the reset button
+     */
     @Subscribe(id = "resetPWMDuty", subject = "clickListener")
     public void onResetPWMDutyClick(final ClickEvent<JmixButton> event) {
         SCRJob.maxPWM = 0;
@@ -374,29 +387,68 @@ public class DevelopmentView extends StandardView {
         log.info("PWM Duty Counter reset to 0.");
     }
 
+    /**
+     * Handles the value change event for the "enableSCR" component.
+     * This method is triggered when the value of the "enableSCR" checkbox changes.
+     * If the event originates from the client, it updates the SCR (Silicon Controlled Rectifier)
+     * state using the {@code pi4JService#setSCRState} method with the new value of the checkbox.
+     *
+     * @param event the component value change event for the "enableSCR" checkbox,
+     *              containing the new state of the checkbox and its source information
+     */
     @Subscribe("enableSCR")
     public void onEnableSCRComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        if (event.isFromClient())
+        if (event.isFromClient()) {
             pi4JService.setSCRState(((JmixCheckbox) event.getSource()).getValue());
+
+            log.info("SCR Status changed by Dev Settings. {}", ((JmixCheckbox) event.getSource()).getValue());
+        }
     }
 
 
+    /**
+     * Handles the value change event for the "enableError" checkbox component.
+     * This method is triggered when the value of the "enableError" checkbox changes.
+     * If the event originates from the client, it updates the error status of the system
+     * using the {@link pi4JService#setErrorStatus} method with the new value of the checkbox.
+     *
+     * @param event the component value change event for the "enableError" checkbox,
+     *              containing the new state of the checkbox and its source information
+     */
     @Subscribe("enableError")
     public void onEnableErrorComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        if (event.isFromClient())
+        if (event.isFromClient()) {
             pi4JService.setErrorStatus(((JmixCheckbox) event.getSource()).getValue());
+
+            log.info("Error Status changed by Dev Settings. {}", ((JmixCheckbox) event.getSource()).getValue());
+        }
     }
 
+    /**
+     * Handles the value change event for the "enablePump" component.
+     * This method is triggered when the value of the "enablePump" checkbox changes.
+     * If the event originates from the client, it updates the pump's state
+     * using the {@link pi4JService#setPumpState} method with the new value of the checkbox.
+     *
+     * @param event the component value change event for the "enablePump" checkbox,
+     *              containing the new state of the checkbox and its source information
+     */
     @Subscribe("enablePump")
     public void onEnablePumpComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        if (event.isFromClient())
+        if (event.isFromClient()) {
             pi4JService.setPumpState(((JmixCheckbox) event.getSource()).getValue());
+
+            log.info("Pump Status changed by Dev Settings. {}", ((JmixCheckbox) event.getSource()).getValue());
+        }
     }
 
     @Subscribe("enableStatus")
     public void onEnableStatusComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixCheckbox, ?> event) {
-        if (event.isFromClient())
+        if (event.isFromClient()) {
             pi4JService.setEnableStatus(((JmixCheckbox) event.getSource()).getValue());
+
+            log.info("Enable Status changed by Dev Settings. {}", ((JmixCheckbox) event.getSource()).getValue());
+        }
     }
 
     /**
@@ -408,11 +460,13 @@ public class DevelopmentView extends StandardView {
      */
     @Subscribe("pwmFrequency")
     public void onPwmFrequencyComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixIntegerField, ?> event) {
-        pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency((Integer) event.getValue());
+        if (event.isFromClient()) {
+            pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency((Integer) event.getValue());
 
-        checkSCREnableState();
+            checkSCREnableState();
 
-        log.info("Set PWM Frequency to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency());
+            log.info("Set PWM Frequency to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).frequency());
+        }
     }
 
     /**
@@ -436,6 +490,9 @@ public class DevelopmentView extends StandardView {
             pi4JService.setSCRState(true);
             pi4JService.setPumpState(true);
 
+            // Update PWM Signal.
+            pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).on();
+
             log.info("Set SCR and Pump to true via Check SRC Enable State.");
         }
     }
@@ -449,11 +506,34 @@ public class DevelopmentView extends StandardView {
      */
     @Subscribe("pwmDuty")
     public void onPwmDutyComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixIntegerField, ?> event) {
-        pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle(NumberUtils.toFloat(event.getValue().toString()));
+        if (event.isFromClient()) {
+            pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle(NumberUtils.toFloat(event.getValue().toString()));
 
-        checkSCREnableState();
+            checkSCREnableState();
 
-        log.info("Set PWM Duty to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle());
+            log.info("Set PWM Duty to {}.", pi4JService.getPWM(DefaultPinout.SCR_PWM_GPIO).dutyCycle());
+        }
+    }
+
+    /**
+     * Handles the value change event for the "modeSelect" component.
+     * This method is triggered when the value of the "modeSelect" component changes.
+     * If the event originated from the client and the new value is not null,
+     * it updates the application cache with the selected mode's ID.
+     *
+     * @param event the component value change event containing the new value of the "modeSelect" component
+     */
+    @Subscribe("modeSelect")
+    public void onModeSelectComponentValueChange(final AbstractField.ComponentValueChangeEvent<JmixSelect<?>, ?> event) {
+        if (event.isFromClient()) {
+            ModeSelect mode = (ModeSelect) event.getValue();
+
+            if (mode != null) {
+                CacheHandler.setValue("mode", mode.getId());
+            }
+
+            log.info("Mode Status changed by Dev Settings. {}", mode);
+        }
     }
 
 

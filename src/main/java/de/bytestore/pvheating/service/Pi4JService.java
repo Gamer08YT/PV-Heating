@@ -9,6 +9,7 @@ import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmType;
 import com.pi4j.plugin.pigpio.provider.gpio.digital.PiGpioDigitalOutput;
 import de.bytestore.pvheating.configuration.DefaultPinout;
+import de.bytestore.pvheating.handler.CacheHandler;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.pi4j.io.gpio.digital.DigitalState.HIGH;
+import static com.pi4j.io.gpio.digital.DigitalState.all;
 
 @Service
 public class Pi4JService {
@@ -41,7 +43,7 @@ public class Pi4JService {
     public Pi4JService(@Autowired Context pi4jContext) {
         this.pi4jContext = pi4jContext;
 
-        //this.setDefaultStates();
+        this.setDefaultStates();
     }
 
     /**
@@ -167,7 +169,7 @@ public class Pi4JService {
         Pwm pwmConfig = getPWM(pinIO);
 
         if (value > 0)
-            pwmConfig.on(60, value.intValue());
+            pwmConfig.on(value.intValue(), 10000);
         else
             pwmConfig.off();
     }
@@ -254,8 +256,11 @@ public class Pi4JService {
      * SCR state and the pump state are both set to false.
      */
     public void setDefaultStates() {
+        CacheHandler.setValue("mode", "standby");
+
         this.setSCRState(false);
         this.setPumpState(false);
+
     }
 
     /**
@@ -284,6 +289,10 @@ public class Pi4JService {
     public void setSCRState(boolean stateIO) {
         //if (getDigitalPin(DefaultPinout.SCR_ENABLE_GPIO) == stateIO) {
         setPinState(DefaultPinout.SCR_ENABLE_GPIO, !stateIO);
+
+        // Set PWM of SCR to Off.
+        if (!stateIO)
+            setPWM(DefaultPinout.SCR_PWM_GPIO, 0.00);
 
         log.info("Set SCR State to {} on GPIO Pin " + DefaultPinout.SCR_ENABLE_GPIO, stateIO);
         //}
@@ -333,5 +342,48 @@ public class Pi4JService {
      */
     public Boolean isPumpEnabled() {
         return !getDigitalPin(DefaultPinout.PUMP_ENABLE_GPIO);
+    }
+
+    /**
+     * Triggers an error based on the specified reason and code.
+     *
+     * @param reasonIO the reason for the error
+     * @param codeIO the error code associated with the error
+     */
+    public void triggerError(String reasonIO, int codeIO) {
+        this.triggerException(reasonIO, codeIO, false);
+    }
+
+    /**
+     * Triggers a warning based on the provided reason and code.
+     *
+     * @param reasonIO the reason for triggering the warning
+     * @param codeIO the specific code associated with the warning
+     */
+    public void triggerWarning(String reasonIO, int codeIO) {
+        this.triggerException(reasonIO, codeIO, true);
+    }
+
+
+    /**
+     * Triggers an exception or warning based on the provided parameters and updates the cache handler accordingly.
+     *
+     * @param reasonIO The reason for the exception or warning being triggered.
+     * @param codeIO The code associated with the exception or warning.
+     * @param warnIO If true, a warning is triggered; if false, an exception is triggered.
+     */
+    private void triggerException(String reasonIO, int codeIO, boolean warnIO) {
+        if (!warnIO) {
+            setDefaultStates();
+
+            CacheHandler.setValue("error", true);
+            CacheHandler.setValue("errorReason", reasonIO);
+            CacheHandler.setValue("errorCode", codeIO);
+        } else {
+            CacheHandler.setValue("warning", true);
+            CacheHandler.setValue("warningReason", reasonIO);
+            CacheHandler.setValue("warningCode", codeIO);
+        }
+
     }
 }

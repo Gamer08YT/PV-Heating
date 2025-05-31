@@ -34,11 +34,11 @@ public class ContextConfiguration {
 //                                MockDigitalOutputProvider.newInstance())
 //                        .build();
 //            } else {
-                //this.pi4j = Pi4J.newAutoContext();
+            //this.pi4j = Pi4J.newAutoContext();
 
 
-
-            PiGpio piGpio = PiGpio.newSocketInstance("192.168.3.193", 8888);
+            PiGpio piGpio = PiGpio.newNativeInstance();
+            //PiGpio.newSocketInstance("192.168.3.193", 8888);
 
             // Register Providers (Remote).
             this.pi4j = Pi4J.newContextBuilder().addPlatform(PiGpioDigitalInputProvider.newInstance(piGpio), PiGpioDigitalOutputProvider.newInstance(piGpio), PiGpioPwmProvider.newInstance(piGpio)).build();

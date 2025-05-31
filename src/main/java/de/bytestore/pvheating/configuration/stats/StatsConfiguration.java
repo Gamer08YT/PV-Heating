@@ -20,7 +20,7 @@ public class StatsConfiguration {
 
         poolIO.setCorePoolSize(1);
         poolIO.setMaxPoolSize(1);
-        poolIO.setQueueCapacity(2);
+        poolIO.setQueueCapacity(1);
 
         return poolIO;
     }

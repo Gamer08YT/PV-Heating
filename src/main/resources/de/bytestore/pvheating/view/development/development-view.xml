@@ -20,6 +20,8 @@
                                       clearButtonVisible="true" value="0"/>
                     </formLayout>
 
+                    <select id="modeSelect" label="Mode" themeNames="small" itemsEnum="de.bytestore.pvheating.entity.ModeSelect"/>
+
                     <button id="resetError" text="Reset Error" icon="REFRESH"/>
                     <button id="resetPWMDuty" text="Reset PWM Duty" themeNames="success" icon="CLOSE"/>
                 </formLayout>
