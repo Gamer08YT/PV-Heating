@@ -12,7 +12,7 @@ Ziel der Software ist es, die Nulleinspeisung zu revolutionieren.
 
 ## Demo
 
-Insert gif or link to demo
+![img.png](img.png)
 
 
 ## Authors
