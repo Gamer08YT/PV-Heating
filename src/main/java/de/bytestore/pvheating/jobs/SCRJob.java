@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Slf4j
 public class SCRJob implements Job {
     private static boolean templock = false;
+    private static int standbyCounter = 0;
+
     @Autowired
     public Pi4JService service;
 
@@ -109,17 +111,31 @@ public class SCRJob implements Job {
 
                     if (handleTemperature()) {
                         if (powerIO != -1) {
-                            if (powerIO > usablePower) {
-                                if (maxPWM > 0) {
-                                    maxPWM = maxPWM - 1;
+                            if (usablePower == 0) {
+                                handleStandbyCounter();
+                            } else {
+                                // Reset Standby Counter.
+                                standbyCounter = 0;
+
+                                log.info("Resetting Standbye Counter");
+
+                                // Reenable SCR and Pump.
+                                enablePumpAndSCR();
+                            }
+
+                            if (standbyCounter < 60) {
+                                if (powerIO > usablePower) {
+                                    if (maxPWM > 0) {
+                                        maxPWM = maxPWM - 1;
+                                    }
+
+                                    //service.setSCRState(false);
+                                } else if (powerIO < usablePower) {
+                                    maxPWM = maxPWM + 1;
+
+                                    service.setSCRState(true);
+                                    service.setPumpState(true);
                                 }
-
-                                //service.setSCRState(false);
-                            } else if (powerIO < usablePower) {
-                                maxPWM = maxPWM + 1;
-
-                                service.setSCRState(true);
-                                service.setPumpState(true);
                             }
 
                         }
@@ -143,6 +159,49 @@ public class SCRJob implements Job {
             //        }
 
 
+        }
+    }
+
+    /**
+     * Enables both the SCR (Silicon Controlled Rectifier) and the pump.
+     *
+     * This method allows power and functionality to flow through the system by:
+     * - Activating the SCR using the {@code setSCRState(true)} method from the service class.
+     * - Enabling the pump by invoking {@code setPumpState(true)} in the service class.
+     *
+     * The purpose of this method is to combine the activation of both system components,
+     * making them operational simultaneously.
+     */
+    private void enablePumpAndSCR() {
+        service.setSCRState(true);
+        service.setPumpState(true);
+    }
+
+    /**
+     * Manages the standby counter for the system and performs actions when the counter reaches a specific threshold.
+     *
+     * This method increments the standby counter if its value is less than 60. When the counter reaches 60,
+     * it disables the SCR (Silicon Controlled Rectifier) and the pump by interacting with the associated service methods.
+     *
+     * The purpose of this method is to monitor and control the system's behavior during a standby state,
+     * ensuring that the necessary components are deactivated once the threshold is reached.
+     *
+     * Key behaviors:
+     * - Increments the `standbyCounter` until it reaches the predefined limit (60).
+     * - Disables the SCR and pump when the counter equals or exceeds the limit.
+     */
+    private void handleStandbyCounter() {
+        if (standbyCounter < 60) {
+            // Increment Standby Counter.
+            standbyCounter++;
+
+            // Disable Pump and SCR on Standby.
+            if (standbyCounter >= 60) {
+                service.setSCRState(false);
+                service.setPumpState(false);
+
+                log.info("Standby Counter Reached. SCR and Pump Disabled.");
+            }
         }
     }
 
