@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Slf4j
 public class SCRJob implements Job {
-    private static boolean templock = false;
-    private static int standbyCounter = 0;
+    public static boolean templock = false;
+    public static int standbyCounter = 0;
 
     @Autowired
     public Pi4JService service;

@@ -15,15 +15,18 @@
                     <checkbox id="enableError" label="Enable Error"/>
                     <formLayout>
                         <numberField label="PWM Duty" id="pwmDuty" value="0" stepButtonsVisible="true"
-                                      clearButtonVisible="true"/>
+                                     clearButtonVisible="true"/>
                         <integerField label="PWM Frequency" id="pwmFrequency" stepButtonsVisible="true"
                                       clearButtonVisible="true" value="0"/>
                     </formLayout>
 
-                    <select id="modeSelect" label="Mode" themeNames="small" itemsEnum="de.bytestore.pvheating.entity.ModeSelect"/>
+                    <select id="modeSelect" label="Mode" themeNames="small"
+                            itemsEnum="de.bytestore.pvheating.entity.ModeSelect"/>
 
                     <button id="resetError" text="Reset Error" icon="REFRESH"/>
                     <button id="resetPWMDuty" text="Reset PWM Duty" themeNames="success" icon="CLOSE"/>
+                    <button id="resetTemperature" text="Reset Temperature Lock" themeNames="primary" icon="CLOSE"/>
+                    <button id="resetStandbyCounter" text="Reset Standby Counter" themeNames="primary" icon="CLOSE"/>
                 </formLayout>
             </hbox>
         </formLayout>

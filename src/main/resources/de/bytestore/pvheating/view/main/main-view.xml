@@ -53,6 +53,16 @@
                     <button css="margin-left: 0.5rem" themeNames="small" id="resetWire1" icon="lumo:reload"
                             text="msg://reset"/>
                 </hbox>
+                <hbox id="error" visible="false" spacing="true" themeNames="error badge">
+                    <span id="errorMessage" text="Empty Error Message"/>
+                    <button css="margin-left: 0.5rem" themeNames="small" id="resetError" icon="lumo:reload"
+                            text="msg://reset"/>
+                </hbox>
+                <hbox id="warning" visible="false" spacing="true" themeNames="warning badge">
+                    <span id="warningMessage" text="Empty Warning Message"/>
+                    <button css="margin-left: 0.5rem" themeNames="small" id="resetWarning" icon="lumo:reload"
+                            text="msg://reset"/>
+                </hbox>
                 <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
                 <hbox width="100%" alignItems="CENTER">

@@ -90,6 +90,10 @@ public class MainView extends StandardMainView {
     private SvgIcon pumpIcon;
     @ViewComponent
     private Span heatingTime;
+    @ViewComponent
+    private HorizontalLayout error;
+    @ViewComponent
+    private Span errorMessage;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -123,6 +127,18 @@ public class MainView extends StandardMainView {
             currentTemperature.setText(formatIO.format(CacheHandler.getValueOrDefault("temperature", 0.00)) + " °C");
             heaterPower.setText(formatIO.format(CacheHandler.getValueOrDefault("heater-power", 0.00)) + " W");
             heaterWork.setText(CacheHandler.getValueOrDefault("heater-electric-work", 0) + " kWh");
+
+            // Add Error Message if available.
+            if ((boolean) CacheHandler.getValueOrDefault("error", false)) {
+                error.setVisible(true);
+                errorMessage.setText(CacheHandler.getValueOrDefault("errorReason", "").toString());
+            }
+
+            // Add a Warning Message if available.
+            if ((boolean) CacheHandler.getValueOrDefault("warning", false)) {
+                error.setVisible(true);
+                errorMessage.setText(CacheHandler.getValueOrDefault("warningReason", "").toString());
+            }
 
             var flowRate = (Double) CacheHandler.getValueOrDefault("flow-per-minute", 0.00);
 
@@ -264,6 +280,18 @@ public class MainView extends StandardMainView {
     public void onResetWire1Click(final ClickEvent<JmixButton> event) {
         service.resetFails();
     }
+
+    @Subscribe(id = "resetError", subject = "clickListener")
+    public void onResetErrorClick(final ClickEvent<JmixButton> event) {
+        service.resetError();
+    }
+
+    @Subscribe(id = "resetWarning", subject = "clickListener")
+    public void onResetWarningClick(final ClickEvent<JmixButton> event) {
+        service.resetWarning();
+    }
+
+
 
 
 }

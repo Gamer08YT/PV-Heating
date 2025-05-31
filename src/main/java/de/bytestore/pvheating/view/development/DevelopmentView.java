@@ -536,5 +536,26 @@ public class DevelopmentView extends StandardView {
         }
     }
 
+    /**
+     * Handles the "reset standby counter" button click event. Resets the standby counter to zero.
+     *
+     * @param event the click event triggered by the user interacting with the JmixButton component
+     */
+    @Subscribe(id = "resetStandbyCounter", subject = "clickListener")
+    public void onResetStandbyCounterClick(final ClickEvent<JmixButton> event) {
+        SCRJob.standbyCounter = 0;
+    }
+
+    /**
+     * Event handler method invoked when the reset temperature button is clicked.
+     * Resets the temperature lock status.
+     *
+     * @param event the click event containing details about the button click
+     */
+    @Subscribe(id = "resetTemperature", subject = "clickListener")
+    public void onResetTemperatureClick(final ClickEvent<JmixButton> event) {
+        SCRJob.templock = false;
+    }
+
 
 }

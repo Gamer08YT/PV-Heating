@@ -386,4 +386,10 @@ public class Pi4JService {
         }
 
     }
+
+    public void resetError() {
+    }
+
+    public void resetWarning() {
+    }
 }
