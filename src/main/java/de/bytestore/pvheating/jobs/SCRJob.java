@@ -104,12 +104,13 @@ public class SCRJob implements Job {
             double usablePower = (double) CacheHandler.getValueOrDefault("usable-power", 0);
 
 //            if(usablePower > 0 && usablePower > config.getPower().getMinPower()) {
-            if (!((boolean) CacheHandler.getValueOrDefault("devCalibration", false))) {
-                if (config.getScr().getType().equals(SCRType.PWM)) {
-                    //Double pwmIO = calculatePWM(usablePower);
-                    double powerIO = (double) CacheHandler.getValueOrDefault("heater-power", -1);
+            if (handleTemperature()) {
+                if (!((boolean) CacheHandler.getValueOrDefault("devCalibration", false))) {
+                    if (config.getScr().getType().equals(SCRType.PWM)) {
+                        //Double pwmIO = calculatePWM(usablePower);
+                        double powerIO = (double) CacheHandler.getValueOrDefault("heater-power", -1);
 
-                    if (handleTemperature()) {
+
                         if (powerIO != -1) {
                             if (usablePower == 0) {
                                 handleStandbyCounter();
@@ -139,18 +140,19 @@ public class SCRJob implements Job {
                             }
 
                         }
-                    } else {
-                        maxPWM = 0;
+
+
+                        log.info("SET PWM TO " + maxPWM);
+
+                        // Set PWM Value.
+                        service.setPWM(DefaultPinout.SCR_PWM_GPIO, (double) maxPWM);
+
+                        // Set Cache Value for Frontend.
+                        CacheHandler.setValue("scr-pwm", maxPWM);
                     }
-
-                    log.info("SET PWM TO " + maxPWM);
-
-                    // Set PWM Value.
-                    service.setPWM(DefaultPinout.SCR_PWM_GPIO, (double) maxPWM);
-
-                    // Set Cache Value for Frontend.
-                    CacheHandler.setValue("scr-pwm", maxPWM);
                 }
+            } else {
+                maxPWM = 0;
             }
 
             //          } else {
