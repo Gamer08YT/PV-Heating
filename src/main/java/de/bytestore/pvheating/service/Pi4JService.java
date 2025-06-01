@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.pi4j.io.gpio.digital.DigitalState.HIGH;
-import static com.pi4j.io.gpio.digital.DigitalState.all;
+import static com.pi4j.io.gpio.digital.DigitalState.*;
 
 @Service
 public class Pi4JService {
@@ -387,9 +386,74 @@ public class Pi4JService {
 
     }
 
+    /**
+     * Resets the error state in the application by clearing relevant cache entries.
+     *
+     * This method performs the following actions:
+     * - Sets the "error" field in the cache to false, indicating no current errors.
+     * - Clears the "errorReason" field in the cache, setting it to an empty string.
+     * - Clears the "errorCode" field in the cache, setting it to an empty string.
+     *
+     * It ensures that any previously stored error-related data in the cache is removed,
+     * allowing for a clean state for future computations or processes.
+     */
     public void resetError() {
+        CacheHandler.setValue("error", false);
+        CacheHandler.setValue("errorReason", "");
+        CacheHandler.setValue("errorCode", "");
     }
 
+    /**
+     * Resets the warning state in the system by clearing its associated values.
+     * This method updates the cache to set the warning flag to false, clears the warning
+     * reason, and resets the warning code to an empty string.
+     *
+     * The changes are applied using the CacheHandler to ensure the system reflects
+     * the updated state, effectively indicating that no warnings are currently present.
+     */
     public void resetWarning() {
+        CacheHandler.setValue("warning", false);
+        CacheHandler.setValue("warningReason", "");
+        CacheHandler.setValue("warningCode", "");
+    }
+
+    /**
+     * Toggles the mode between different states: "standby", a previously stored mode, or "dynamic".
+     *
+     * If the current mode is not "standby", it switches the mode to "standby" and*/
+    public void toggleMode() {
+        String currentIO = String.valueOf(CacheHandler.getValueOrDefault("mode", "standby"));
+        String oldIO = String.valueOf(CacheHandler.getValueOrDefault("modeOld", ""));
+
+        if (!currentIO.equals("standby")) {
+            setMode("standby");
+            CacheHandler.setValue("modeOld", currentIO);
+        } else if (!oldIO.equals("")) {
+            setMode(oldIO);
+            CacheHandler.setValue("modeOld", "");
+        } else {
+            setMode("dynamic");
+        }
+    }
+
+    /**
+     * Sets the mode for the application or system by storing the given mode value in the cache.
+     *
+     * @param mode the mode to be set; this could represent*/
+    public void setMode(String mode) {
+        CacheHandler.setValue("mode", mode);
+
+        log.info("Set Mode to {}.", mode);
+    }
+
+    /**
+     * Resets the internal states of the object.
+     * This method calls additional helper methods to perform
+     * the necessary state reset actions, ensuring fail and warning
+     * states are cleared.
+     */
+    public void resetStates() {
+        resetFails();
+        resetWarning();
     }
 }

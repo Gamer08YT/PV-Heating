@@ -20,6 +20,9 @@ public class GPIOService {
 
     @Autowired
     public GPIOService(@Autowired Pi4JService service) {
+        /**
+         * Handle Flow Meter.
+         */
         var builderIO = DigitalInputConfig.newBuilder(service.getPi4jContext()).address(DefaultPinout.FLOW_METER_GPIO).debounce(500L).name("FlowMeter").pull(PullResistance.PULL_UP).build();
 
         service.getPi4jContext().create(builderIO).addListener(event -> {
@@ -28,6 +31,26 @@ public class GPIOService {
                 GPIOService.FLOW_PULSE_COUNT++;
             }
         });
+
+        /**
+         * Handle Status Button.
+         */
+        var statusBtnBuilder = DigitalInputConfig.newBuilder(service.getPi4jContext()).address(DefaultPinout.STATUS_BUTTON_GPIO).debounce(500L).name("StatusButton").pull(PullResistance.PULL_UP).build();
+
+        service.getPi4jContext().create(statusBtnBuilder).addListener(event -> {
+            service.toggleMode();
+        });
+
+        /**
+         * Handle Fault Button.
+         */
+        var faultBtnBuilder = DigitalInputConfig.newBuilder(service.getPi4jContext()).address(DefaultPinout.FAULT_BUTTON_GPIO).debounce(500L).name("FaultButton").pull(PullResistance.PULL_UP).build();
+
+
+        service.getPi4jContext().create(faultBtnBuilder).addListener(event -> {
+            service.resetStates();
+        });
+
 
         log.info("Registered GPIO Listener.");
     }
