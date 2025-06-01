@@ -8,7 +8,7 @@
     border-radius: 0.5rem;
 }
 
-.stats-card .title, .gpio {
+.stats-card .title, .gpio, .badge {
     background-color: var(--lumo-contrast-10pct);
     border-radius: 0.5rem;
     padding-left: 0.5rem;

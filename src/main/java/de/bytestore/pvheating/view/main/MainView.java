@@ -11,6 +11,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.handler.CacheHandler;
+import de.bytestore.pvheating.handler.ConfigHandler;
+import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
 import io.jmix.core.Messages;
@@ -94,6 +96,10 @@ public class MainView extends StandardMainView {
     private HorizontalLayout error;
     @ViewComponent
     private Span errorMessage;
+    @ViewComponent
+    private Span offsetLabel;
+
+    private SystemConfig config = ConfigHandler.getCached();
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -114,6 +120,8 @@ public class MainView extends StandardMainView {
     @Subscribe
     public void onInit(final InitEvent event) {
         this.refreshStats();
+
+        offsetLabel.setText(messageBundle.formatMessage("description-offsets", config.getPower().getMinPower(), config.getPower().getOffsetPower()));
     }
 
     /**
@@ -290,8 +298,6 @@ public class MainView extends StandardMainView {
     public void onResetWarningClick(final ClickEvent<JmixButton> event) {
         service.resetWarning();
     }
-
-
 
 
 }

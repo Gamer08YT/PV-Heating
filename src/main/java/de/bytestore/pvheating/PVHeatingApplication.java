@@ -23,7 +23,7 @@ import javax.sql.DataSource;
 
 @Push
 @Theme(value = "PV-Heating")
-@PWA(name = "PV Heating", shortName = "PV Heating")
+@PWA(name = "PV Heating", shortName = "PV Heating", description = "A simple application to control a PV heating system, Developed by Jan Heil (www.byte-store.de).", offline = true)
 @SpringBootApplication
 public class PVHeatingApplication implements AppShellConfigurator {
 

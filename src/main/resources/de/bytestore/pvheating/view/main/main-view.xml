@@ -100,7 +100,10 @@
                     <hbox width="100%" alignItems="CENTER">
                         <vbox id="maxPowerCard" classNames="stats-card">
                             <span classNames="title" text="msg://max-power"/>
-                            <span classNames="description" text="msg://description-max-power"/>
+                            <hbox spacing="false" padding="false">
+                                <span classNames="description" text="msg://description-max-power"/>
+                                <span classNames="badge" id="offsetLabel" text="msg://description-offsets"/>
+                            </hbox>
                             <span classNames="value" id="usablePower" text="0 W"/>
                         </vbox>
                         <svgIcon size="4.5rem" resource="VAADIN/themes/PV-Heating/icons/arrow.svg"/>
