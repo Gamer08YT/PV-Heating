@@ -30,7 +30,6 @@ public class CalcHandler {
             //                         -------------------------
             //                          currentPower * efficiency
             return (volume * waterKO * deltaT) / (powerIO * efficiency);
-
         }
 
         return 0;
