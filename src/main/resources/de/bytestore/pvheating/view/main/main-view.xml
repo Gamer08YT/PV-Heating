@@ -63,6 +63,9 @@
                     <button css="margin-left: 0.5rem" themeNames="small" id="resetWarning" icon="lumo:reload"
                             text="msg://reset"/>
                 </hbox>
+                <hbox id="standby" visible="false" spacing="true" themeNames="warning badge">
+                    <span id="standbyMessage" text="msg://standbyMessage"/>
+                </hbox>
                 <span id="useSupportedBoard" visible="false" themeNames="success badge" text="msg://hasSupportedBoard"/>
 
                 <hbox width="100%" alignItems="CENTER">

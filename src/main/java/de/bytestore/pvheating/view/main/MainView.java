@@ -12,6 +12,7 @@ import com.vaadin.flow.component.shared.Tooltip;
 import com.vaadin.flow.router.Route;
 import de.bytestore.pvheating.handler.CacheHandler;
 import de.bytestore.pvheating.handler.ConfigHandler;
+import de.bytestore.pvheating.jobs.SCRJob;
 import de.bytestore.pvheating.objects.config.system.SystemConfig;
 import de.bytestore.pvheating.service.ModbusService;
 import de.bytestore.pvheating.service.Pi4JService;
@@ -100,6 +101,8 @@ public class MainView extends StandardMainView {
     private Span offsetLabel;
 
     private SystemConfig config = ConfigHandler.getCached();
+    @ViewComponent
+    private HorizontalLayout standby;
 
     @Subscribe
     public void onReady(final ReadyEvent event) {
@@ -159,6 +162,9 @@ public class MainView extends StandardMainView {
             }
 
             checkForErrors();
+
+            // Show Standby Dialog if SCR is in standby.
+            standby.setVisible((SCRJob.standbyCounter == 60));
         }));
     }
 
