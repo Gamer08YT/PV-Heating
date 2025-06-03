@@ -53,9 +53,9 @@ public class ButtonJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        handleErrorTask();
-        handleWarningTask();
-        handleStatusTask();
+//        handleErrorTask();
+//        handleWarningTask();
+//        handleStatusTask();
     }
 
     /**
@@ -96,7 +96,9 @@ public class ButtonJob implements Job {
                 };
 
                 // Schedule every 250ms.
-                timer.scheduleAtFixedRate(statusTask, TimeUnit.MICROSECONDS.toMillis(250), TimeUnit.MICROSECONDS.toMillis(250));
+                timer.scheduleAtFixedRate(statusTask, 250, 250);
+
+                log.info("Created and scheduled Timer Task for Status Button.");
             }
         } else {
             if (statusTask != null) {
@@ -152,7 +154,9 @@ public class ButtonJob implements Job {
                 };
 
                 // Schedule every 250ms.
-                timer.scheduleAtFixedRate(warningTask, TimeUnit.MICROSECONDS.toMillis(250), TimeUnit.MICROSECONDS.toMillis(250));
+                timer.scheduleAtFixedRate(warningTask, 250, 250);
+
+                log.info("Created and scheduled Timer Task for Warning Button.");
             }
         } else {
             if (warningTask != null) {
