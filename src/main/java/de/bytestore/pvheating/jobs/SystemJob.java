@@ -42,15 +42,16 @@ public class SystemJob implements Job {
     @Authenticated
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        // Handle Smart Meter via Home Assistant.
-        this.handleHomeAssistant();
+        if (config != null) {
+            // Handle Smart Meter via Home Assistant.
+            this.handleHomeAssistant();
 
-        // Read Power from Lokal Power Sensor.
-        this.readLocalPower();
+            // Read Power from Lokal Power Sensor.
+            this.readLocalPower();
 
-        // Calculate Usable Power.
-        this.calcUsablePower();
-
+            // Calculate Usable Power.
+            this.calcUsablePower();
+        }
     }
 
     /**

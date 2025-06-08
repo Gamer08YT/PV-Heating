@@ -165,10 +165,26 @@ public class Pi4JService {
      * @param value The PWM value to be set. A positive value turns the pin on, while a negative value turns it off.
      */
     public void setPWM(int pinIO, Double value) {
+        setPWM(pinIO, value, false);
+    }
+
+    /**
+     * Configures the PWM (Pulse Width Modulation) settings for a specified pin.
+     *
+     * @param pinIO The identifier for the pin to which the PWM signal will be applied.
+     * @param value The duty cycle value for the PWM signal. A value greater than 0 enables the signal;
+     *              otherwise, the PWM is turned off.
+     * @param normal If true, uses the default configuration for the PWM signal;
+     *               otherwise, applies a custom configuration with a specified duty cycle and a fixed period.
+     */
+    public void setPWM(int pinIO, Double value, boolean normal) {
         Pwm pwmConfig = getPWM(pinIO);
 
         if (value > 0)
-            pwmConfig.on(value.intValue(), 10000);
+            if (!normal)
+                pwmConfig.on(value.intValue(), 10000);
+            else
+                pwmConfig.on(value.intValue());
         else
             pwmConfig.off();
     }

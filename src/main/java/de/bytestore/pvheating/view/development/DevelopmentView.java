@@ -557,5 +557,30 @@ public class DevelopmentView extends StandardView {
         SCRJob.templock = false;
     }
 
+    /**
+     * Handles the click event for the fake error button and triggers an error in the system.
+     *
+     * @param event the ClickEvent containing information about the button click
+     */
+    @Subscribe(id = "fakeError", subject = "clickListener")
+    public void onFakeErrorClick(final ClickEvent<JmixButton> event) {
+        pi4JService.triggerError("Test Error - This is a test.", -10);
+    }
+
+    /**
+     * Handles the click event for the fake warning button. When invoked, triggers a test warning message.
+     *
+     * @param event the click event containing information about the button interaction
+     */
+    @Subscribe(id = "fakeWarning", subject = "clickListener")
+    public void onFakeWarningClick(final ClickEvent<JmixButton> event) {
+        pi4JService.triggerWarning("Test Warning - This is a test.", -10);
+    }
+
+    @Subscribe(id = "resetError", subject = "clickListener")
+    public void onResetErrorClick(final ClickEvent<JmixButton> event) {
+        pi4JService.resetError();
+        pi4JService.resetWarning();
+    }
 
 }

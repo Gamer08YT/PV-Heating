@@ -26,7 +26,10 @@
                     <button id="resetError" text="Reset Error" icon="REFRESH"/>
                     <button id="resetPWMDuty" text="Reset PWM Duty" themeNames="success" icon="CLOSE"/>
                     <button id="resetTemperature" text="Reset Temperature Lock" themeNames="primary" icon="EXPAND"/>
-                    <button id="resetStandbyCounter" text="Reset Standby Counter" themeNames="primary" icon="lumo:clock"/>
+                    <button id="resetStandbyCounter" text="Reset Standby Counter" themeNames="primary"
+                            icon="lumo:clock"/>
+                    <button id="fakeError" text="Simulate Error" themeNames="outlined" icon="lumo:error"/>
+                    <button id="fakeWarning" text="Simulate Warning" themeNames="outlined success" icon="vaadin:warning"/>
                 </formLayout>
             </hbox>
         </formLayout>

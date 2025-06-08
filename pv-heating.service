@@ -1,0 +1,21 @@
+# /etc/systemd/system/pv-heating.service
+# sudo systemctl daemon-reexec
+# sudo systemctl daemon-reload
+# sudo systemctl enable pv-heating.service
+# sudo systemctl start pv-heating.service
+# sudo systemctl status pv-heating.service
+
+[Unit]
+Description=PV Heating Java Application
+After=network.target
+
+[Service]
+WorkingDirectory=/root
+ExecStart=/usr/bin/java -Xmx512M -XX:+UseZGC -jar PV-Heating-0.0.1-SNAPSHOT.jar
+Restart=always
+RestartSec=5
+SuccessExitStatus=143
+User=root
+
+[Install]
+WantedBy=multi-user.target
