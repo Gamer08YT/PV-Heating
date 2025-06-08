@@ -1,0 +1,36 @@
+name: Build DEB Package
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up build environment
+        run: |
+          sudo apt update
+          sudo apt install -y dpkg-dev fakeroot
+
+      - name: Fix permissions
+        run: |
+          chmod 0755 pvheating/DEBIAN
+          chmod 0644 pvheating/DEBIAN/control || true
+          [ -f pvheating/DEBIAN/postinst ] && chmod 0755 pvheating/DEBIAN/postinst
+          [ -f pvheating/DEBIAN/prerm ] && chmod 0755 pvheating/DEBIAN/prerm
+
+      - name: Build DEB package
+        run: |
+          dpkg-deb --build pvheating
+
+      - name: Upload DEB as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: pvheating
+          path: pvheating.deb
